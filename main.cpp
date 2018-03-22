@@ -8,6 +8,39 @@
 // contains printing utilities
 #include "sqlhelper.h"
 
+using hsql::kStmtSelect;
+using hsql::kStmtInsert;
+using hsql::kStmtCreate;
+using hsql::kStmtUpdate;
+using hsql::kStmtDelete;
+using hsql::kStmtDrop;
+
+
+void dispatchStatement(const hsql::SQLStatement* stmt) {
+	switch (stmt->type()) {
+		case kStmtSelect:
+			printf("Select\n");
+			break;
+		case kStmtInsert:
+			printf("Insert\n");
+			break;
+		case kStmtCreate:
+			printf("Create\n");
+			break;
+		case kStmtUpdate:
+			printf("Update\n");
+			break;
+		case kStmtDelete:
+			printf("Delete\n");
+			break;
+		case kStmtDrop:
+			printf("Drop\n");
+			break;
+		default:
+			break;
+	}
+}
+
 int main(int argc, char *argv[]) {
     if (argc <= 1) {
         fprintf(stderr, "Usage: ./example \"SELECT * FROM test;\"\n");
@@ -24,8 +57,11 @@ int main(int argc, char *argv[]) {
         printf("Number of statements: %lu\n", result->size());
 
         for (uint i = 0; i < result->size(); ++i) {
-            // Print a statement summary.
-            hsql::printStatementInfo(result->getStatement(i));
+			const hsql::SQLStatement* statement = result->getStatement(i);
+
+			dispatchStatement(statement);
+
+            hsql::printStatementInfo(statement);
         }
 
         delete result;
