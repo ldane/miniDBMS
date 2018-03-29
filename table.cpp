@@ -31,10 +31,31 @@ void setColumnTypes(std::string columnName, std::string ctm){
 	// need to check if already exists maybe
 	columnTypesMap.insert(std::make_pair(columnName, ctm));
 }
-		/*std::string getTableName();
-		std::string getPrimaryKey();
-		int getRecordSize();
-		int getTotalSize();
-		int getNumOfRecords();
-		std::vector<std::string> getColumnNames();
-		std::string getColumnType(std::string column);*/
+
+std::string Table::getTableName(){
+	return tableName;
+}
+
+std::string Table::getPrimaryKey(){
+	return pk;
+}
+
+int Table::getRecordSize(){
+	return recordSize;
+}
+
+int Table::getTotalSize(){
+	return totalSize;
+}
+
+int Table::getNumOfRecords(){
+	return numOfRecords;
+}
+
+std::vector<std::string> Table::getColumnNames(){
+	return columnNames;
+}
+
+std::string Table::getColumnType(std::string column){
+	
+}
