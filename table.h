@@ -10,17 +10,17 @@ class Table{
 		int recordSize;
 		int totalSize;
 		int numOfRecords;
-		std::vector<std::string>;
-		std::map<std::string, std::string>;
+		std::vector<std::string> columnNames;
+		std::map<std::string, std::string> columnTypesMap;
 	
 	public :
-		Table(std::string);
-		void setPrimaryKey(std::string);
+		Table(std::string tn);
+		void setPrimaryKey(std::string pk);
 		void setRecordSize(int size);
 		void setTotalSize(int size);
 		void setNumOfRecords(int num);
-		void setColumnNames(std::vector<std::string> columnNames);
-		void setColumnTypes(std::string columnName, std::string columnType);
+		void setColumnNames(std::vector<std::string> cn);
+		void setColumnTypes(std::string columnName, std::string ctm);
 		std::string getTableName();
 		std::string getPrimaryKey();
 		int getRecordSize();
