@@ -53,7 +53,7 @@ int main(int argc, char *argv[]) {
 		while (true){
 			printf("SQL> ");
 			std::string myStatement;
-			getline(cin, myStatement);
+			getline(std::cin, myStatement);
 			if (myStatement == "quit"){
 				return 0;
 			} else {
