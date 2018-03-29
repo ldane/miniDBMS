@@ -51,7 +51,7 @@ int main(int argc, char *argv[]) {
     if (argc <= 1) {
         fprintf(stderr, "Usage: ./example \"SELECT * FROM test;\"\n");
 		while (true){
-			printf("SQL> ");
+			printf("\nSQL> ");
 			std::string myStatement;
 			getline(std::cin, myStatement);
 			if (myStatement == "quit"){
