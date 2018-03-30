@@ -4,6 +4,7 @@
 //
 #include "table.h"
 #include <string>
+#include <map>
 
 //
 class Catalog{
