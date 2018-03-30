@@ -6,6 +6,10 @@
 // include the sql parser
 #include "SQLParser.h"
 
+//
+#include "catalog.h"
+#include "table.h"
+
 // contains printing utilities
 #include "sqlhelper.h"
 
@@ -50,6 +54,8 @@ hsql::SQLParserResult* parse(std::string query){
 int main(int argc, char *argv[]) {
     if (argc <= 1) {
         fprintf(stderr, "Usage: ./example \"SELECT * FROM test;\"\n");
+		Catalog ctlg();
+		ctlg.loadFromFile("catalog.txt");
 		while (true){
 			printf("\nSQL> ");
 			std::string myStatement;
