@@ -9,7 +9,7 @@
 //
 class Catalog{
 	private:
-		int numOfTables;
+		unsigned int numOfTables;
 		std::map<std::string, Table*> tables;
 	
 	public:
