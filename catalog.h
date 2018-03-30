@@ -3,6 +3,7 @@
 #define CATALOG_H
 //
 #include "table.h"
+#include <string>
 
 //
 class Catalog{

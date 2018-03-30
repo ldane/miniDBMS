@@ -3,6 +3,8 @@
 #define TABLE_H
 
 //
+#include <string>
+
 class Table{
 	private:
 		std::string tableName;
