@@ -26,7 +26,7 @@ void Catalog::loadFromFile(std::string fileName){
 		while (getline(file, line)){
 			// process 6 lines at a time
 			// if a line fails to be parsed correctly, the catalog is formatted wrong or contains wrong syntax
-			std::cout << line << endl;
+			std::cout << line << std::endl;
 			// create a table object
 		}
 		file.close();

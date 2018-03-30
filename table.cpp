@@ -9,6 +9,7 @@ Table::Table(std::string tn){
 	totalSize = 0;
 	numOfRecords = 0;
 	//columnNames columnTypesMap
+	columnTypesMap();
 }
 void Table::setPrimaryKey(std::string pk){
 	primaryKey = pk;
