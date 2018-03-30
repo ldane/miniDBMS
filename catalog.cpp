@@ -1,14 +1,15 @@
 //
 #include "catalog.h"
-
+#include <iostream>
+#include <fstream>
 //
 
 Catalog::Catalog(){
 	numOfTables = 0;
 }
 
-void Catalog::addTable(Table newTable){
-	tables.insert(std::make_pair(newTable.getTableName(), newTable);
+void Catalog::addTable(Table* newTable){
+	tables.insert(std::make_pair(newTable->getTableName(), newTable);
 	if (numOfTables == tables.size()) {
 		// failed to insert because duplicate exists
 	} else {
@@ -19,7 +20,17 @@ void Catalog::addTable(Table newTable){
 
 void Catalog::loadFromFile(std::string fileName){
 	// check if file is valid table schemas
-	
+	std::string line;
+	std::ifstream file (fileName);
+	if (file.is_open()){
+		while (getline(file, line)){
+			// process 6 lines at a time
+			// if a line fails to be parsed correctly, the catalog is formatted wrong or contains wrong syntax
+			printf(line + "\n");
+			// create a table object
+		}
+		file.close();
+	}
 }
 
 void Catalog::writeToFile(){

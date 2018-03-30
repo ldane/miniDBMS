@@ -8,11 +8,11 @@
 class Catalog{
 	private:
 		int numOfTables;
-		std::map<std::string, Table> tables;
+		std::map<std::string, Table*> tables;
 	
 	public:
 		Catalog();
-		void addTable(Table newTable);
+		void addTable(Table* newTable);
 		void loadFromFile(std::string fileName);
 		void writeToFile();
 }

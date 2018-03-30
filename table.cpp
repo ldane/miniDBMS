@@ -57,5 +57,8 @@ std::vector<std::string> Table::getColumnNames(){
 }
 
 std::string Table::getColumnType(std::string column){
-	
+	if (columnTypesMap.find(column) != columnTypesMap.end()){
+		return columnTypesMap[column];
+	} else {
+		return "";
 }
