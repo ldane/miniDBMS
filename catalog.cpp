@@ -24,10 +24,18 @@ void Catalog::loadFromFile(std::string fileName){
 	std::ifstream file (fileName);
 	if (file.is_open()){
 		while (getline(file, line)){
-			// process 6 lines at a time
-			// if a line fails to be parsed correctly, the catalog is formatted wrong or contains wrong syntax
-			std::cout << line << std::endl;
-			// create a table object
+			// process >> 6 << lines at a time
+			// if a line fails to be parsed correctly, the catalog is formatted wrong or contains wrong syntax (watch out for empty lines)
+			// this line must be of the format tablename=xxxx 
+			std::string subTableLineCheck = line.substr(0, 9);
+			
+			// case-sensitive
+			if (subTableLineCheck == "tablename="){
+				std::string subTableLine = line.substr(10);
+				if (getline(file, line)){
+					//check 2nd line starts with columns=
+				}
+			}
 		}
 		file.close();
 	}
