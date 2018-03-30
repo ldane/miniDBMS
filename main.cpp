@@ -54,7 +54,7 @@ hsql::SQLParserResult* parse(std::string query){
 int main(int argc, char *argv[]) {
     if (argc <= 1) {
         fprintf(stderr, "Usage: ./example \"SELECT * FROM test;\"\n");
-		Catalog ctlg();
+		Catalog ctlg;
 		ctlg.loadFromFile("catalog.txt");
 		while (true){
 			printf("\nSQL> ");
