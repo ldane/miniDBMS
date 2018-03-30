@@ -37,7 +37,7 @@ std::string Table::getTableName(){
 }
 
 std::string Table::getPrimaryKey(){
-	return pk;
+	return primaryKey;
 }
 
 int Table::getRecordSize(){
@@ -61,4 +61,5 @@ std::string Table::getColumnType(std::string column){
 		return columnTypesMap[column];
 	} else {
 		return "";
+	}
 }
