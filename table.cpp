@@ -27,7 +27,7 @@ void Table::setColumnNames(std::vector<std::string> cn){
 	columnNames = cn;
 }
 
-void setColumnTypes(std::string columnName, std::string ctm){
+void Table::setColumnTypes(std::string columnName, std::string ctm){
 	// need to check if already exists maybe
 	columnTypesMap.insert(std::make_pair(columnName, ctm));
 }
