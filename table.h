@@ -33,6 +33,6 @@ class Table{
 		int getNumOfRecords();
 		std::vector<std::string> getColumnNames();
 		std::string getColumnType(std::string column);
-}
+};
 
 #endif
