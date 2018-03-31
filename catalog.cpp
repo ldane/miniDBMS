@@ -20,7 +20,7 @@ void Catalog::addTable(Table* newTable){
 
 void Catalog::loadFromFile(std::string fileName){
 	// check if file is valid table schemas
-	printf("Loading catalog from file");
+	printf("Loading catalog from file\n");
 	std::string line;
 	std::ifstream file (fileName);
 	if (file.is_open()){
@@ -36,7 +36,7 @@ void Catalog::loadFromFile(std::string fileName){
 			// records=?
 			
 			// case-sensitive
-			std::cout << line.substr(0, 4) << "111\n";
+			std::cout << line.substr(0, 9) << "111\n";
 			if (line.substr(0, 9) == "tablename="){
 				std::string nTableName = line.substr(10);
 				std::cout << nTableName << "\n";
