@@ -28,7 +28,7 @@ void Table::addColumn(std::string clmn){
 	// left of = is column name
 	// right of = is column type 
 	std::cout << "trying to add column" << std::endl;
-	std::size_t pos = clmn.find("=");
+	std::size_t pos = clmn.find(":");
 	std::cout << "trying to add column2" << std::endl;
 	std::string nColumnName = clmn.substr(0,pos);
 	std::cout << "trying to add column3" << std::endl;
@@ -87,7 +87,7 @@ void Table::print(){
 		} else {
 			std::cout << ",";
 		}
-		std::cout << clmn << columnTypesMap[clmn];
+		std::cout << clmn << ":" << columnTypesMap[clmn];
 	}
 	std::cout << std::endl;
 	std::cout << "primary key=" << primaryKey << std::endl;

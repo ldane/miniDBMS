@@ -1,5 +1,5 @@
 tablename=Test
-columns=C1:INT,C2,CHAR(10)
+columns=C1:INT,C2:CHAR(10)
 primary key=C1
 recordsize=13
 totalsize=65
