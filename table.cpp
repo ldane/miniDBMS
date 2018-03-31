@@ -9,6 +9,7 @@ Table::Table(std::string tn, bool temp) : columnTypesMap(){
 	totalSize = 0;
 	numOfRecords = 0;
 	isTemporary = temp;
+	isDropped = false;
 	//columnNames columnTypesMap
 }
 void Table::setPrimaryKey(std::string pk){

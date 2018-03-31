@@ -19,6 +19,7 @@ class Table{
 		std::vector<std::string> columnNames;
 		std::map<std::string, std::string> columnTypesMap;
 		bool isTemporary;
+		bool isDropped;
 	
 	public :
 		Table(std::string tn, bool temp = false);
