@@ -47,7 +47,7 @@ void Catalog::loadFromFile(std::string fileName){
 						// first take everything after the =
 						// split this string by ','
 						// into a vector 
-						std::stringstream allColumns = line.substr(8);
+						std::stringstream allColumns(line.substr(8));
 						
 						if (getline(file, line)){
 							if (line.substr(0, 12) == "primary key="){
@@ -75,7 +75,6 @@ void Catalog::loadFromFile(std::string fileName){
 														while(std::getline(allColumns, segment, ',')){
 															pTable->addColumn(segment);
 														}
-														pTable->set
 														addTable(pTable);
 														pTable->print();
 														delete pTable;
