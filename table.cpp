@@ -27,13 +27,13 @@ void Table::addColumn(std::string clmn){
 	// passed in value will be of format C1=INT
 	// left of = is column name
 	// right of = is column type 
-	std::cout << "trying to add column" << std::endl;
+	//std::cout << "trying to add column" << std::endl;
 	std::size_t pos = clmn.find(":");
-	std::cout << "trying to add column2" << std::endl;
+	//std::cout << "trying to add column2" << std::endl;
 	std::string nColumnName = clmn.substr(0,pos);
-	std::cout << "trying to add column3" << std::endl;
+	//std::cout << "trying to add column3" << std::endl;
 	std::string nColumnType = clmn.substr(pos+1);
-	std::cout << "trying to add column4" << std::endl;
+	//std::cout << "trying to add column4" << std::endl;
 	columnNames.push_back(nColumnName);
 	columnTypesMap.insert(std::make_pair(nColumnName, nColumnType));
 }
