@@ -46,10 +46,10 @@ void Catalog::loadFromFile(std::string fileName){
 									if (line.substr(0, 10) == "recordsize="){
 										std::string nRecordSize = line.substr(11);
 										if (getline(file, line)){
-											if (line.substr(0, 9)== "totalsize="){
+											if (line.substr(0, 9) == "totalsize="){
 												std::string nTotalSize = line.substr(10);
 												if (getline(file, line)){
-													if (line.substr(0, 7) = "records="){
+													if (line.substr(0, 7) == "records="){
 														std::string nRecords = line.substr(8);
 														// now build the table, and insert it into the catalog
 														Table* pTable = new Table(nTableName);
