@@ -32,7 +32,7 @@ void Table::addColumn(std::string clmn){
 	std::cout << "trying to add column2" << std::endl;
 	std::string nColumnName = clmn.substr(0,pos);
 	std::cout << "trying to add column3" << std::endl;
-	std::string nColumnType = clmn.substr(pos);
+	std::string nColumnType = clmn.substr(pos+1);
 	std::cout << "trying to add column4" << std::endl;
 	columnNames.push_back(nColumnName);
 	columnTypesMap.insert(std::make_pair(nColumnName, nColumnType));
