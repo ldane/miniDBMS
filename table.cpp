@@ -77,13 +77,13 @@ void Table::print(){
 	// build the string for columns.
 	std::cout << "columns=";
 	bool isFirstTime = true;
-	for (int i : columnNames){
+	for (std::string clmn : columnNames){
 		if (isFirstTime){
 			isFirstTime = false;
 		} else {
-			cout << ",";
+			std::cout << ",";
 		}
-		cout << i << columnNames["i"];
+		std::cout << clmn << columnNames[clmn];
 	}
 	std::cout << std::endl;
 	std::cout << "primary key=" << primaryKey << std::endl;
