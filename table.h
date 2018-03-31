@@ -18,9 +18,10 @@ class Table{
 		int numOfRecords;
 		std::vector<std::string> columnNames;
 		std::map<std::string, std::string> columnTypesMap;
+		bool isTemporary;
 	
 	public :
-		Table(std::string tn);
+		Table(std::string tn, bool temp = false);
 		void setPrimaryKey(std::string pk);
 		void setRecordSize(int size);
 		void setTotalSize(int size);
