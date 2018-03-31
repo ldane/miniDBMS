@@ -60,6 +60,8 @@ void Catalog::loadFromFile(std::string fileName){
 														pTable->setTotalSize(std::stoi(nTotalSize));
 														pTable->setNumOfRecords(std::stoi(nRecords));
 														addTable(pTable);
+														pTable->print();
+														delete pTable;
 													}
 												}
 											}
