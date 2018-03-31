@@ -36,7 +36,7 @@ void Catalog::loadFromFile(std::string fileName){
 			// records=?
 			
 			// case-sensitive
-			std::cout << line.substr(0, 0);
+			std::cout << line;
 			if (line.substr(0, 9) == "tablename="){
 				std::string nTableName = line.substr(10);
 				printf("test1");
