@@ -63,3 +63,11 @@ std::string Table::getColumnType(std::string column){
 		return "";
 	}
 }
+
+void Table::print(){
+	printf("tablename=%s\n", tableName);
+	printf("primary key=%s\n", primaryKey);
+	printf("recordsize=%d\n", recordSize);
+	printf("totalsize=%d\n", totalSize);
+	printf("records=%d\n", numOfRecords);
+}
