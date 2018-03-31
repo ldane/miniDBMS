@@ -65,9 +65,14 @@ std::string Table::getColumnType(std::string column){
 }
 
 void Table::print(){
-	printf("tablename=%s\n", tableName);
-	printf("primary key=%s\n", primaryKey);
-	printf("recordsize=%d\n", recordSize);
-	printf("totalsize=%d\n", totalSize);
-	printf("records=%d\n", numOfRecords);
+	// printf("tablename=%s\n", tableName);
+	std::cout << "tablename=" << tableName << std::endl;
+	// printf("primary key=%s\n", primaryKey);
+	std::cout << "primary key=" << primaryKey << std::endl;
+	// printf("recordsize=%d\n", recordSize);
+	std::cout << "recordsize=" << recordSize << std::endl;
+	// printf("totalsize=%d\n", totalSize);
+	std::cout << "totalsize=" << totalSize << std::endl;
+	// printf("records=%d\n", numOfRecords);
+	std::cout << "records=" << numOfRecords << std::endl;
 }
