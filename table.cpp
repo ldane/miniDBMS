@@ -23,8 +23,15 @@ void Table::setTotalSize(int size){
 void Table::setNumOfRecords(int num){
 	numOfRecords = num;
 }
-void Table::setColumnNames(std::vector<std::string> cn){
-	columnNames = cn;
+void Table::addColumn(std::string clmn){
+	// passed in value will be of format C1=INT
+	// left of = is column name
+	// right of = is column type 
+	std::size_t pos = clmn.find("=");
+	std::string nColumnName = clmn.substr(0,pos);
+	std::string nColumnType = clmn.substr(pos);
+	columnNames.push_back(nColumnName);
+	columnTypesMap.insert(std::make_pair(nColumnName, nColumnType));
 }
 
 void Table::setColumnTypes(std::string columnName, std::string ctm){
@@ -67,6 +74,18 @@ std::string Table::getColumnType(std::string column){
 void Table::print(){
 	std::cout << "Printing a table..." << std::endl;
 	std::cout << "tablename=" << tableName << std::endl;
+	// build the string for columns.
+	std::cout << "columns=";
+	bool isFirstTime = true;
+	for (int i : columnNames){
+		if (isFirstTime){
+			isFirstTime = false;
+		} else {
+			cout << ",";
+		}
+		cout << i << columnNames["i"];
+	}
+	std::cout << std::endl;
 	std::cout << "primary key=" << primaryKey << std::endl;
 	std::cout << "recordsize=" << recordSize << std::endl;
 	std::cout << "totalsize=" << totalSize << std::endl;

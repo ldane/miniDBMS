@@ -25,7 +25,7 @@ class Table{
 		void setRecordSize(int size);
 		void setTotalSize(int size);
 		void setNumOfRecords(int num);
-		void setColumnNames(std::vector<std::string> cn);
+		void addColumn(std::string clmn);
 		void setColumnTypes(std::string columnName, std::string ctm);
 		std::string getTableName();
 		std::string getPrimaryKey();

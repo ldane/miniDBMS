@@ -2,6 +2,8 @@
 #include "catalog.h"
 #include <iostream>
 #include <fstream>
+#include <stringstream>
+#include <vector>
 //
 
 Catalog::Catalog(){
@@ -41,6 +43,12 @@ void Catalog::loadFromFile(std::string fileName){
 				std::string nTableName = line.substr(10);
 				if (getline(file, line)){
 					if (line.substr(0, 8) == "columns="){
+						// columns=C1:INT,C2,CHAR(10)
+						// first take everything after the =
+						// split this string by ','
+						// into a vector 
+						std::stringstream allColumns = line.substr(8);
+						
 						if (getline(file, line)){
 							if (line.substr(0, 12) == "primary key="){
 								std::string nPrimaryKey = line.substr(12);
@@ -61,6 +69,13 @@ void Catalog::loadFromFile(std::string fileName){
 														pTable->setRecordSize(std::stoi(nRecordSize));
 														pTable->setTotalSize(std::stoi(nTotalSize));
 														pTable->setNumOfRecords(std::stoi(nRecords));
+														
+														// add columns
+														std::string segment;
+														while(std::getline(allColumns, segment, ',')){
+															pTable->addColumn(segment);
+														}
+														pTable->set
 														addTable(pTable);
 														pTable->print();
 														delete pTable;
