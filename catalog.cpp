@@ -20,6 +20,7 @@ void Catalog::addTable(Table* newTable){
 
 void Catalog::loadFromFile(std::string fileName){
 	// check if file is valid table schemas
+	printf("Loading catalog from file");
 	std::string line;
 	std::ifstream file (fileName);
 	if (file.is_open()){
