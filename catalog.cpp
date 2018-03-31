@@ -26,14 +26,49 @@ void Catalog::loadFromFile(std::string fileName){
 		while (getline(file, line)){
 			// process >> 6 << lines at a time
 			// if a line fails to be parsed correctly, the catalog is formatted wrong or contains wrong syntax (watch out for empty lines)
-			// this line must be of the format tablename=xxxx 
-			std::string subTableLineCheck = line.substr(0, 9);
+			// a correctly formatted file has 6 lines in the following order.
+			// tablename=?
+			// columns=C1:INT,C2,CHAR(10)
+			// primary key=C1
+			// recordsize=?
+			// totalsize=?
+			// records=?
 			
 			// case-sensitive
-			if (subTableLineCheck == "tablename="){
-				std::string subTableLine = line.substr(10);
+			if (line.substr(0, 9) == "tablename="){
+				std::string nTableName = line.substr(10);
 				if (getline(file, line)){
-					//check 2nd line starts with columns=
+					if (line.substr(0, 7) == "columns="){
+						if (getline(file, line)){
+							if (line.substr(0, 11) == "primary key="){
+								std::string nPrimaryKey = line.substr(12);
+								if (getline(file, line)){
+									if (line.substr(0, 10) == "recordsize="){
+										std::string nRecordSize = line.substr(11);
+										if (getline(file, line)){
+											if (line.substr(0, 9)== "totalsize="){
+												std::string nTotalSize = line.substr(10);
+												if (getline(file, line)){
+													if (line.substr(0, 7) = "records="){
+														std::string nRecords = line.substr(8);
+														// now build the table, and insert it into the catalog
+														Table* pTable = new Table(nTableName);
+														pTable->setPrimaryKey(nPrimaryKey);
+														//pTable->setColumnNames
+														//pTable->setColumnTypes
+														pTable->setRecordSize(std::stoi(nRecordSize));
+														pTable->setTotalSize(std::stoi(nTotalSize));
+														pTable->setNumOfRecords(std::stoi(nRecords));
+														addTable(pTable);
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
 				}
 			}
 		}
