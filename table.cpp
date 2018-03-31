@@ -83,7 +83,7 @@ void Table::print(){
 		} else {
 			std::cout << ",";
 		}
-		std::cout << clmn << columnNames[clmn];
+		std::cout << clmn << columnTypesMap[clmn];
 	}
 	std::cout << std::endl;
 	std::cout << "primary key=" << primaryKey << std::endl;
