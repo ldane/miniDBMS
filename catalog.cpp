@@ -37,19 +37,25 @@ void Catalog::loadFromFile(std::string fileName){
 			// case-sensitive
 			if (line.substr(0, 9) == "tablename="){
 				std::string nTableName = line.substr(10);
+				printf("test1");
 				if (getline(file, line)){
 					if (line.substr(0, 7) == "columns="){
+						printf("test2");
 						if (getline(file, line)){
 							if (line.substr(0, 11) == "primary key="){
+								printf("test3");
 								std::string nPrimaryKey = line.substr(12);
 								if (getline(file, line)){
 									if (line.substr(0, 10) == "recordsize="){
+										printf("test4");
 										std::string nRecordSize = line.substr(11);
 										if (getline(file, line)){
 											if (line.substr(0, 9) == "totalsize="){
+												printf("test5");
 												std::string nTotalSize = line.substr(10);
 												if (getline(file, line)){
 													if (line.substr(0, 7) == "records="){
+														printf("test6");
 														std::string nRecords = line.substr(8);
 														// now build the table, and insert it into the catalog
 														Table* pTable = new Table(nTableName);
