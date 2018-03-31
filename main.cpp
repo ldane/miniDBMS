@@ -8,35 +8,103 @@
 // contains printing utilities
 #include "sqlhelper.h"
 
+
+#define STRSIZE 100
+
 using hsql::kStmtSelect;
 using hsql::kStmtInsert;
 using hsql::kStmtCreate;
-using hsql::kStmtUpdate;
 using hsql::kStmtDelete;
 using hsql::kStmtDrop;
+using hsql::kTableSelect;
 
+std::string getString(std::FILE *f) {
+	char buf[STRSIZE];
+	fread(buf, sizeof(char)*STRSIZE, 1, f);
+	std::string result(buf);
+	return result;
+}
+
+int getInt(std::FILE *f) {
+	int buf;
+	fread(&buf, sizeof(int), 1, f);
+	return buf;
+}
+
+void writeString(std::FILE *f, std::string input) {
+//	fwrite();
+}
+
+void writeInt(std::FILE *f, int input) {
+//	fwrite();
+}
+
+std::FILE* openTable(const char* table, const char* mode) {
+	std::string fname(table);
+	fname = fname+".tbl";
+	std::FILE* f = fopen(fname.c_str(), mode);
+	return f
+}
+
+void readCatalog() {
+	return;
+}
+
+void writeCatalog() {
+	return;
+}
+
+void log(std::string logbuf) {
+	printf("LOG: %s\n", logbuf.c_str());
+}
+
+void selectData(const hsql::SelectStatement* stmt) {
+	printf("select\n");
+	std::FILE* f = openTable(stmt->tableName, "rb");
+	//read catalog
+	fclose(f);
+	delete f;
+}
+void insertData(const hsql::InsertStatement* stmt) {
+	printf("Insert\n");
+	//read catalog
+}
+void deleteData(const hsql::DeleteStatement* stmt) {
+	printf("delete\n");
+	//read catalog
+}
+void createTable(const hsql::CreateStatement* stmt) {
+	printf("create %s\n", stmt->tableName);
+	std::FILE* f = openTable(stmt->tableName, "wb");
+	//update catalog
+	fclose(f);
+	delete f;
+}
+void dropTable(const hsql::DropStatement* stmt) {
+	//update catalog
+	//remove table file
+	printf("drop\n");
+}
 
 void dispatchStatement(const hsql::SQLStatement* stmt) {
 	switch (stmt->type()) {
 		case kStmtSelect:
-			printf("Select\n");
+		    selectData((const hsql::SelectStatement*) stmt);
 			break;
 		case kStmtInsert:
-			printf("Insert\n");
-			break;
-		case kStmtCreate:
-			printf("Create\n");
-			break;
-		case kStmtUpdate:
-			printf("Update\n");
+		    insertData((const hsql::InsertStatement*) stmt);
 			break;
 		case kStmtDelete:
-			printf("Delete\n");
+		    deleteData((const hsql::DeleteStatement*) stmt);
+			break;
+		case kStmtCreate:
+		    createTable((const hsql::CreateStatement*) stmt);
 			break;
 		case kStmtDrop:
-			printf("Drop\n");
+			dropTable((const hsql::DropStatement*) stmt);
 			break;
 		default:
+			log("undefined sql operation");
 			break;
 	}
 }
