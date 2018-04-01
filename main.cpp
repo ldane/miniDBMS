@@ -253,7 +253,7 @@ int main(int argc, char *argv[]) {
 			break;
 		}
 		parseCommand(myStatement);
-		//ctlg.writeToFile("catalogWRITETEST.txt");
+		ctlg.writeToFile("catalogWRITETEST.txt");
     }
 	return 0;
 }
