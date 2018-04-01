@@ -105,6 +105,7 @@ void Catalog::writeToFile(std::string fileName){
 	// recordsize=13
 	// totalsize=65
 	// records=5
+	printf("Writing catalog to file\n");
 	std::ofstream ofs(fileName);
 	if (ofs.is_open()){
 		// for each table in the map 
