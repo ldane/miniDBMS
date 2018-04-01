@@ -111,7 +111,7 @@ void createTable(const std::string query) {
 	
 	// now build the table, and insert it into the catalog
 	
-	pTable->parseAndSetPrimaryKey(lastfield);
+	pTable->setPrimaryKey(lastfield);
 	ctlg.addTable(pTable);
 	//pTable->print();
 }
