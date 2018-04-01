@@ -146,7 +146,13 @@ void parseCommand(std::string myStatement) {
 		std::cout << "create table\n";
 		createTable(myStatement);
 	} else if (icompare(myStatement.substr(0,10),"show table")) {
-		std::cout << "show table";
+		if(icompare(myStatement.substr(0,11),"show tables")) {
+			ctlg.showTables();
+		} else {
+			myStatement.erase(0,10);
+			trim(&myStatement);
+			ctlg.showTable(myStatement);
+		}
 	} else {
 		hsql::SQLParserResult* result = hsql::SQLParser::parseSQLString(myStatement);
 		if (result->isValid()) {
@@ -181,7 +187,10 @@ int main(int argc, char *argv[]) {
 	if (argc!=1) {
 		std::istringstream ss(argv[1]);
 		while(std::getline(ss, myStatement, ';')) {
+			size_t pos=myStatement.rfind(';');
+			myStatement = myStatement.substr(0,pos-1);
 			trim(&myStatement);
+			
 			if(icompare(myStatement.substr(0,4), "quit")) {
 				quit=false;
 				break;
@@ -193,7 +202,10 @@ int main(int argc, char *argv[]) {
 	while (quit){
 		printf("\nSQL> ");
 		while(std::getline(std::cin, myStatement, ';')) {
+			size_t pos=myStatement.rfind(';');
+			myStatement = myStatement.substr(0,pos-1);
 			trim(&myStatement);
+
 			if(icompare(myStatement.substr(0,4), "quit")) {
 				quit=false;
 				break;

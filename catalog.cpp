@@ -119,3 +119,17 @@ void Catalog::writeToFile(std::string fileName){
 	ofs.close();
 	
 }
+
+void Catalog::showTable(std::string t) {
+	std::cout << t;
+	for (const auto& kv : tables)
+		if(kv.first == t)
+			if (!kv.second->isDropped())
+				kv.second->print();
+}
+
+void Catalog::showTables() {
+	for (const auto& kv : tables)
+		if (!kv.second->isTemporary() && !kv.second->isDropped())
+			kv.second->print();
+}
