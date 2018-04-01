@@ -124,8 +124,11 @@ void Catalog::showTable(std::string t) {
 	std::cout << t << std::endl;
 	for (const auto& kv : tables)
 		if(kv.first == t)
-			if (!kv.second->isDropped())
+			if (!kv.second->isDropped()) {
 				kv.second->print();
+				return;
+			}
+	std::cout << "No table found." << std::endl;
 }
 
 void Catalog::showTables() {

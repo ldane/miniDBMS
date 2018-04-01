@@ -2,6 +2,9 @@
 #include <stdlib.h>
 #include <string>
 #include <algorithm>
+#include <functional> 
+#include <cctype>
+#include <locale>
 #include <iostream>
 #include <sstream>
 #include <fstream>
@@ -45,28 +48,24 @@ bool icompare(std::string const& a, std::string const& b)
     }
 }
 
-void trim(std::string* s) {
-	size_t pos;
-	pos = s->find_first_not_of(" \t");
-	s->erase(0,pos);
+// trim from start
+static inline void ltrim(std::string &s) {
+    s.erase(s.begin(), std::find_if(s.begin(), s.end(),
+            std::not1(std::ptr_fun<int, int>(std::isspace))));
 }
 
-void trim2(std::string* s) {
-	size_t  pos;
-	std::string whitespaces (" \t\f\v\n\r");
-	
-	pos = s->find_last_not_of(whitespaces);
-	if (pos!=std::string::npos){
-		s->erase(pos+1);
-	} else {
-		s->clear();
-	}
+// trim from end
+static inline void rtrim(std::string &s) {
+    s.erase(std::find_if(s.rbegin(), s.rend(),
+            std::not1(std::ptr_fun<int, int>(std::isspace))).base(), s.end());
 }
-	
 
-void log(std::string logbuf) {
-	printf("LOG: %s\n", logbuf.c_str());
+// trim from both ends
+static inline void trim(std::string &s) {
+	rtrim(s);
+    ltrim(s);
 }
+
 /* End helper functions */
 
 void selectData(const hsql::SelectStatement* stmt) {
@@ -75,6 +74,10 @@ void selectData(const hsql::SelectStatement* stmt) {
 
 void insertData(const hsql::InsertStatement* stmt) {
 	printf("Insert\n");
+	std::cout <<"Ups\n";
+	for(auto it = stmt->values->begin(); it != stmt->values->end(); ++it) {
+		std::cout <<"Ups\n";
+	}
 	//read catalog
 }
 
@@ -100,20 +103,17 @@ void createTable(const std::string query) {
 
 	pos = nQuery.find('(');
 	tableName = nQuery.substr(0,pos);
-	trim(&tableName);
+	trim(tableName);
 	
 	//create our table *
 	Table* pTable = new Table(tableName);
-
-	std::cout << tableName << "\n";
 
 	nQuery.erase(0, pos+1);
 	
 	while((pos = nQuery.find(',')) != std::string::npos) {
 		field = nQuery.substr(0,pos);
-		trim(&field);
+		trim(field);
 		std::replace(field.begin(), field.end(), ' ',':');
-		std::cout << field << "\n";
 		// add columns to our table*
 		pTable->addColumn(field);
 		nQuery.erase(0,pos+1);
@@ -121,14 +121,13 @@ void createTable(const std::string query) {
 
 	pos = nQuery.rfind(")");
 	lastfield = nQuery.substr(0,pos);
-	trim(&lastfield);
+	trim(lastfield);
 	if(icompare(lastfield.substr(0,11), "PRIMARY KEY")) {
 		pos = lastfield.find("(");
 		lastfield.erase(0,pos+1);
 		pos = lastfield.rfind(")");
 		lastfield = lastfield.substr(0,pos);
-		trim(&lastfield);
-		std::cout << "PRIMARY " << lastfield << "\n";
+		trim(lastfield);
 	}
 	// check if the primary key exists
 	
@@ -160,22 +159,23 @@ void dispatchStatement(const hsql::SQLStatement* stmt) {
 			dropTable((const hsql::DropStatement*) stmt);
 			break;
 		default:
-			log("undefined sql operation");
 			break;
 	}
 }
 
 void parseCommand(std::string myStatement) {
 	if (icompare(myStatement.substr(0,12),"create table")) {
-		std::cout << "create table\n";
 		createTable(myStatement);
 	} else if (icompare(myStatement.substr(0,10),"show table")) {
 		if(icompare(myStatement.substr(0,11),"show tables")) {
 			ctlg.showTables();
 		} else {
 			myStatement.erase(0,10);
-			trim(&myStatement);
-			ctlg.showTable(myStatement);
+			trim(myStatement);
+			if (myStatement=="")
+				std::cout << "No table name specified.\n";
+			else
+				ctlg.showTable(myStatement);
 		}
 	} else {
 		hsql::SQLParserResult* result = hsql::SQLParser::parseSQLString(myStatement);
@@ -215,7 +215,7 @@ int main(int argc, char *argv[]) {
 		while(std::getline(ss, myStatement, ';')) {
 			size_t pos=myStatement.rfind(';');
 			myStatement = myStatement.substr(0,pos-1);
-			trim(&myStatement);
+			trim(myStatement);
 			
 			if(icompare(myStatement.substr(0,4), "quit")) {
 				quit=false;
@@ -226,19 +226,19 @@ int main(int argc, char *argv[]) {
 		ctlg.writeToFile("catalogWRITETEST.txt");
 	}
 	while (quit){
+		size_t pos;
 		printf("\nSQL> ");
-		while(std::getline(std::cin, myStatement, ';')) {
-			size_t pos=myStatement.rfind(';');
-			myStatement = myStatement.substr(0,pos-1);
-			trim(&myStatement);
+		std::getline(std::cin, myStatement, ';');
+		pos=myStatement.rfind(';');
+		myStatement = myStatement.substr(0,pos-1);
+		trim(myStatement);
 
-			if(icompare(myStatement.substr(0,4), "quit")) {
-				quit=false;
-				break;
-			}
-			parseCommand(myStatement);
+		if(icompare(myStatement.substr(0,4), "quit")) {
+			quit=false;
+			break;
 		}
-		ctlg.writeToFile("catalogWRITETEST.txt");
+		parseCommand(myStatement);
+		//ctlg.writeToFile("catalogWRITETEST.txt");
     }
 	return 0;
 }
