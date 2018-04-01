@@ -17,6 +17,10 @@ void Table::setPrimaryKey(std::string pk){
 	primaryKey = pk;
 }
 
+void Table::parseAndSetPrimaryKey(std::string pk){
+	primaryKey = pk.substr(8);
+}
+
 void Table::setRecordSize(int size){
 	recordSize = size;
 }
@@ -31,7 +35,12 @@ void Table::addColumn(std::string clmn){
 	// left of = is column name
 	// right of = is column type 
 	//std::cout << "trying to add column" << std::endl;
+	//replace space with : if : not found
 	std::size_t pos = clmn.find(":");
+	if (pos == std::string::npos){
+		//not found 
+		pos = clmn.find(" ");
+	}
 	//std::cout << "trying to add column2" << std::endl;
 	std::string nColumnName = clmn.substr(0,pos);
 	//std::cout << "trying to add column3" << std::endl;
