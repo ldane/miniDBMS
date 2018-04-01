@@ -113,11 +113,14 @@ std::string Table::getFormattedMetaData(){
 	ss << "totalsize=" << totalSize << "\n";
 	ss << "records=" << numOfRecords << "\n";
 	return ss.str();*/
+	std::cout << "does this work\n";
 	std::string myReturn = "";
 	myReturn += "tablename=";
+	std::cout << "does this work\n";
 	myReturn += tableName;
 	myReturn += "\n";
 	myReturn += "columns=";
+	std::cout << "does this work\n";
 	bool isFirstTime = true;
 	for (std::string clmn : columnNames){
 		if (isFirstTime){
@@ -139,6 +142,7 @@ std::string Table::getFormattedMetaData(){
 	myReturn += "totalsize=";
 	myReturn += totalSize;
 	myReturn += "\n";
+	std::cout << "does this work\n";
 	myReturn += "records=";
 	myReturn += numOfRecords;
 	myReturn += "\n";
