@@ -181,7 +181,9 @@ void parseCommand(std::string myStatement) {
 }
 
 void createTableFile(std::string tableName){
-	std::ofstream ofs(tableName += ".tbl");
+	std::string fileName = tableName;
+	fileName += ".tbl";
+	std::ofstream ofs(fileName);
 	ofs.close();
 }
 
