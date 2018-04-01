@@ -250,7 +250,7 @@ int main(int argc, char *argv[]) {
 			}
 			parseCommand(myStatement);
 		}
-		ctlg.writeToFile("catalogWRITETEST.txt");
+		//ctlg.writeToFile("catalogWRITETEST.txt");
 	}
 	while (quit){
 		size_t pos;
@@ -265,7 +265,8 @@ int main(int argc, char *argv[]) {
 			break;
 		}
 		parseCommand(myStatement);
-		ctlg.writeToFile("catalogWRITETEST.txt");
+		//ctlg.writeToFile("catalogWRITETEST.txt");
     }
+	ctlg.writeToFile("catalogWRITETEST.txt");
 	return 0;
 }
