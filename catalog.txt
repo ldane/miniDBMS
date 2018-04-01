@@ -1,0 +1,6 @@
+tablename=HELLO
+columns=C1:INT,C2:CHAR(5),C3:INT
+primary key=C1
+recordsize=13
+totalsize=13
+records=1

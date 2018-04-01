@@ -24,8 +24,6 @@
 Catalog ctlg;
 
 
-#define STRSIZE 255
-
 using hsql::kStmtSelect;
 using hsql::kStmtInsert;
 using hsql::kStmtDelete;
@@ -96,8 +94,6 @@ void selectData(const hsql::SelectStatement* stmt) {
 }
 
 void insertData(const hsql::InsertStatement* stmt) {
-	int i;
-	char s[255];
 	std::string fileName = stmt->tableName;
 	trim(fileName);
 	std::string tName = fileName;
@@ -109,24 +105,34 @@ void insertData(const hsql::InsertStatement* stmt) {
 	infile.close();
 	std::ofstream ofs(fileName, std::ofstream::binary | std::ofstream::out | std::ofstream::app);
 
+	auto table=ctlg.findTable(stmt->tableName);
+
 	auto values = stmt->values;
+	int ind=0;
 	for(auto it = values->begin(); it != values->end(); ++it) {
+		size_t size;
+		int i;
+		char *s;
 		const hsql::Expr* v=*it;
 		switch(v->type) {
 			case kExprLiteralInt:
 				i=v->ival;
+				size = table->getColumnByteSizeAt(ind);
 				std::cout << v->ival << "\n";
-				ofs.write((char *)&i, sizeof(int));
+				ofs.write((char *)&i, size);
 				break;
 			case kExprLiteralString:
-				std::memset(s,0,255);
+				size = table->getColumnByteSizeAt(ind);
+				s = new char[size];
+				std::memset(s,0,size);
 				std::strcpy(s,v->name);
 				std::cout << s << "\n";
-				ofs.write(s, sizeof(s));
+				ofs.write(s, size);
 				break;
 			default:
 				break;
 		}
+		ind++;
 	}
 	ofs.close();
 	// increment things in catalog
