@@ -209,6 +209,7 @@ std::string Table::parseRecord(char* buffer) {
 		}
 		ss << " ";
 	}
+	ss << "\n";
 	return ss.str();
 }
 
