@@ -71,10 +71,14 @@ void createTable(const std::string query) {
 	std::string tableName, field, lastfield;
 	std::string nQuery = query.substr(12);
 	std::size_t pos;
+	
 
 	pos = nQuery.find('(');
 	tableName = nQuery.substr(0,pos);
 	trim(&tableName);
+	
+	//create our table *
+	Table* pTable = new Table(tableName);
 
 	std::cout << tableName << "\n";
 
@@ -85,6 +89,8 @@ void createTable(const std::string query) {
 		trim(&field);
 		std::replace(field.begin(), field.end(), ' ',':');
 		std::cout << field << "\n";
+		// add columns to our table*
+		pTable->addColumn(field);
 		nQuery.erase(0,pos+1);
 	}
 
@@ -100,6 +106,12 @@ void createTable(const std::string query) {
 		std::cout << "PRIMARY " << lastfield << "\n";
 	}
 	// check if the primary key exists
+	
+	// now build the table, and insert it into the catalog
+	
+	pTable->parseAndSetPrimaryKey(lastfield);
+	addTable(pTable);
+	//pTable->print();
 }
 void dropTable(const hsql::DropStatement* stmt) {
 	//update catalog
