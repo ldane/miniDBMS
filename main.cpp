@@ -113,6 +113,7 @@ void createTable(const std::string query) {
 	
 	pTable->setPrimaryKey(lastfield);
 	ctlg.addTable(pTable);
+	createTableFile(tableName);
 	//pTable->print();
 }
 void dropTable(const hsql::DropStatement* stmt) {
@@ -177,6 +178,11 @@ void parseCommand(std::string myStatement) {
 			delete result;
 		}
 	}
+}
+
+void createTableFile(std::string tableName){
+	std::ofstream ofs(tableName += ".tbl");
+	ofs.close();
 }
 
 int main(int argc, char *argv[]) {
