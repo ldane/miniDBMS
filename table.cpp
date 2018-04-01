@@ -91,11 +91,8 @@ bool Table::isDropped(){
 
 std::string Table::getFormattedMetaData(){
 	std::ostringstream ss;
-	std::cout << "does this work\n";
 	ss << "tablename=" << tableName << "\n";
-	std::cout << "does this work2\n";
 	ss << "columns=";
-	std::cout << "does this work3\n";
 	bool isFirstTime = true;
 	for (std::string clmn : columnNames){
 		if (isFirstTime){
