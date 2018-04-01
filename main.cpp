@@ -55,11 +55,11 @@ void trim2(std::string* s) {
 	size_t  pos;
 	std::string whitespaces (" \t\f\v\n\r");
 	
-	pos = s.find_last_not_of(whitespaces);
+	pos = s->find_last_not_of(whitespaces);
 	if (pos!=std::string::npos){
-		s.erase(pos+1);
+		s->erase(pos+1);
 	} else {
-		s.clear();
+		s->clear();
 	}
 }
 	
