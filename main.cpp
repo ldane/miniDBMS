@@ -68,7 +68,7 @@ void deleteData(const hsql::DeleteStatement* stmt) {
 }
 
 void createTable(const std::string query) {
-	std::string tableName, field;
+	std::string tableName, field, lastfield;
 	std::string nQuery = query.substr(12);
 	std::size_t pos;
 
@@ -87,8 +87,10 @@ void createTable(const std::string query) {
 		nQuery.erase(0,pos+1);
 	}
 
-	pos = nQuery.find(");");
-	std::cout << nQuery << "\n";
+	pos = nQuery.rfind(");");
+	lastfield = nQuery.substr(0,pos-1);
+	trim(&lastfield);
+	std::cout << lastfield << "\n";
 }
 void dropTable(const hsql::DropStatement* stmt) {
 	//update catalog
