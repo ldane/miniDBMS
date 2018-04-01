@@ -10,13 +10,14 @@ Catalog::Catalog(){
 	numOfTables = 0;
 }
 
-void Catalog::addTable(Table* newTable){
+bool Catalog::addTable(Table* newTable){
 	tables.insert(std::make_pair(newTable->getTableName(), newTable));
 	if (numOfTables == tables.size()) {
 		// failed to insert because duplicate exists
+		return false;
 	} else {
 		numOfTables = tables.size();
-		// table inserted successfully
+		return true;
 	}
 }
 
@@ -75,7 +76,11 @@ void Catalog::loadFromFile(std::string fileName){
 														while(std::getline(allColumns, segment, ',')){
 															pTable->addColumn(segment);
 														}
-														addTable(pTable);
+														if (addTable(pTable)){
+															//??? can't fail
+														} else {
+															delete pTable;
+														}
 														//pTable->print();
 														//delete pTable;
 													}

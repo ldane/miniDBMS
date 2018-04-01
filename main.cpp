@@ -145,9 +145,12 @@ void createTable(const std::string query) {
 	// now build the table, and insert it into the catalog
 	
 	pTable->setPrimaryKey(lastfield);
-	ctlg.addTable(pTable);
-	createTableFile(tableName);
-	std::cout << "Created TABLE " << tableName << " Successfully\n";
+	if (ctlg.addTable(pTable)){
+		createTableFile(tableName);
+		std::cout << "Created TABLE " << tableName << " Successfully\n";
+	} else {
+		std::cout << "Duplicate TABLE " << tableName << " exists already\n";
+	}
 	//pTable->print();
 }
 void dropTable(const hsql::DropStatement* stmt) {

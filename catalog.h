@@ -14,7 +14,7 @@ class Catalog{
 	
 	public:
 		Catalog();
-		void addTable(Table *newTable);
+		bool addTable(Table *newTable);
 		void loadFromFile(std::string fileName);
 		void writeToFile(std::string fileName);
 		void showTable(std::string t);
