@@ -150,6 +150,7 @@ int main(int argc, char *argv[]) {
 			getline(std::cin, myStatement);
 			parseCommand(myStatement);
 		}
+		ctlg.writeToFile("catalogWRITETEST.txt");
     }
 	return 0;
 }
