@@ -189,7 +189,17 @@ void createTable(const std::string query) {
 }
 void dropTable(const hsql::DropStatement* stmt) {
 	//update catalog
+	//no need to use drop flag, just delete entry entirely
+	std::string tName = stmt->tableName;
+	trim(tName);
+	ctlg.dropTable(tName);
 	//remove table file
+	std::string fName = tName;
+	tName += ".tbl";
+	if( remove( tName ) != 0 )
+		perror( "Error deleting file" );
+	else
+		puts( "File successfully deleted" );
 	printf("drop\n");
 }
 

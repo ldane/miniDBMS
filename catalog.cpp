@@ -43,6 +43,11 @@ bool Catalog::addTable(Table* newTable){
 	}
 }
 
+void Catalog:dropTable(std::string tn){
+	delete findTable(tn);
+	tables.erase(tn);
+}
+
 void Catalog::loadFromFile(std::string fileName){
 	// check if file is valid table schemas
 	printf("Loading catalog from file\n");

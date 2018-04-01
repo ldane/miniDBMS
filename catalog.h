@@ -21,6 +21,7 @@ class Catalog{
 		void showTables();
 		bool incrementRecordsInTable(std::string tn);
 		Table* findTable(std::string t);
+		void dropTable(std::string tn);
 };
 
 #endif
