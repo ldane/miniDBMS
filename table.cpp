@@ -1,6 +1,7 @@
 //
 #include "table.h"
 //
+#include <sstream>
 
 Table::Table(std::string tn, bool temp) : columnTypesMap(){
 	tableName = tn;
@@ -8,8 +9,8 @@ Table::Table(std::string tn, bool temp) : columnTypesMap(){
 	recordSize = 0;
 	totalSize = 0;
 	numOfRecords = 0;
-	isTemporary = temp;
-	isDropped = false;
+	temporary = temp;
+	dropped = false;
 	//columnNames columnTypesMap
 }
 void Table::setPrimaryKey(std::string pk){
@@ -75,6 +76,43 @@ std::string Table::getColumnType(std::string column){
 	} else {
 		return "";
 	}
+}
+
+void Table::setIfDropped(bool dropflag){
+	dropped = dropflag;
+}
+bool Table::isTemporary(){
+	return temporary;
+}
+
+bool Table::isDropped(){
+	return dropped;
+}
+
+std::string Table::getFormattedMetaData(){
+	std::stringstream ss;
+	std::cout << "does this work\n";
+	ss << "tablename=" << "faketablename" << "\n";
+	std::cout << "does this work2\n";
+	ss << "columns=";
+	std::cout << "does this work3\n";
+	std::cout << "after columns=";
+	bool isFirstTime = true;
+	for (std::string clmn : columnNames){
+		if (isFirstTime){
+			isFirstTime = false;
+		} else {
+			std::cout << "before ,";
+			ss << ",";
+		}
+		ss << clmn << ":" << columnTypesMap[clmn];
+	}
+	ss << "\n";
+	ss << "primary key=" << primaryKey << "\n";
+	ss << "recordsize=" << recordSize << "\n";
+	ss << "totalsize=" << totalSize << "\n";
+	ss << "records=" << numOfRecords << "\n";
+	return ss.str();
 }
 
 void Table::print(){

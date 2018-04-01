@@ -94,8 +94,9 @@ void Catalog::loadFromFile(std::string fileName){
 	}
 }
 
-void Catalog::writeToFile(){
-	// write the contents of each catalog to file in a specific format
+void Catalog::writeToFile(std::string fileName){
+	// write the contents of each table in catalog to file in a specific format
+	// ignore tables that have the temporary and dropped flags 
 	// format dictated in project specifiction
 	// copied below
 	// tableName=T
@@ -104,4 +105,18 @@ void Catalog::writeToFile(){
 	// recordsize=13
 	// totalsize=65
 	// records=5
+	std::ofstream ofs(fileName);
+	if (ofs.is_open()){
+		// for each table in the map 
+		// print the schema of the table if the temporary and dropped flags are both false
+		for (const auto& kv : tables){
+			if (!kv.second->isTemporary() && !kv.second->isDropped()){
+				std::cout << "test2\n";
+				ofs << kv.second->getFormattedMetaData();
+			}
+		}
+	}
+	
+	ofs.close();
+	
 }

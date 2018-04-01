@@ -18,8 +18,8 @@ class Table{
 		int numOfRecords;
 		std::vector<std::string> columnNames;
 		std::map<std::string, std::string> columnTypesMap;
-		bool isTemporary;
-		bool isDropped;
+		bool temporary;
+		bool dropped;
 	
 	public :
 		Table(std::string tn, bool temp = false);
@@ -37,6 +37,10 @@ class Table{
 		std::vector<std::string> getColumnNames();
 		std::string getColumnType(std::string column);
 		void print();
+		void setIfDropped(bool dropflag);
+		bool isTemporary();
+		bool isDropped();
+		std::string getFormattedMetaData();
 };
 
 #endif

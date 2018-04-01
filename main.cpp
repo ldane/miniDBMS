@@ -117,10 +117,7 @@ void dispatchStatement(const hsql::SQLStatement* stmt) {
 }
 
 void parseCommand(std::string myStatement) {
-	if (icompare(myStatement.substr(0,4),"quit")){
-		// TODO: do clean-up and write catalog
-		exit(0);
-	} else if (icompare(myStatement.substr(0,12),"create table")) {
+	if (icompare(myStatement.substr(0,12),"create table")) {
 		std::cout << "create table\n";
 		createTable(myStatement);
 	} else if (icompare(myStatement.substr(0,10),"show table")) {
@@ -169,6 +166,7 @@ int main(int argc, char *argv[]) {
 			trim(&myStatement);
 			parseCommand(myStatement);
 		}
-	}
+		ctlg.writeToFile("catalogWRITETEST.txt");
+    }
 	return 0;
 }
