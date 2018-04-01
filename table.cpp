@@ -241,3 +241,23 @@ int Table::getColumnBytePosition(std::string clmn){
 	// if it doesnt find any matches, return ???
 	return -1;
 }
+
+int Table::getColumnByteSize(std::string clmn){
+	for (auto const& value : columnNames){
+		if (value == clmn){
+			std::string focus = getColumnType(value);
+			if (focus == "INT"){
+				return 4;
+				
+			} else if (focus.substr(0, 5) == "CHAR("){
+				pos = focus.find(")");
+				std::string chB = focus.substr(5, pos-5);
+				//std::cout << "chB is " << chB << std::endl;
+				return atoi(chB.c_str());
+			}
+		}
+	}
+	
+	// none found? 
+	return 0;
+}
