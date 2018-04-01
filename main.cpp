@@ -29,6 +29,8 @@ using hsql::kStmtInsert;
 using hsql::kStmtDelete;
 using hsql::kStmtDrop;
 using hsql::kTableSelect;
+using hsql::kExprLiteralInt;
+using hsql::kExprLiteralString;
 using hsql::ColumnDefinition;
 
 /* Helper functions */
@@ -66,6 +68,17 @@ static inline void trim(std::string &s) {
     ltrim(s);
 }
 
+void trim2(std::string* s) {
+    size_t  pos;
+    std::string whitespaces (" \t\f\v\n\r");
+
+    pos = s->find_last_not_of(whitespaces);
+    if (pos!=std::string::npos){
+        s->erase(pos+1);
+    } else {
+        s->clear();
+    }
+}
 /* End helper functions */
 
 void selectData(const hsql::SelectStatement* stmt) {
@@ -74,9 +87,19 @@ void selectData(const hsql::SelectStatement* stmt) {
 
 void insertData(const hsql::InsertStatement* stmt) {
 	printf("Insert\n");
-	std::cout <<"Ups\n";
-	for(auto it = stmt->values->begin(); it != stmt->values->end(); ++it) {
-		std::cout <<"Ups\n";
+	auto values = stmt->values;
+	for(auto it = values->begin(); it != values->end(); ++it) {
+		const hsql::Expr* v=*it;
+		switch(v->type) {
+			case kExprLiteralInt:
+				std::cout << v->ival << "\n";
+				break;
+			case kExprLiteralString:
+				std::cout << v->name << "\n";
+				break;
+			default:
+				break;
+		}
 	}
 	//read catalog
 }
@@ -88,7 +111,7 @@ void deleteData(const hsql::DeleteStatement* stmt) {
 
 void createTableFile(std::string tableName){
 	std::string fileName = tableName;
-	trim(&fileName);
+	trim(fileName);
 	trim2(&fileName);
 	fileName += ".tbl";
 	std::ofstream ofs(fileName);
