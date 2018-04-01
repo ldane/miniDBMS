@@ -25,7 +25,7 @@ using hsql::kStmtDrop;
 using hsql::kTableSelect;
 using hsql::ColumnDefinition;
 
-
+/* Helper functions */
 bool icompare_pred(unsigned char a, unsigned char b)
 {
     return std::tolower(a) == std::tolower(b);
@@ -42,10 +42,16 @@ bool icompare(std::string const& a, std::string const& b)
     }
 }
 
+void trim(std::string* s) {
+	size_t pos;
+	pos = s->find_first_not_of(" \t");
+	s->erase(0,pos);
+}
 
 void log(std::string logbuf) {
 	printf("LOG: %s\n", logbuf.c_str());
 }
+/* End helper functions */
 
 void selectData(const hsql::SelectStatement* stmt) {
 	printf("select\n");
@@ -62,17 +68,27 @@ void deleteData(const hsql::DeleteStatement* stmt) {
 }
 
 void createTable(const std::string query) {
-	std::string tableName, fields;
-	std::string nQuery = query.substr(6);
-	std::cout << nQuery;
-	std::stringstream ss(nQuery);
-	if(std::getline(ss, tableName, '(')) {
-		std::cout << "Ups";
+	std::string tableName, field;
+	std::string nQuery = query.substr(12);
+	std::size_t pos;
+
+	pos = nQuery.find('(');
+	tableName = nQuery.substr(0,pos);
+	trim(&tableName);
+
+	std::cout << tableName << "\n";
+
+	nQuery.erase(0, pos+1);
+	
+	while((pos = nQuery.find(',')) != std::string::npos) {
+		field = nQuery.substr(0,pos);
+		trim(&field);
+		std::cout << field << "\n";
+		nQuery.erase(0,pos+1);
 	}
-	if(std::getline(ss, fields, ')')) {
-		std::cout << "Ups";
-	}
-	std::cout << tableName << " " << fields;
+
+	pos = nQuery.find(");");
+	std::cout << nQuery << "\n";
 }
 void dropTable(const hsql::DropStatement* stmt) {
 	//update catalog
@@ -100,19 +116,15 @@ void dispatchStatement(const hsql::SQLStatement* stmt) {
 	}
 }
 
-hsql::SQLParserResult* parse(std::string query){
-	hsql::SQLParserResult* result = hsql::SQLParser::parseSQLString(query);
-	return result;
-}
-
 void parseCommand(std::string myStatement) {
-	if (myStatement == "quit"){
-		return 0;
-	} else if (icompare(myStatement.substr(0,6),"create")) {
-		std::cout << "Create";
+	if (icompare(myStatement.substr(0,4),"quit")){
+		// TODO: do clean-up and write catalog
+		exit(0);
+	} else if (icompare(myStatement.substr(0,12),"create table")) {
+		std::cout << "create table\n";
 		createTable(myStatement);
 	} else if (icompare(myStatement.substr(0,10),"show table")) {
-		std::cout << "Show";
+		std::cout << "show table";
 	} else {
 		hsql::SQLParserResult* result = hsql::SQLParser::parseSQLString(myStatement);
 		if (result->isValid()) {
@@ -120,7 +132,7 @@ void parseCommand(std::string myStatement) {
 			printf("Number of statements: %lu\n", result->size());
 
 			for (uint i = 0; i < result->size(); ++i) {
-				;const hsql::SQLStatement* statement = result->getStatement(i);
+				const hsql::SQLStatement* statement = result->getStatement(i);
 
 				dispatchStatement(statement);
 
@@ -140,16 +152,23 @@ void parseCommand(std::string myStatement) {
 }
 
 int main(int argc, char *argv[]) {
-    if (argc <= 1) {
-        fprintf(stderr, "Usage: ./example \"SELECT * FROM test;\"\n");
-		Catalog ctlg;
-		ctlg.loadFromFile("catalog.txt");
-		while (true){
-			printf("\nSQL> ");
-			std::string myStatement;
-			getline(std::cin, myStatement);
+	Catalog ctlg;
+	ctlg.loadFromFile("catalog.txt");
+	std::string myStatement;
+
+	if (argc >=1) {
+		std::istringstream ss(argv[1]);
+		while(std::getline(ss, myStatement, ';')) {
+			trim(&myStatement);
 			parseCommand(myStatement);
 		}
-    }
+	}
+	while (true){
+		printf("\nSQL> ");
+		while(std::getline(std::cin, myStatement, ';')) {
+			trim(&myStatement);
+			parseCommand(myStatement);
+		}
+	}
 	return 0;
 }
