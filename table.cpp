@@ -194,7 +194,7 @@ std::string Table::parseRecord(char* buffer) {
 	char* s;
 	for (auto& c: columnTypesMap) {
 		if(c.second == "INT") {
-			i = (int) *buffer;
+			memcpy(&i, buffer, sizeof(int));
 			ss << c.first << ":" << i << "\n";
 			buffer+=sizeof(int);
 		} else if (c.second.substr(0,4) == "CHAR") {
