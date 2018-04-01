@@ -153,7 +153,7 @@ std::string Table::getFormattedMetaData(){
 }
 
 void Table::print(){
-	std::cout << "Printing a table..." << std::endl;
+	//std::cout << "Printing a table..." << std::endl;
 	std::cout << "tablename=" << tableName << std::endl;
 	// build the string for columns.
 	std::cout << "columns=";
