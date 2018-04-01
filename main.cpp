@@ -272,17 +272,36 @@ int main(int argc, char *argv[]) {
 	std::string myStatement;
 	bool quit=true;
 	if (argc!=1) {
-		std::istringstream ss(argv[1]);
-		while(std::getline(ss, myStatement, ';')) {
-			size_t pos=myStatement.rfind(';');
-			myStatement = myStatement.substr(0,pos-1);
-			trim(myStatement);
-			
-			if(icompare(myStatement.substr(0,4), "quit")) {
-				quit=false;
-				break;
+		std::string arg = argv[1];
+		size_t len = arg.size();
+		std::cout <<arg << "\n";
+		if(icompare(arg.substr(len-4,len),".sql")) {
+			std::ifstream ss(arg);
+			while(std::getline(ss, myStatement, ';')) {
+				size_t pos=myStatement.rfind(';');
+				myStatement = myStatement.substr(0,pos-1);
+				trim(myStatement);
+				
+				if(icompare(myStatement.substr(0,4), "quit")) {
+					quit=false;
+					break;
+				}
+				parseCommand(myStatement);
 			}
-			parseCommand(myStatement);
+
+		} else {
+			std::istringstream ss(argv[1]);
+			while(std::getline(ss, myStatement, ';')) {
+				size_t pos=myStatement.rfind(';');
+				myStatement = myStatement.substr(0,pos-1);
+				trim(myStatement);
+				
+				if(icompare(myStatement.substr(0,4), "quit")) {
+					quit=false;
+					break;
+				}
+				parseCommand(myStatement);
+			}
 		}
 		//ctlg.writeToFile("catalogWRITETEST.txt");
 	}
