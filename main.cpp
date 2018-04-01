@@ -83,14 +83,23 @@ void createTable(const std::string query) {
 	while((pos = nQuery.find(',')) != std::string::npos) {
 		field = nQuery.substr(0,pos);
 		trim(&field);
+		std::replace(field.begin(), field.end(), ' ',':');
 		std::cout << field << "\n";
 		nQuery.erase(0,pos+1);
 	}
 
-	pos = nQuery.rfind(");");
-	lastfield = nQuery.substr(0,pos-1);
+	pos = nQuery.rfind(")");
+	lastfield = nQuery.substr(0,pos);
 	trim(&lastfield);
-	std::cout << lastfield << "\n";
+	if(icompare(lastfield.substr(0,11), "PRIMARY KEY")) {
+		pos = lastfield.find("(");
+		lastfield.erase(0,pos+1);
+		pos = lastfield.rfind(")");
+		lastfield = lastfield.substr(0,pos);
+		trim(&lastfield);
+		std::cout << "PRIMARY " << lastfield << "\n";
+	}
+	// check if the primary key exists
 }
 void dropTable(const hsql::DropStatement* stmt) {
 	//update catalog
