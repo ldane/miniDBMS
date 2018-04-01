@@ -89,7 +89,6 @@ void deleteData(const hsql::DeleteStatement* stmt) {
 void createTableFile(std::string tableName){
 	std::string fileName = tableName;
 	trim(&fileName);
-	trim2(&fileName);
 	fileName += ".tbl";
 	std::ofstream ofs(fileName);
 	ofs.close();
