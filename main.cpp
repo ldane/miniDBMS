@@ -152,21 +152,26 @@ int main(int argc, char *argv[]) {
 	Catalog ctlg;
 	ctlg.loadFromFile("catalog.txt");
 	std::string myStatement;
+	bool quit=true;
 	if (argc!=1) {
 		std::istringstream ss(argv[1]);
 		while(std::getline(ss, myStatement, ';')) {
 			trim(&myStatement);
-			if(icompare(myStatement.substr(0,4), "quit"))
+			if(icompare(myStatement.substr(0,4), "quit")) {
+				quit=false;
 				break;
+			}
 			parseCommand(myStatement);
 		}
 	}
-	while (true){
+	while (quit){
 		printf("\nSQL> ");
 		while(std::getline(std::cin, myStatement, ';')) {
 			trim(&myStatement);
-			if(icompare(myStatement.substr(0,4), "quit"))
+			if(icompare(myStatement.substr(0,4), "quit")) {
+				quit=false;
 				break;
+			}
 			parseCommand(myStatement);
 		}
 		ctlg.writeToFile("catalogWRITETEST.txt");
