@@ -191,7 +191,7 @@ void createTable(const std::string query) {
 void dropTable(const hsql::DropStatement* stmt) {
 	//update catalog
 	//no need to use drop flag, just delete entry entirely
-	std::string tName = stmt->tableName;
+	std::string tName = stmt->name;
 	trim(tName);
 	ctlg.dropTable(tName);
 	//remove table file
