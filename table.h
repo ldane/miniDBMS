@@ -45,6 +45,7 @@ class Table{
 		std::string getFormattedMetaData();
 		std::string parseRecord(char* buffer);
 		int getColumnByteSizeAt(int columnIndex);
+		int getColumnBytePosition(std::string clmn);
 };
 
 #endif

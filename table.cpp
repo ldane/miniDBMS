@@ -228,3 +228,16 @@ int Table::getColumnByteSizeAt(int columnIndex){
 	}
 	return 0;
 }
+
+int Table::getColumnBytePosition(std::string clmn){
+	int bytePos = 0;
+	for (std::size_t i = 0; i < columnNames.size(); i++){
+		if (columnNames.at(i) != clmn){
+			bytePos += getColumnByteSizeAt(i);
+		} else {
+			return bytePos;
+		}
+	}
+	// if it doesnt find any matches, return ???
+	return -1;
+}

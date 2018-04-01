@@ -13,3 +13,4 @@ https://stackoverflow.com/questions/2462951/c-equivalent-of-stringbuffer-stringb
 http://www.cplusplus.com/forum/general/13135/
 https://stackoverflow.com/questions/12774207/fastest-way-to-check-if-a-file-exist-using-standard-c-c11-c
 http://www.cplusplus.com/reference/cstdio/remove/
+https://stackoverflow.com/questions/544928/reading-integer-size-bytes-from-a-char-array
