@@ -178,5 +178,8 @@ void Catalog::showTables() {
 }
 
 Table* Catalog::findTable(std::string t) {
-	return tables.find(t)->second;
+	auto it = tables.find(t);
+	if (it == tables.end())
+		return NULL;
+	return it->second;
 }

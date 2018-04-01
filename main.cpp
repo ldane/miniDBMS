@@ -80,6 +80,10 @@ void selectData(const hsql::SelectStatement* stmt) {
 	fileName += ".tbl";
 	std::ifstream ifs(fileName, std::ofstream::binary | std::ofstream::in);
 	Table *t = ctlg.findTable(stmt->fromTable->name);
+	if( t == NULL ) {
+		std::cout << "No table found\n";
+		return;
+	}
 	recordsize = t->getRecordSize();	
 	buffer = new char[recordsize];
 	while (ifs) {
