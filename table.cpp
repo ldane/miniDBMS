@@ -90,9 +90,9 @@ bool Table::isDropped(){
 }
 
 std::string Table::getFormattedMetaData(){
-	std::stringstream ss;
+	/*std::ostringstream ss;
 	std::cout << "does this work\n";
-	ss << "tablename=" << "faketablename" << "\n";
+	ss << "tablename=" << tableName << "\n";
 	std::cout << "does this work2\n";
 	ss << "columns=";
 	std::cout << "does this work3\n";
@@ -112,7 +112,37 @@ std::string Table::getFormattedMetaData(){
 	ss << "recordsize=" << recordSize << "\n";
 	ss << "totalsize=" << totalSize << "\n";
 	ss << "records=" << numOfRecords << "\n";
-	return ss.str();
+	return ss.str();*/
+	std::string myReturn = "";
+	myReturn += "tablename=";
+	myReturn += tableName;
+	myReturn += "\n";
+	myReturn += "columns=";
+	bool isFirstTime = true;
+	for (std::string clmn : columnNames){
+		if (isFirstTime){
+			isFirstTime = false;
+		} else {
+			myReturn += ",";
+		}
+		myReturn += clmn;
+		myReturn += ":";
+		myReturn += columnTypesMap[clmn];
+	}
+	myReturn += "\n";
+	myReturn += "primary key=";
+	myReturn += primaryKey;
+	myReturn += "\n";
+	myReturn += "recordsize=";
+	myReturn += recordSize;
+	myReturn += "\n";
+	myReturn += "totalsize=";
+	myReturn += totalSize;
+	myReturn += "\n";
+	myReturn += "records=";
+	myReturn += numOfRecords;
+	myReturn += "\n";
+	return myReturn;
 }
 
 void Table::print(){
