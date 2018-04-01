@@ -301,6 +301,6 @@ int main(int argc, char *argv[]) {
 		parseCommand(myStatement);
 		//ctlg.writeToFile("catalogWRITETEST.txt");
     }
-	ctlg.writeToFile("catalogWRITETEST.txt");
+	ctlg.writeToFile("catalog.txt");
 	return 0;
 }
