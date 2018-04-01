@@ -90,7 +90,7 @@ bool Table::isDropped(){
 }
 
 std::string Table::getFormattedMetaData(){
-	std::stringstream ss;
+	std::ostringstream ss;
 	ss << "tablename=" << tableName << "\n";
 	ss << "columns=";
 	std::cout << "after columns=";
