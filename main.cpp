@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <functional> 
 #include <cctype>
+#include <cstring>
 #include <locale>
 #include <iostream>
 #include <sstream>
@@ -22,7 +23,7 @@
 Catalog ctlg;
 
 
-#define STRSIZE 100
+#define STRSIZE 255
 
 using hsql::kStmtSelect;
 using hsql::kStmtInsert;
@@ -75,27 +76,38 @@ void selectData(const hsql::SelectStatement* stmt) {
 }
 
 void insertData(const hsql::InsertStatement* stmt) {
+	std::string fileName = stmt->tableName;
+	int i;
+	char s[255];
+	trim(fileName);
+	fileName += ".tbl";
+	std::ofstream ofs(fileName, std::ofstream::binary | std::ofstream::out | std::ofstream::app);
+
 	printf("Insert\n");
 	auto values = stmt->values;
 	for(auto it = values->begin(); it != values->end(); ++it) {
 		const hsql::Expr* v=*it;
 		switch(v->type) {
 			case kExprLiteralInt:
+				i=v->ival;
 				std::cout << v->ival << "\n";
+				ofs.write((char *)&i, sizeof(int));
 				break;
 			case kExprLiteralString:
-				std::cout << v->name << "\n";
+				std::memset(s,0,255);
+				std::strcpy(s,v->name);
+				std::cout << s << "\n";
+				ofs.write(s, sizeof(s));
 				break;
 			default:
 				break;
 		}
 	}
-	//read catalog
+	ofs.close();
 }
 
 void deleteData(const hsql::DeleteStatement* stmt) {
 	printf("delete\n");
-	//read catalog
 }
 
 void createTableFile(std::string tableName){
