@@ -81,15 +81,61 @@ void selectData(const hsql::SelectStatement* stmt) {
 	if( t == NULL ) {
 		std::cout << "No table found\n";
 		return;
-	}
+	}	
 	recordsize = t->getRecordSize();	
 	buffer = new char[recordsize];
-	std::cout << "char:" << sizeof(char) << "\n";
 	while (true) {
 		ifs.read(buffer, recordsize);
 		if(ifs.eof())
 			break;
-		std::cout << t->parseRecord(buffer);
+		if(stmt->whereClause==NULL)
+			std::cout << t->parseRecord(buffer);
+		else {
+			auto where = stmt->whereClause;
+			auto field = where->expr->name;
+			int pos = t->getColumnBytePosition(field);
+			int size = t->getColumnByteSize(field);
+			char *b=buffer+pos;
+			bool doit=false;
+			switch(where->opChar) {
+				case '=':
+					if(where->expr2->type==kExprLiteralString) {
+						std::string val1(b,size);
+						std::string val2(where->expr2->name);
+						if(icompare(val1,val2))
+							doit=true;
+					} else if(where->expr2->type==kExprLiteralInt) {
+						int val1;
+						memcpy(&val1, b, sizeof(int));
+						int val2 = where->expr2->ival;
+						if(val1==val2)
+							doit=true;
+					}
+					break;
+				case '<':
+					if(where->expr2->type==kExprLiteralInt) {
+						int val1;
+						memcpy(&val1, b, sizeof(int));
+						int val2 = where->expr2->ival;
+						if(val1<val2)
+							doit=true;
+					}
+					break;
+				case '>':
+					if(where->expr2->type==kExprLiteralInt) {
+						int val1;
+						memcpy(&val1, b, sizeof(int));
+						int val2 = where->expr2->ival;
+						if(val1>val2)
+							doit=true;
+					}
+					break;
+				default:
+					break;
+			}
+			if(doit)
+				std::cout << t->parseRecord(buffer);
+		}
 		//delete buffer;
 	}
 	ifs.close();

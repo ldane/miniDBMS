@@ -2,5 +2,5 @@ tablename=HELLO
 columns=C1:INT,C2:CHAR(5),C3:INT
 primary key=C1
 recordsize=13
-totalsize=26
-records=2
+totalsize=78
+records=6
