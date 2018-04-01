@@ -93,12 +93,13 @@ std::string Table::getFormattedMetaData(){
 	std::stringstream ss;
 	ss << "tablename=" << tableName << "\n";
 	ss << "columns=";
+	std::cout << "after columns=";
 	bool isFirstTime = true;
 	for (std::string clmn : columnNames){
-		std::cout << "Testing";
 		if (isFirstTime){
 			isFirstTime = false;
 		} else {
+			std::cout << "before ,";
 			ss << ",";
 		}
 		ss << clmn << ":" << columnTypesMap[clmn];
