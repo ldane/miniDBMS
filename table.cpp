@@ -195,16 +195,19 @@ std::string Table::parseRecord(char* buffer) {
 	for (auto& c: columnTypesMap) {
 		if(c.second == "INT") {
 			i = (int) *buffer;
-			ss << c.first << ":" << i << "\n";
+			//ss << c.first << ":" << i << "\n";
+			ss << i;
 			buffer+=sizeof(int);
 		} else if (c.second.substr(0,4) == "CHAR") {
 			size_t pos = c.second.length();
 			int v = atoi(c.second.substr(5,pos-5).c_str());
 			s = new char[v];
 			std::strncpy(s,buffer,v);
-			ss << c.first << ":" << s << "\n";
+			//ss << c.first << ":" << s << "\n";
+			ss << s;
 			buffer+=v;
 		}
+		ss << " ";
 	}
 	return ss.str();
 }
