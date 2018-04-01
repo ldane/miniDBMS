@@ -70,6 +70,13 @@ void deleteData(const hsql::DeleteStatement* stmt) {
 	//read catalog
 }
 
+void createTableFile(std::string tableName){
+	std::string fileName = tableName;
+	fileName += ".tbl";
+	std::ofstream ofs(fileName);
+	ofs.close();
+}
+
 void createTable(const std::string query) {
 	std::string tableName, field, lastfield;
 	std::string nQuery = query.substr(12);
@@ -181,12 +188,7 @@ void parseCommand(std::string myStatement) {
 	}
 }
 
-void createTableFile(std::string tableName){
-	std::string fileName = tableName;
-	fileName += ".tbl";
-	std::ofstream ofs(fileName);
-	ofs.close();
-}
+
 
 int main(int argc, char *argv[]) {
 	
