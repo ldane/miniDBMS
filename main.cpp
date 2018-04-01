@@ -84,9 +84,7 @@ void selectData(const hsql::SelectStatement* stmt) {
 	}
 	recordsize = t->getRecordSize();	
 	buffer = new char[recordsize];
-	while (ifs) {
-		ifs.read(buffer, recordsize*sizeof(char));
-		std::cout << '1';
+	while (ifs.read(buffer, recordsize*sizeof(char))) {
 		std::cout << t->parseRecord(buffer);
 		delete buffer;
 	}
