@@ -90,19 +90,17 @@ bool Table::isDropped(){
 }
 
 std::string Table::getFormattedMetaData(){
-	/*std::ostringstream ss;
+	std::ostringstream ss;
 	std::cout << "does this work\n";
 	ss << "tablename=" << tableName << "\n";
 	std::cout << "does this work2\n";
 	ss << "columns=";
 	std::cout << "does this work3\n";
-	std::cout << "after columns=";
 	bool isFirstTime = true;
 	for (std::string clmn : columnNames){
 		if (isFirstTime){
 			isFirstTime = false;
 		} else {
-			std::cout << "before ,";
 			ss << ",";
 		}
 		ss << clmn << ":" << columnTypesMap[clmn];
@@ -112,8 +110,8 @@ std::string Table::getFormattedMetaData(){
 	ss << "recordsize=" << recordSize << "\n";
 	ss << "totalsize=" << totalSize << "\n";
 	ss << "records=" << numOfRecords << "\n";
-	return ss.str();*/
-	std::cout << "does this work\n";
+	return ss.str();
+	/*std::cout << "does this work\n";
 	std::string myReturn = "";
 	myReturn += "tablename=";
 	std::cout << "does this work\n";
@@ -145,8 +143,7 @@ std::string Table::getFormattedMetaData(){
 	std::cout << "does this work\n";
 	myReturn += "records=";
 	myReturn += numOfRecords;
-	myReturn += "\n";
-	return myReturn;
+	return myReturn;*/
 }
 
 void Table::print(){
