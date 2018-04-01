@@ -111,7 +111,6 @@ void Catalog::writeToFile(std::string fileName){
 		// print the schema of the table if the temporary and dropped flags are both false
 		for (const auto& kv : tables){
 			if (!kv.second->isTemporary() && !kv.second->isDropped()){
-				std::cout << "test2\n";
 				ofs << kv.second->getFormattedMetaData();
 			}
 		}
