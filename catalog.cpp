@@ -5,16 +5,16 @@
 #include <sstream>
 #include <vector>
 //
-bool icompare_pred(unsigned char a, unsigned char b)
+bool iicompare_pred(unsigned char a, unsigned char b)
 {
     return std::tolower(a) == std::tolower(b);
 }
 
-bool icompare(std::string const& a, std::string const& b)
+bool iicompare(std::string const& a, std::string const& b)
 {
     if (a.length()==b.length()) {
         return std::equal(b.begin(), b.end(),
-                           a.begin(), icompare_pred);
+                           a.begin(), iicompare_pred);
     }
     else {
         return false;
@@ -28,7 +28,7 @@ Catalog::Catalog(){
 
 bool Catalog::addTable(Table* newTable){
 	for (const auto& kv : tables){
-		if (icompare(kv.first, newTable->getTableName())){
+		if (iicompare(kv.first, newTable->getTableName())){
 			// there is an existing table
 			return false;
 		}
