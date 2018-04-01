@@ -121,7 +121,7 @@ void Catalog::writeToFile(std::string fileName){
 }
 
 void Catalog::showTable(std::string t) {
-	std::cout << t;
+	std::cout << t << std::endl;
 	for (const auto& kv : tables)
 		if(kv.first == t)
 			if (!kv.second->isDropped())
