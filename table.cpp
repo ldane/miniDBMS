@@ -152,6 +152,11 @@ std::string Table::getFormattedMetaData(){
 	return myReturn;*/
 }
 
+void Table::incrementRecords(){
+	numOfRecords++;
+	totalSize+=recordSize;
+}
+
 void Table::print(){
 	//std::cout << "Printing a table..." << std::endl;
 	std::cout << "tablename=" << tableName << std::endl;

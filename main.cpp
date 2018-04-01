@@ -80,7 +80,13 @@ void insertData(const hsql::InsertStatement* stmt) {
 	int i;
 	char s[255];
 	trim(fileName);
+	std::string tName = fileName;
 	fileName += ".tbl";
+	std::ifstream infile(fileName);
+	if (!infile.good()){
+		return;
+	}
+	infile.close();
 	std::ofstream ofs(fileName, std::ofstream::binary | std::ofstream::out | std::ofstream::app);
 
 	printf("Insert\n");
@@ -104,6 +110,8 @@ void insertData(const hsql::InsertStatement* stmt) {
 		}
 	}
 	ofs.close();
+	// increment things in catalog
+	ctlg.incrementRecordsInTable(tName);
 }
 
 void deleteData(const hsql::DeleteStatement* stmt) {

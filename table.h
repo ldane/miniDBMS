@@ -25,6 +25,7 @@ class Table{
 		Table(std::string tn, bool temp = false);
 		void setPrimaryKey(std::string pk);
 		void setRecordSize(int size);
+		void incrementRecords();
 		void setTotalSize(int size);
 		void setNumOfRecords(int num);
 		void addColumn(std::string clmn);

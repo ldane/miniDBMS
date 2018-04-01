@@ -19,6 +19,7 @@ class Catalog{
 		void writeToFile(std::string fileName);
 		void showTable(std::string t);
 		void showTables();
+		bool incrementRecordsInTable(std::string tn);
 };
 
 #endif
