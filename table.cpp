@@ -90,6 +90,7 @@ bool Table::isDropped(){
 }
 
 std::string Table::getFormattedMetaData(){
+	std::cout << "test999\n";
 	std::stringstream ss;
 	ss << "tablename=" << tableName << "\n";
 	ss << "columns=";
@@ -103,6 +104,7 @@ std::string Table::getFormattedMetaData(){
 		ss << clmn << ":" << columnTypesMap[clmn];
 	}
 	ss << "\n";
+	std::cout << "test32985632\n";
 	ss << "primary key=" << primaryKey << "\n";
 	ss << "recordsize=" << recordSize << "\n";
 	ss << "totalsize=" << totalSize << "\n";

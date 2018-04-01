@@ -106,7 +106,6 @@ void Catalog::writeToFile(std::string fileName){
 	// totalsize=65
 	// records=5
 	std::ofstream ofs(fileName);
-	std::cout << "testing if made it here line 109\n";
 	if (ofs.is_open()){
 		// for each table in the map 
 		// print the schema of the table if the temporary and dropped flags are both false
