@@ -243,7 +243,7 @@ int Table::getColumnBytePosition(std::string clmn){
 }
 
 int Table::getColumnByteSize(std::string clmn){
-	int pos = 0;
+	std::size_t pos = 0;
 	for (auto const& value : columnNames){
 		if (value == clmn){
 			std::string focus = getColumnType(value);
