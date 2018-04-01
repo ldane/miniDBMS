@@ -199,11 +199,11 @@ std::string Table::parseRecord(char* buffer) {
 			buffer+=sizeof(int);
 		} else if (c.second.substr(0,4) == "CHAR") {
 			size_t pos = c.second.length();
-			int v = atoi(c.second.substr(5,pos-1).c_str());
+			int v = atoi(c.second.substr(5,pos-5).c_str());
 			s = new char[v];
 			std::strncpy(s,buffer,v);
 			ss << c.first << ":" << s << "\n";
-			buffer+=sizeof(v);
+			buffer+=v;
 		}
 	}
 	return ss.str();

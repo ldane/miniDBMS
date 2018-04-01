@@ -285,7 +285,7 @@ int main(int argc, char *argv[]) {
 		std::string arg = argv[1];
 		size_t len = arg.size();
 		std::cout <<arg << "\n";
-		if(icompare(arg.substr(len-4,len),".sql")) {
+		if(icompare(arg.substr(len-4),".sql")) {
 			std::ifstream ss(arg);
 			while(std::getline(ss, myStatement, ';')) {
 				size_t pos=myStatement.rfind(';');
