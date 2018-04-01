@@ -43,7 +43,7 @@ bool Catalog::addTable(Table* newTable){
 	}
 }
 
-void Catalog:dropTable(std::string tn){
+void Catalog::dropTable(std::string tn){
 	delete findTable(tn);
 	tables.erase(tn);
 }
