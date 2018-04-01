@@ -77,7 +77,7 @@ void Catalog::loadFromFile(std::string fileName){
 														}
 														addTable(pTable);
 														pTable->print();
-														delete pTable;
+														//delete pTable;
 													}
 												}
 											}
