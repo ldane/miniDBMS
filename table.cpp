@@ -117,7 +117,8 @@ std::string Table::getFormattedMetaData(){
 	std::string myReturn = "";
 	myReturn += "tablename=";
 	std::cout << "does this work\n";
-	myReturn += tableName;
+	std::string abc = tableName;
+	myReturn += abc;
 	myReturn += "\n";
 	myReturn += "columns=";
 	std::cout << "does this work\n";
