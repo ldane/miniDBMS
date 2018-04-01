@@ -148,6 +148,7 @@ int main(int argc, char *argv[]) {
 			printf("\nSQL> ");
 			std::string myStatement;
 			getline(std::cin, myStatement);
+			if (myStatement == "quit") break;
 			parseCommand(myStatement);
 		}
 		ctlg.writeToFile("catalogWRITETEST.txt");
