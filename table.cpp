@@ -211,9 +211,16 @@ std::string Table::parseRecord(char* buffer) {
 
 int Table::getColumnByteSizeAt(int columnIndex){
 	std::string focus = getColumnType(columnNames.at(columnIndex));
+	std::size_t pos;
 	
-	//parse the byte size from the string, assume is CHAR( )
-	std::size_t pos = focus.find(")");
-	std::string chB = focus.substr(5, pos-5);
-	return atoi(chB.c_str());
+	if (focus == "INT"){
+		return 4;
+		
+	} else if (focus.substr(0, 5) == "CHAR("){
+		pos = focus.find(")");
+		std::string chB = focus.substr(5, pos-5);
+		//std::cout << "chB is " << chB << std::endl;
+		return atoi(chB.c_str());
+	}
+	return 0;
 }
