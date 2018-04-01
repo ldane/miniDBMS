@@ -51,6 +51,19 @@ void trim(std::string* s) {
 	s->erase(0,pos);
 }
 
+void trim2(std::string* s) {
+	size_t  pos;
+	std::string whitespaces (" \t\f\v\n\r");
+	
+	pos = s.find_last_not_of(whitespaces);
+	if (pos!=std::string::npos){
+		s.erase(pos+1);
+	} else {
+		s.clear();
+	}
+}
+	
+
 void log(std::string logbuf) {
 	printf("LOG: %s\n", logbuf.c_str());
 }
@@ -73,6 +86,7 @@ void deleteData(const hsql::DeleteStatement* stmt) {
 void createTableFile(std::string tableName){
 	std::string fileName = tableName;
 	trim(&fileName);
+	trim2(&fileName);
 	fileName += ".tbl";
 	std::ofstream ofs(fileName);
 	ofs.close();
