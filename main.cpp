@@ -15,6 +15,8 @@
 // contains printing utilities
 #include "sqlhelper.h"
 
+Catalog ctlg;
+
 
 #define STRSIZE 100
 
@@ -110,7 +112,7 @@ void createTable(const std::string query) {
 	// now build the table, and insert it into the catalog
 	
 	pTable->parseAndSetPrimaryKey(lastfield);
-	addTable(pTable);
+	ctlg.addTable(pTable);
 	//pTable->print();
 }
 void dropTable(const hsql::DropStatement* stmt) {
@@ -172,7 +174,7 @@ void parseCommand(std::string myStatement) {
 }
 
 int main(int argc, char *argv[]) {
-	Catalog ctlg;
+	
 	ctlg.loadFromFile("catalog.txt");
 	std::string myStatement;
 	bool quit=true;
