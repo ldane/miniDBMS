@@ -173,3 +173,7 @@ void Catalog::showTables() {
 		if (!kv.second->isTemporary() && !kv.second->isDropped())
 			kv.second->print();
 }
+
+Table* Catalog::findTable(std::string t) {
+	return tables.find(t)->second;
+}

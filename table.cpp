@@ -2,6 +2,7 @@
 #include "table.h"
 //
 #include <sstream>
+#include <cstring>
 
 Table::Table(std::string tn, bool temp) : columnTypesMap(){
 	tableName = tn;
@@ -185,4 +186,25 @@ void Table::print(){
 	std::cout << "recordsize=" << recordSize << std::endl;
 	std::cout << "totalsize=" << totalSize << std::endl;
 	std::cout << "records=" << numOfRecords << std::endl;
+}
+
+std::string Table::parseRecord(char* buffer) {
+	std::ostringstream ss;
+	int i;
+	char* s;
+	for (auto& c: columnTypesMap) {
+		if(c.second == "INT") {
+			i = (int) *buffer;
+			ss << c.first << ":" << i << "\n";
+			buffer+=sizeof(int);
+		} else if (c.second.substr(0,4) == "CHAR") {
+			size_t pos = c.second.length();
+			int v = atoi(c.second.substr(5,pos-1).c_str());
+			s = new char[v];
+			std::strncpy(s,buffer,v);
+			ss << c.first << ":" << s << "\n";
+			buffer+=sizeof(v);
+		}
+	}
+	return ss.str();
 }

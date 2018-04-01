@@ -43,6 +43,7 @@ class Table{
 		bool isTemporary();
 		bool isDropped();
 		std::string getFormattedMetaData();
+		std::string parseRecord(char* buffer);
 };
 
 #endif

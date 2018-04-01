@@ -72,13 +72,28 @@ static inline void trim(std::string &s) {
 /* End helper functions */
 
 void selectData(const hsql::SelectStatement* stmt) {
-	printf("select\n");
+	char* buffer;
+	int recordsize;
+	std::string fileName = stmt->fromTable->name;
+	trim(fileName);
+	fileName += ".tbl";
+	std::ifstream ifs(fileName, std::ofstream::binary | std::ofstream::in);
+	Table *t = ctlg.findTable(stmt->fromTable->name);
+	recordsize = t->getRecordSize();	
+	buffer = new char[recordsize];
+	while (ifs) {
+		ifs.read(buffer, recordsize*sizeof(char));
+		std::cout << '1';
+		std::cout << t->parseRecord(buffer);
+		delete buffer;
+	}
+	ifs.close();
 }
 
 void insertData(const hsql::InsertStatement* stmt) {
-	std::string fileName = stmt->tableName;
 	int i;
 	char s[255];
+	std::string fileName = stmt->tableName;
 	trim(fileName);
 	std::string tName = fileName;
 	fileName += ".tbl";
@@ -89,7 +104,6 @@ void insertData(const hsql::InsertStatement* stmt) {
 	infile.close();
 	std::ofstream ofs(fileName, std::ofstream::binary | std::ofstream::out | std::ofstream::app);
 
-	printf("Insert\n");
 	auto values = stmt->values;
 	for(auto it = values->begin(); it != values->end(); ++it) {
 		const hsql::Expr* v=*it;

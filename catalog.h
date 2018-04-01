@@ -20,6 +20,7 @@ class Catalog{
 		void showTable(std::string t);
 		void showTables();
 		bool incrementRecordsInTable(std::string tn);
+		Table* findTable(std::string t);
 };
 
 #endif
