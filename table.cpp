@@ -204,7 +204,7 @@ std::string Table::parseRecord(char* buffer) {
 			s = new char[v];
 			std::strncpy(s,buffer,v);
 			//ss << c.first << ":" << s << "\n";
-			ss << s;
+			ss << "'" << s << "'";
 			buffer+=v;
 		}
 		ss << " ";
