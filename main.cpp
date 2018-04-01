@@ -135,6 +135,7 @@ void createTable(const std::string query) {
 	pTable->setPrimaryKey(lastfield);
 	ctlg.addTable(pTable);
 	createTableFile(tableName);
+	std::cout << "Created TABLE " << tableName << " Successfully\n"
 	//pTable->print();
 }
 void dropTable(const hsql::DropStatement* stmt) {
