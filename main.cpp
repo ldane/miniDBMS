@@ -23,41 +23,6 @@ using hsql::kStmtDelete;
 using hsql::kStmtDrop;
 using hsql::kTableSelect;
 
-std::string getString(std::FILE *f) {
-	char buf[STRSIZE];
-	fread(buf, sizeof(char)*STRSIZE, 1, f);
-	std::string result(buf);
-	return result;
-}
-
-int getInt(std::FILE *f) {
-	int buf;
-	fread(&buf, sizeof(int), 1, f);
-	return buf;
-}
-
-void writeString(std::FILE *f, std::string input) {
-//	fwrite();
-}
-
-void writeInt(std::FILE *f, int input) {
-//	fwrite();
-}
-
-std::FILE* openTable(const char* table, const char* mode) {
-	std::string fname(table);
-	fname = fname+".tbl";
-	std::FILE* f = fopen(fname.c_str(), mode);
-	return f
-}
-
-void readCatalog() {
-	return;
-}
-
-void writeCatalog() {
-	return;
-}
 
 void log(std::string logbuf) {
 	printf("LOG: %s\n", logbuf.c_str());
@@ -65,19 +30,22 @@ void log(std::string logbuf) {
 
 void selectData(const hsql::SelectStatement* stmt) {
 	printf("select\n");
-	std::FILE* f = openTable(stmt->tableName, "rb");
+	std::FILE* f = openTable(stmt->fromTable, "rb");
 	//read catalog
 	fclose(f);
 	delete f;
 }
+
 void insertData(const hsql::InsertStatement* stmt) {
 	printf("Insert\n");
 	//read catalog
 }
+
 void deleteData(const hsql::DeleteStatement* stmt) {
 	printf("delete\n");
 	//read catalog
 }
+
 void createTable(const hsql::CreateStatement* stmt) {
 	printf("create %s\n", stmt->tableName);
 	std::FILE* f = openTable(stmt->tableName, "wb");
@@ -156,33 +124,5 @@ int main(int argc, char *argv[]) {
 			}
 		}
     }
-    std::string query = argv[1];
-
-    // parse a given query
-    hsql::SQLParserResult* result = hsql::SQLParser::parseSQLString(query);
-	
-    // check whether the parsing was successful
-    if (result->isValid()) {
-        printf("Parsed successfully!\n");
-        printf("Number of statements: %lu\n", result->size());
-
-        for (uint i = 0; i < result->size(); ++i) {
-			const hsql::SQLStatement* statement = result->getStatement(i);
-
-			dispatchStatement(statement);
-
-            hsql::printStatementInfo(statement);
-        }
-
-        delete result;
-        return 0;
-    } else {
-        fprintf(stderr, "Given string is not a valid SQL query.\n");
-        fprintf(stderr, "%s (L%d:%d)\n", 
-                result->errorMsg(),
-                result->errorLine(),
-                result->errorColumn());
-        delete result;
-        return -1;
-    }
+	return 0;
 }
