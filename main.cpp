@@ -107,7 +107,7 @@ hsql::SQLParserResult* parse(std::string query){
 
 void parseCommand(std::string myStatement) {
 	if (myStatement == "quit"){
-		return 0;
+		return;
 	} else if (icompare(myStatement.substr(0,6),"create")) {
 		std::cout << "Create";
 		createTable(myStatement);
