@@ -2,12 +2,14 @@
 #include "table.h"
 //
 
-Table::Table(std::string tn) : columnTypesMap(){
+Table::Table(std::string tn, bool temp) : columnTypesMap(){
 	tableName = tn;
 	primaryKey = "";
 	recordSize = 0;
 	totalSize = 0;
 	numOfRecords = 0;
+	isTemporary = temp;
+	isDropped = false;
 	//columnNames columnTypesMap
 }
 void Table::setPrimaryKey(std::string pk){
