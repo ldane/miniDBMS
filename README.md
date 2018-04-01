@@ -8,3 +8,5 @@ http://thispointer.com/stdmap-tutorial-part-1-usage-detail-with-examples/
 http://www.cplusplus.com/reference/string/string/substr/
 https://stackoverflow.com/questions/10058606/splitting-a-string-by-a-character
 https://stackoverflow.com/questions/12702561/iterate-through-a-c-vector-using-a-for-loop
+https://stackoverflow.com/questions/2850312/use-of-for-each-on-map-elements
+https://stackoverflow.com/questions/2462951/c-equivalent-of-stringbuffer-stringbuilder
