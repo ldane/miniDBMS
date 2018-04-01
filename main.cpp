@@ -197,11 +197,12 @@ void dropTable(const hsql::DropStatement* stmt) {
 	//remove table file
 	std::string fName = tName;
 	tName += ".tbl";
-	if( std::remove( tName.c_str() ) != 0 )
+	if( std::remove( tName.c_str() ) != 0 ){
 		perror( "Error deleting file" );
-	else
+	} else {
 		puts( "File successfully deleted" );
-	printf("drop\n");
+		printf("Dropped table successfully\n");
+	}
 }
 
 void dispatchStatement(const hsql::SQLStatement* stmt) {

@@ -55,7 +55,7 @@ void Table::addColumn(std::string clmn){
 	} else if (nColumnType.substr(0, 5) == "CHAR("){
 		pos = nColumnType.find(")");
 		std::string chB = nColumnType.substr(5, pos-5);
-		std::cout << "chB is " << chB << std::endl;
+		//std::cout << "chB is " << chB << std::endl;
 		recordSize += atoi(chB.c_str());
 	}
 }

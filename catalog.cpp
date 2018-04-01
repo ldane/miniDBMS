@@ -92,17 +92,15 @@ void Catalog::loadFromFile(std::string fileName){
 														// now build the table, and insert it into the catalog
 														Table* pTable = new Table(nTableName);
 														pTable->setPrimaryKey(nPrimaryKey);
-														//pTable->setColumnNames
-														//pTable->setColumnTypes
-														pTable->setRecordSize(std::stoi(nRecordSize));
-														pTable->setTotalSize(std::stoi(nTotalSize));
-														pTable->setNumOfRecords(std::stoi(nRecords));
 														
 														// add columns
 														std::string segment;
 														while(std::getline(allColumns, segment, ',')){
 															pTable->addColumn(segment);
 														}
+														pTable->setRecordSize(std::stoi(nRecordSize));
+														pTable->setTotalSize(std::stoi(nTotalSize));
+														pTable->setNumOfRecords(std::stoi(nRecords));
 														if (addTable(pTable)){
 															//??? can't fail
 														} else {
