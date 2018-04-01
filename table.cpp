@@ -48,6 +48,15 @@ void Table::addColumn(std::string clmn){
 	//std::cout << "trying to add column4" << std::endl;
 	columnNames.push_back(nColumnName);
 	columnTypesMap.insert(std::make_pair(nColumnName, nColumnType));
+	if (nColumnType == "INT"){
+		recordSize += 4;
+		
+	} else if (nColumnType.substr(0, 5) == "CHAR("){
+		pos = nColumnType.find(")");
+		std::string chB = nColumnType.substr(5, pos-5);
+		std::cout << "chB is " << chB << std::endl;
+		recordSize += atoi(chB.c_str());
+	}
 }
 
 void Table::setColumnTypes(std::string columnName, std::string ctm){
