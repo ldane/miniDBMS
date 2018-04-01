@@ -44,6 +44,7 @@ class Table{
 		bool isDropped();
 		std::string getFormattedMetaData();
 		std::string parseRecord(char* buffer);
+		int getColumnByteSizeAt(int columnIndex);
 };
 
 #endif

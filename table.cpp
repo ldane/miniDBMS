@@ -208,3 +208,12 @@ std::string Table::parseRecord(char* buffer) {
 	}
 	return ss.str();
 }
+
+int Table::getColumnByteSizeAt(int columnIndex){
+	std::string focus = getColumnType(columnNames.at(columnIndex));
+	
+	//parse the byte size from the string, assume is CHAR( )
+	std::size_t pos = focus.find(")");
+	std::string chB = focus.substr(5, pos-5);
+	return atoi(chB.c_str());
+}
