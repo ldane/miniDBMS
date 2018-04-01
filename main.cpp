@@ -111,7 +111,7 @@ void insertData(const hsql::InsertStatement* stmt) {
 	}
 	ofs.close();
 	// increment things in catalog
-	ctlg.incrementRecordsInTable(tName);
+	bool success = ctlg.incrementRecordsInTable(tName);
 }
 
 void deleteData(const hsql::DeleteStatement* stmt) {

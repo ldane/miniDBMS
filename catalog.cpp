@@ -148,6 +148,15 @@ void Catalog::writeToFile(std::string fileName){
 	
 }
 
+bool Catalog::incrementRecordsInTable(std::string tn){
+	for (const auto& kv : tables)
+		if(kv.first == tn){
+			kv.second->incrementRecords();
+			return true;
+		}
+	return false;		
+}
+
 void Catalog::showTable(std::string t) {
 	std::cout << t << std::endl;
 	for (const auto& kv : tables)
