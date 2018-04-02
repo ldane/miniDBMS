@@ -73,6 +73,19 @@ int selectData(const hsql::SelectStatement* stmt, bool print=true) {
 	char* buffer;
 	int recordsize;
 	int count=0;
+	if(stmt->fromTable->type == hsql::kTableJoin) {
+		// Do Join
+		auto join = stmt->fromTable->join;
+		auto right = join->right;
+		auto left = join->left;
+		auto condition = join->condition;
+		auto op = condition->opChar;
+		auto e1 = condition->expr->name;
+		auto e2 = condition->expr2->name;
+		std::cout << "R:" << right->name << " L:" << left->name << "\n";
+		std::cout << "E1:" << left->name << e1 << op << "E2:" << right->name << e2 << "\n";
+		return 0;
+	}
 	std::string fileName = stmt->fromTable->name;
 	trim(fileName);
 	fileName += ".tbl";
