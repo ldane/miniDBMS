@@ -7,6 +7,7 @@
 #include <vector>
 #include <map>
 #include <iostream>
+#include <unordered_map>
 
 
 class Table{
@@ -17,7 +18,7 @@ class Table{
 		int totalSize;
 		int numOfRecords;
 		std::vector<std::string> columnNames;
-		std::map<std::string, std::string> columnTypesMap;
+		std::unordered_map<std::string, std::string> columnTypesMap;
 		bool temporary;
 		bool dropped;
 	
