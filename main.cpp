@@ -69,17 +69,19 @@ static inline void trim(std::string &s) {
 
 /* End helper functions */
 
-void selectData(const hsql::SelectStatement* stmt) {
+int selectData(const hsql::SelectStatement* stmt, bool print=true) {
 	char* buffer;
 	int recordsize;
+	int count=0;
 	std::string fileName = stmt->fromTable->name;
 	trim(fileName);
 	fileName += ".tbl";
 	std::ifstream ifs(fileName, std::ofstream::binary | std::ofstream::in);
 	Table *t = ctlg.findTable(stmt->fromTable->name);
 	if( t == NULL ) {
-		std::cout << "No table found\n";
-		return;
+		if(print)
+			std::cout << "No table found\n";
+		return 0;
 	}	
 	recordsize = t->getRecordSize();	
 	buffer = new char[recordsize];
@@ -87,9 +89,11 @@ void selectData(const hsql::SelectStatement* stmt) {
 		ifs.read(buffer, recordsize);
 		if(ifs.eof())
 			break;
-		if(stmt->whereClause==NULL)
-			std::cout << t->parseRecord(buffer);
-		else {
+		if(stmt->whereClause==NULL) {
+			count++;
+			if(print)
+				std::cout << t->parseRecord(buffer);
+		} else {
 			auto where = stmt->whereClause;
 			auto field = where->expr->name;
 			int pos = t->getColumnBytePosition(field);
@@ -131,12 +135,16 @@ void selectData(const hsql::SelectStatement* stmt) {
 				default:
 					break;
 			}
-			if(doit)
-				std::cout << t->parseRecord(buffer);
+			if(doit) {
+				count++;
+				if(print)
+					std::cout << t->parseRecord(buffer);
+			}
 		}
 		//delete buffer;
 	}
 	ifs.close();
+	return count;
 }
 
 void insertData(const hsql::InsertStatement* stmt) {
@@ -152,8 +160,41 @@ void insertData(const hsql::InsertStatement* stmt) {
 	std::ofstream ofs(fileName, std::ofstream::binary | std::ofstream::out | std::ofstream::app);
 
 	auto table=ctlg.findTable(stmt->tableName);
-
 	auto values = stmt->values;
+
+	//CHECK BEFORE INSERT
+	std::ostringstream query;
+	query << "SELECT * FROM ";
+	query << stmt->tableName <<" WHERE ";
+	query << table->getPrimaryKey() << "=";
+	int pos = table->getIndexOfPrimaryKey();
+	int i=0;
+	for(auto it = values->begin(); it != values->end(); ++it) {
+		const hsql::Expr* v=*it;
+		if(i==pos) {
+			switch(v->type) {
+				case kExprLiteralInt:
+					query << v->ival;
+					break;
+				case kExprLiteralString:
+					query << "'" << v->name << "';";
+					break;
+				default:
+					break;
+			}
+			break;
+		}
+		i++;
+	}
+	
+	hsql::SQLParserResult* result = hsql::SQLParser::parseSQLString(query.str());
+	i=selectData((const hsql::SelectStatement*) result->getStatement(0),false);
+	if(i!=0) {
+		std::cout << "Duplicate Primary Key\n";
+		return;
+	}
+
+
 	int ind=0;
 	for(auto it = values->begin(); it != values->end(); ++it) {
 		size_t size;
@@ -164,7 +205,7 @@ void insertData(const hsql::InsertStatement* stmt) {
 			case kExprLiteralInt:
 				i=v->ival;
 				size = table->getColumnByteSizeAt(ind);
-				std::cout << v->ival << "\n";
+				//std::cout << v->ival << "\n";
 				ofs.write((char *)&i, size);
 				break;
 			case kExprLiteralString:
@@ -172,7 +213,7 @@ void insertData(const hsql::InsertStatement* stmt) {
 				s = new char[size];
 				std::memset(s,0,size);
 				std::strcpy(s,v->name);
-				std::cout << s << "\n";
+				//std::cout << s << "\n";
 				ofs.write(s, size);
 				break;
 			default:
@@ -298,14 +339,14 @@ void parseCommand(std::string myStatement) {
 		hsql::SQLParserResult* result = hsql::SQLParser::parseSQLString(myStatement);
 		if (result->isValid()) {
 			printf("Parsed successfully!\n");
-			printf("Number of statements: %lu\n", result->size());
+			//printf("Number of statements: %lu\n", result->size());
 
 			for (uint i = 0; i < result->size(); ++i) {
 				const hsql::SQLStatement* statement = result->getStatement(i);
 
 				dispatchStatement(statement);
 
-				hsql::printStatementInfo(statement);
+				//hsql::printStatementInfo(statement);
 			}
 
 			delete result;
@@ -330,7 +371,6 @@ int main(int argc, char *argv[]) {
 	if (argc!=1) {
 		std::string arg = argv[1];
 		size_t len = arg.size();
-		std::cout <<arg << "\n";
 		if(icompare(arg.substr(len-4),".sql")) {
 			std::ifstream ss(arg);
 			while(std::getline(ss, myStatement, ';')) {

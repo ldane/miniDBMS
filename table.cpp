@@ -213,7 +213,7 @@ std::string Table::parseRecord(char* buffer) {
 	return ss.str();
 }
 
-int Table::getColumnByteSizeAt(int columnIndex){
+size_t Table::getColumnByteSizeAt(int columnIndex){
 	std::string focus = getColumnType(columnNames.at(columnIndex));
 	std::size_t pos;
 	
@@ -229,8 +229,8 @@ int Table::getColumnByteSizeAt(int columnIndex){
 	return 0;
 }
 
-int Table::getColumnBytePosition(std::string clmn){
-	int bytePos = 0;
+size_t Table::getColumnBytePosition(std::string clmn){
+	size_t bytePos = 0;
 	for (std::size_t i = 0; i < columnNames.size(); i++){
 		if (columnNames.at(i) != clmn){
 			bytePos += getColumnByteSizeAt(i);
@@ -242,7 +242,7 @@ int Table::getColumnBytePosition(std::string clmn){
 	return -1;
 }
 
-int Table::getColumnByteSize(std::string clmn){
+size_t Table::getColumnByteSize(std::string clmn){
 	std::size_t pos;
 	for (auto const& value : columnNames){
 		if (value == clmn){
@@ -263,10 +263,11 @@ int Table::getColumnByteSize(std::string clmn){
 	return 0;
 }
 
-int Table::getIndexOfPrimaryKey(){
-	for (int i = 0; i < columnNames.size(); i++){
+size_t Table::getIndexOfPrimaryKey(){
+	for (size_t i = 0; i < columnNames.size(); i++){
 		if (columnNames.at(i) == getPrimaryKey()){
 			return i;
 		}
 	}
+	return 0;
 }
