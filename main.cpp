@@ -85,6 +85,20 @@ int selectData(const hsql::SelectStatement* stmt, bool print=true) {
 	}	
 	recordsize = t->getRecordSize();	
 	buffer = new char[recordsize];
+
+	// prepare select list
+	auto values = stmt->selectList;
+	std::ostringstream fields;
+	fields << "";
+	for(auto it = values->begin(); it != values->end(); ++it) {
+		fields << (*it)->name << ",";
+	}
+	std::string fieldList = fields.str();
+	if (fieldList.size()!=0)
+		fieldList.pop_back();
+	else
+		fieldList = "*";	
+	//std::cout << fieldList << "\n";
 	while (true) {
 		ifs.read(buffer, recordsize);
 		if(ifs.eof())
@@ -92,7 +106,7 @@ int selectData(const hsql::SelectStatement* stmt, bool print=true) {
 		if(stmt->whereClause==NULL) {
 			count++;
 			if(print)
-				std::cout << t->parseRecord(buffer);
+				std::cout << t->parseRecord(buffer,fieldList);
 		} else {
 			auto where = stmt->whereClause;
 			auto field = where->expr->name;
@@ -138,7 +152,7 @@ int selectData(const hsql::SelectStatement* stmt, bool print=true) {
 			if(doit) {
 				count++;
 				if(print)
-					std::cout << t->parseRecord(buffer);
+					std::cout << t->parseRecord(buffer,fieldList);
 			}
 		}
 		//delete buffer;

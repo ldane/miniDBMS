@@ -188,11 +188,17 @@ void Table::print(){
 	std::cout << "records=" << numOfRecords << std::endl;
 }
 
-std::string Table::parseRecord(char* buffer) {
+std::string Table::parseRecord(char* buffer, std::string fieldList) {
 	std::ostringstream ss;
 	int i;
 	char* s;
 	for (auto& c: columnTypesMap) {
+		if(fieldList != "*") {
+			if(fieldList.find(c.first)==std::string::npos) {
+				buffer+=getColumnByteSize(c.first);
+				continue;
+			}
+		}
 		if(c.second == "INT") {
 			memcpy(&i, buffer, sizeof(int));
 			//ss << c.first << ":" << i << "\n";

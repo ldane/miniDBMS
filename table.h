@@ -43,7 +43,7 @@ class Table{
 		bool isTemporary();
 		bool isDropped();
 		std::string getFormattedMetaData();
-		std::string parseRecord(char* buffer);
+		std::string parseRecord(char* buffer, std::string fieldList);
 		size_t getColumnByteSizeAt(int columnIndex);
 		size_t getColumnBytePosition(std::string clmn);
 		size_t getColumnByteSize(std::string);
