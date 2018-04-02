@@ -168,6 +168,7 @@ void insertData(const hsql::InsertStatement* stmt) {
 	fileName += ".tbl";
 	std::ifstream infile(fileName);
 	if (!infile.good()){
+		printf("Table doesn't exist to insert into");
 		return;
 	}
 	infile.close();
