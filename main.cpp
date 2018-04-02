@@ -44,8 +44,7 @@ bool icompare(std::string const& a, std::string const& b)
     if (a.length()==b.length()) {
         return std::equal(b.begin(), b.end(),
                            a.begin(), icompare_pred);
-    }
-    else {
+    } else {
         return false;
     }
 }
@@ -94,15 +93,14 @@ void selectData(const hsql::SelectStatement* stmt) {
 			auto where = stmt->whereClause;
 			auto field = where->expr->name;
 			int pos = t->getColumnBytePosition(field);
-			int size = t->getColumnByteSize(field);
 			char *b=buffer+pos;
 			bool doit=false;
 			switch(where->opChar) {
 				case '=':
 					if(where->expr2->type==kExprLiteralString) {
-						std::string val1(b,size);
+						std::string val1(b);
 						std::string val2(where->expr2->name);
-						if(icompare(val1,val2))
+						if(val1 == val2)
 							doit=true;
 					} else if(where->expr2->type==kExprLiteralInt) {
 						int val1;
