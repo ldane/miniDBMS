@@ -1,0 +1,13 @@
+CREATE TABLE MI (M1 INT, M2 CHAR(255), M3 CHAR(20), PRIMARY KEY(M1));
+
+INSERT INTO MI VALUES(1, 'longtexthaha1234532895', 'john'); INSERT INTO MI VALUES(2, 'banananananananananaan', 'joseph');
+
+SELECT * FROM MI;
+
+SELECT M3 FROM MI WHERE M1=2;
+
+INSERT INTO MI VALUES(3, 'po', 'psicle');
+
+INSERT INTO MI VALUES(3, 'pop', 'sicle');
+
+SELECT * FROM MI WHERE M1>1;
