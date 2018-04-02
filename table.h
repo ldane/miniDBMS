@@ -47,6 +47,7 @@ class Table{
 		int getColumnByteSizeAt(int columnIndex);
 		int getColumnBytePosition(std::string clmn);
 		int getColumnByteSize(std::string);
+		int getIndexOfPrimaryKey();
 };
 
 #endif

@@ -262,3 +262,11 @@ int Table::getColumnByteSize(std::string clmn){
 	// none found? 
 	return 0;
 }
+
+int Table::getIndexOfPrimaryKey(){
+	for (int i = 0; i < columnNames.size(); i++){
+		if (columnNames.at(i) == getPrimaryKey()){
+			return i;
+		}
+	}
+}
