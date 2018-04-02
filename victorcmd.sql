@@ -11,3 +11,5 @@ INSERT INTO MI VALUES(3, 'po', 'psicle');
 INSERT INTO MI VALUES(3, 'pop', 'sicle');
 
 SELECT * FROM MI WHERE M1>1;
+
+quit;
