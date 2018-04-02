@@ -1,6 +1,9 @@
 # miniDBMS
 miniDBMS written in C++
 
+# Limitations
+single PK in tables
+a stored CHAR can not end with ';' ( example: 'abc;' will cause complications )
 
 # Links/references
 https://stackoverflow.com/questions/5455802/how-to-read-a-complete-line-from-the-user-using-cin
@@ -14,3 +17,4 @@ http://www.cplusplus.com/forum/general/13135/
 https://stackoverflow.com/questions/12774207/fastest-way-to-check-if-a-file-exist-using-standard-c-c11-c
 http://www.cplusplus.com/reference/cstdio/remove/
 https://stackoverflow.com/questions/544928/reading-integer-size-bytes-from-a-char-array
+https://stackoverflow.com/questions/21647/reading-from-text-file-until-eof-repeats-last-line
