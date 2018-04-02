@@ -1,9 +1,16 @@
 # miniDBMS
 miniDBMS written in C++
 
+#
+./main file.sql 
+./main
+./main "SQL STATEMENT"
+
 # Limitations
 single PK in tables
-a stored CHAR can not end with ';' ( example: 'abc;' will cause complications )
+a stored CHAR can not contain ';' ( example: 'ab;c' will cause complications )
+JOIN, functionality not implemented
+SELECT x,y INTO t FROM t2, functionality not implemented
 
 # Links/references
 https://stackoverflow.com/questions/5455802/how-to-read-a-complete-line-from-the-user-using-cin
