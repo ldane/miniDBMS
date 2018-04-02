@@ -192,23 +192,25 @@ std::string Table::parseRecord(char* buffer, std::string fieldList) {
 	std::ostringstream ss;
 	int i;
 	char* s;
-	for (auto& c: columnTypesMap) {
+	for (auto const& value : columnNames){
+		std::string focus = getColumnType(value);
 		if(fieldList != "*") {
-			if(fieldList.find(c.first)==std::string::npos) {
-				buffer+=getColumnByteSize(c.first);
+			if(fieldList.find(value)==std::string::npos) {
+				buffer+=getColumnByteSize(value);
 				continue;
 			}
 		}
-		if(c.second == "INT") {
+		if(focus == "INT") {
 			memcpy(&i, buffer, sizeof(int));
 			//ss << c.first << ":" << i << "\n";
 			ss << i;
 			buffer+=sizeof(int);
-		} else if (c.second.substr(0,4) == "CHAR") {
-			size_t pos = c.second.length();
-			int v = atoi(c.second.substr(5,pos-5).c_str());
-			s = new char[v];
+		} else if (focus.substr(0,4) == "CHAR") {
+			size_t pos = focus.length();
+			int v = atoi(focus.substr(5,pos-5).c_str());
+			s = new char[v+1];
 			std::strncpy(s,buffer,v);
+			s[v]=0;
 			//ss << c.first << ":" << s << "\n";
 			ss << "'" << s << "'";
 			buffer+=v;

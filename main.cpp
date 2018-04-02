@@ -237,7 +237,7 @@ void insertData(const hsql::InsertStatement* stmt) {
 	}
 	ofs.close();
 	// increment things in catalog
-	if (ctlg.incrementRecordsInTable(tName)) printf("Successfully inserted record");
+	if (ctlg.incrementRecordsInTable(tName)) printf("Successfully inserted record\n");
 }
 
 void deleteData(const hsql::DeleteStatement* stmt) {
@@ -387,7 +387,11 @@ int main(int argc, char *argv[]) {
 		size_t len = arg.size();
 		if(icompare(arg.substr(len-4),".sql")) {
 			std::ifstream ss(arg);
-			while(std::getline(ss, myStatement, ';')) {
+			while(true) {
+				std::getline(ss, myStatement, ';');
+				if(ss.eof())
+					break;
+
 				size_t pos=myStatement.rfind(';');
 				myStatement = myStatement.substr(0,pos-1);
 				trim(myStatement);

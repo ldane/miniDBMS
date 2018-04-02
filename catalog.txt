@@ -1,6 +1,12 @@
-tablename=HELLO
-columns=C1:INT,C2:CHAR(5),C3:INT
-primary key=C1
-recordsize=13
-totalsize=78
+tablename=T1
+columns=K:INT,A:CHAR(2),B:INT
+primary key=K
+recordsize=10
+totalsize=60
+records=6
+tablename=T2
+columns=K1:INT,K2:CHAR(2),X:CHAR(5),Y:INT
+primary key=K1
+recordsize=15
+totalsize=90
 records=6
