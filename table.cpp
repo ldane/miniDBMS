@@ -275,3 +275,33 @@ size_t Table::getIndexOfPrimaryKey(){
 	}
 	return 0;
 }
+
+bool Table::isLocked(int pk_target){
+	// returns true if locked 
+	// returns false if unlocked
+	if (lockedItems.find(pk_target) == lockedItems.end()){
+		return false;
+	} else {
+		return true;
+	}
+}
+bool Table::lock(int pk_target){
+	// returns true if successfully locked row
+	// returns false if row is already locked
+	if (isLocked(pk_target)){
+		return false;
+	} else {
+		lockedItems.insert(pk_target);
+		return true;
+	}
+}
+bool Table::unlock(int pk_target){
+	// returns true if successfully unlocks row
+	// returns false if row is already unlocked (shouldn't happen)
+	if (isLocked(pk_target)){
+		lockedItems.erase(pk_target);
+		return true;
+	} else {
+		return false;
+	}
+}
