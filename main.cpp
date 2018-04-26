@@ -371,7 +371,7 @@ void parseCommand(std::string myStatement) {
 	}
 }
 
-bool processStream(std::istream &ss) {
+bool processStream(std::istream &ss, bool single = false) {
 	std::string myStatement;
 	while(true) {
 		std::getline(ss, myStatement, ';');
@@ -386,6 +386,7 @@ bool processStream(std::istream &ss) {
 			return false;
 		}
 		parseCommand(myStatement);
+		if (single) return true;
 	}
 	return true;
 }
@@ -406,7 +407,7 @@ int main(int argc, char *argv[]) {
 	}
 	while (quit){
 		printf("\nSQL> ");
-		quit=processStream(std::cin);
+		quit=processStream(std::cin, true);
     }
 	ctlg.writeToFile("catalog.txt");
 	return 0;
