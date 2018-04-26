@@ -257,7 +257,6 @@ void createTable(const std::string query) {
 	std::string tableName, field, lastfield;
 	std::string nQuery = query.substr(12);
 	std::size_t pos;
-	
 
 	pos = nQuery.find('(');
 	tableName = nQuery.substr(0,pos);
@@ -300,6 +299,7 @@ void createTable(const std::string query) {
 	}
 	//pTable->print();
 }
+
 void dropTable(const hsql::DropStatement* stmt) {
 	//update catalog
 	//no need to use drop flag, just delete entry entirely
@@ -354,86 +354,59 @@ void parseCommand(std::string myStatement) {
 		hsql::SQLParserResult* result = hsql::SQLParser::parseSQLString(myStatement);
 		if (result->isValid()) {
 			printf("Parsed successfully!\n");
-			//printf("Number of statements: %lu\n", result->size());
 
 			for (uint i = 0; i < result->size(); ++i) {
 				const hsql::SQLStatement* statement = result->getStatement(i);
 
 				dispatchStatement(statement);
-
-				//hsql::printStatementInfo(statement);
 			}
-
-			delete result;
 		} else {
 			fprintf(stderr, "Given string is not a valid SQL query.\n");
 			fprintf(stderr, "%s (L%d:%d)\n", 
 					result->errorMsg(),
 					result->errorLine(),
 					result->errorColumn());
-			delete result;
 		}
+		delete result;
 	}
 }
 
+bool processStream(std::istream &ss) {
+	std::string myStatement;
+	while(true) {
+		std::getline(ss, myStatement, ';');
+		if(ss.eof())
+			break;
 
+		size_t pos=myStatement.rfind(';');
+		myStatement = myStatement.substr(0,pos-1);
+		trim(myStatement);
+
+		if(icompare(myStatement.substr(0,4), "quit")) {
+			return false;
+		}
+		parseCommand(myStatement);
+	}
+	return true;
+}
 
 int main(int argc, char *argv[]) {
-	
 	ctlg.loadFromFile("catalog.txt");
-	std::string myStatement;
 	bool quit=true;
 	if (argc!=1) {
 		std::string arg = argv[1];
 		size_t len = arg.size();
 		if(icompare(arg.substr(len-4),".sql")) {
 			std::ifstream ss(arg);
-			while(true) {
-				std::getline(ss, myStatement, ';');
-				if(ss.eof())
-					break;
-
-				size_t pos=myStatement.rfind(';');
-				myStatement = myStatement.substr(0,pos-1);
-				trim(myStatement);
-				
-				if(icompare(myStatement.substr(0,4), "quit")) {
-					quit=false;
-					break;
-				}
-				parseCommand(myStatement);
-			}
-
+			quit=processStream(ss);
 		} else {
 			std::istringstream ss(argv[1]);
-			while(std::getline(ss, myStatement, ';')) {
-				size_t pos=myStatement.rfind(';');
-				myStatement = myStatement.substr(0,pos-1);
-				trim(myStatement);
-				
-				if(icompare(myStatement.substr(0,4), "quit")) {
-					quit=false;
-					break;
-				}
-				parseCommand(myStatement);
-			}
+			quit=processStream(ss);
 		}
-		//ctlg.writeToFile("catalogWRITETEST.txt");
 	}
 	while (quit){
-		size_t pos;
 		printf("\nSQL> ");
-		std::getline(std::cin, myStatement, ';');
-		pos=myStatement.rfind(';');
-		myStatement = myStatement.substr(0,pos-1);
-		trim(myStatement);
-
-		if(icompare(myStatement.substr(0,4), "quit")) {
-			quit=false;
-			break;
-		}
-		parseCommand(myStatement);
-		//ctlg.writeToFile("catalogWRITETEST.txt");
+		quit=processStream(std::cin);
     }
 	ctlg.writeToFile("catalog.txt");
 	return 0;

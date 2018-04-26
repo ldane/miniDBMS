@@ -190,8 +190,6 @@ void Table::print(){
 
 std::string Table::parseRecord(char* buffer, std::string fieldList) {
 	std::ostringstream ss;
-	int i;
-	char* s;
 	for (auto const& value : columnNames){
 		std::string focus = getColumnType(value);
 		if(fieldList != "*") {
@@ -201,16 +199,14 @@ std::string Table::parseRecord(char* buffer, std::string fieldList) {
 			}
 		}
 		if(focus == "INT") {
-			memcpy(&i, buffer, sizeof(int));
+			int *i = (int *)buffer;
 			//ss << c.first << ":" << i << "\n";
-			ss << i;
+			ss << *i;
 			buffer+=sizeof(int);
 		} else if (focus.substr(0,4) == "CHAR") {
 			size_t pos = focus.length();
 			int v = atoi(focus.substr(5,pos-5).c_str());
-			s = new char[v+1];
-			std::strncpy(s,buffer,v);
-			s[v]=0;
+			std::string s(buffer,v);
 			//ss << c.first << ":" << s << "\n";
 			ss << "'" << s << "'";
 			buffer+=v;
