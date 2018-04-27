@@ -34,13 +34,11 @@ using hsql::kExprLiteralString;
 using hsql::ColumnDefinition;
 
 /* Helper functions */
-bool icompare_pred(unsigned char a, unsigned char b)
-{
+bool icompare_pred(unsigned char a, unsigned char b) {
     return std::tolower(a) == std::tolower(b);
 }
 
-bool icompare(std::string const& a, std::string const& b)
-{
+bool icompare(std::string const& a, std::string const& b) {
     if (a.length()==b.length()) {
         return std::equal(b.begin(), b.end(),
                            a.begin(), icompare_pred);
@@ -155,7 +153,6 @@ int selectData(const hsql::SelectStatement* stmt, bool print=true) {
 					std::cout << t->parseRecord(buffer,fieldList);
 			}
 		}
-		//delete buffer;
 	}
 	ifs.close();
 	return count;
@@ -245,14 +242,6 @@ void deleteData(const hsql::DeleteStatement* stmt) {
 	printf("delete\n");
 }
 
-void createTableFile(std::string tableName){
-	std::string fileName = tableName;
-	trim(fileName);
-	fileName += ".tbl";
-	std::ofstream ofs(fileName);
-	ofs.close();
-}
-
 void createTable(const std::string query) {
 	std::string tableName, field, lastfield;
 	std::string nQuery = query.substr(12);
@@ -292,7 +281,7 @@ void createTable(const std::string query) {
 	
 	pTable->setPrimaryKey(lastfield);
 	if (ctlg.addTable(pTable)){
-		createTableFile(tableName);
+		pTable->createTableFile();
 		std::cout << "Created TABLE " << tableName << " Successfully\n";
 	} else {
 		std::cout << "Duplicate TABLE " << tableName << " exists already\n";

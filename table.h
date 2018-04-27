@@ -34,6 +34,7 @@ class Table{
 		void addColumn(std::string clmn);
 		void setColumnTypes(std::string columnName, std::string ctm);
 		void parseAndSetPrimaryKey(std::string pk);
+		void createTableFile();
 		std::string getTableName();
 		std::string getPrimaryKey();
 		int getRecordSize();

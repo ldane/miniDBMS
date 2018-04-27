@@ -2,6 +2,7 @@
 #include "table.h"
 //
 #include <sstream>
+#include <fstream>
 #include <cstring>
 
 Table::Table(std::string tn, bool temp) : columnTypesMap(){
@@ -14,6 +15,14 @@ Table::Table(std::string tn, bool temp) : columnTypesMap(){
 	dropped = false;
 	//columnNames columnTypesMap
 }
+
+void Table::createTableFile(){
+	std::string fileName = tableName;
+	fileName += ".tbl";
+	std::ofstream ofs(fileName);
+	ofs.close();
+}
+
 void Table::setPrimaryKey(std::string pk){
 	primaryKey = pk;
 }
@@ -25,12 +34,15 @@ void Table::parseAndSetPrimaryKey(std::string pk){
 void Table::setRecordSize(int size){
 	recordSize = size;
 }
+
 void Table::setTotalSize(int size){
 	totalSize = size;
 }
+
 void Table::setNumOfRecords(int num){
 	numOfRecords = num;
 }
+
 void Table::addColumn(std::string clmn){
 	// passed in value will be of format C1=INT
 	// left of = is column name
