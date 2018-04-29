@@ -39,6 +39,7 @@ class Table{
 		std::ifstream getiFile();
 		char* getNextRow(std::ifstream& ifs);
 		char* getNthRow(std::ifstream& ifs, int n);
+		std::string getRecordColumn(char* buffer, std::string col);
 		std::string getTableName();
 		std::string getPrimaryKey();
 		int getRecordSize();

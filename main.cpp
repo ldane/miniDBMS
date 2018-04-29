@@ -123,6 +123,9 @@ std::string prepareFieldList(std::vector<hsql::Expr *>* values) {
 
 int selectData(const hsql::SelectStatement* stmt, bool print=true) {
 	int count=0;
+	std::string fieldList = prepareFieldList(stmt->selectList);
+	std::ostringstream ss;
+
 	if(stmt->fromTable->type == hsql::kTableJoin) {
 		// Do Join
 		auto join = stmt->fromTable->join;
@@ -130,68 +133,89 @@ int selectData(const hsql::SelectStatement* stmt, bool print=true) {
 		auto left = join->left;
 		auto condition = join->condition;
 		auto op = condition->opChar;
-		auto e1 = condition->expr->name;
-		auto e2 = condition->expr2->name;
-		std::cout << "R:" << right->name << " L:" << left->name << "\n";
-		std::cout << "E1:" << left->name << e1 << op << "E2:" << right->name << e2 << "\n";
+		auto e1 = condition->expr;
+		auto e2 = condition->expr2;
 
+		std::string rName(right->name);
+		std::string e2Name(e2->table);
+		if (icompare(rName,e2Name)) {
+			auto temp = e2;
+			e2 = e1;
+			e1 = temp;
+		}
 
 		Table *rTable = ctlg.findTable(right->name);
 		Table *lTable = ctlg.findTable(left->name);
+		std::string rtype = rTable->getColumnType(right->name);
+		std::string ltype = lTable->getColumnType(left->name);
+		//If the columns are not same type, no need to do the join
+		if (rtype != ltype)
+			return 0;
+
 		std::ifstream rifs = rTable->getiFile();
 		std::ifstream lifs = lTable->getiFile();
+
 		for(char* rbuf=rTable->getNextRow(rifs); rbuf!=NULL; rbuf=rTable->getNextRow(rifs)) {
-			for(char* lbuf=lTable->getNextRow(lifs); lbuf!=NULL; lbuf=rTable->getNextRow(lifs)) {
-				//doOperation(op,e1,e2);
+			auto val1 = rTable->getRecordColumn(rbuf, e1->name);
+			//restart the file
+			lifs.clear();
+			lifs.seekg (0, lifs.beg);
+			for(char* lbuf=lTable->getNextRow(lifs); lbuf!=NULL; lbuf=lTable->getNextRow(lifs)) {
+				auto val2 = lTable->getRecordColumn(lbuf, e2->name);
+				if(doOperation(op,val1,val2)) {
+					ss << rTable->parseRecord(rbuf, fieldList) << lTable->parseRecord(lbuf, fieldList) << "\n";
+					count++;
+				}
 			}
 		}
-		return 0;
-	}
+		rifs.close();
+		lifs.close();
+	} else {
 
-	Table *t = ctlg.findTable(stmt->fromTable->name);
-	// check if the table exists
-	if( t == NULL ) {
-		if(print)
-			std::cout << "No table found\n";
-		return 0;
-	}
-	
-	std::ifstream ifs = t->getiFile();
-
-	std::string fieldList = prepareFieldList(stmt->selectList);
-		
-	for(char* buf=t->getNextRow(ifs); buf!=NULL; buf=t->getNextRow(ifs)) {
-		if(stmt->whereClause==NULL) {
-			count++;
+		Table *t = ctlg.findTable(stmt->fromTable->name);
+		// check if the table exists
+		if( t == NULL ) {
 			if(print)
-				std::cout << t->parseRecord(buf,fieldList);
-		} else {
-			auto where = stmt->whereClause;
-			auto field = where->expr->name;
-			int pos = t->getColumnBytePosition(field);
-			//std::string type = t->getColumnType(field);
-			char *b=buf+pos;
-			bool doit=false;
-
-			if(where->expr2->type==kExprLiteralString) {
-				std::string val1(b);
-				std::string val2(where->expr2->name);
-				doit = doOperation(where->opChar, val1, val2);
-			} else if(where->expr2->type==kExprLiteralInt) {
-				int val1;
-				memcpy(&val1, b, sizeof(int));
-				int val2 = where->expr2->ival;
-				doit = doOperation(where->opChar, val1, val2);
-			}
-
-			if(doit) {
+				std::cout << "No table found\n";
+			return 0;
+		}
+		
+		std::ifstream ifs = t->getiFile();
+			
+		for(char* buf=t->getNextRow(ifs); buf!=NULL; buf=t->getNextRow(ifs)) {
+			if(stmt->whereClause==NULL) {
 				count++;
-				if(print)
-					std::cout << t->parseRecord(buf,fieldList);
+				ss << t->parseRecord(buf,fieldList) << "\n";
+			} else {
+				auto where = stmt->whereClause;
+				auto field = where->expr->name;
+				int pos = t->getColumnBytePosition(field);
+				//std::string type = t->getColumnType(field);
+				char *b=buf+pos;
+				bool doit=false;
+
+				if(where->expr2->type==kExprLiteralString) {
+					std::string val1(b);
+					std::string val2(where->expr2->name);
+					doit = doOperation(where->opChar, val1, val2);
+				} else if(where->expr2->type==kExprLiteralInt) {
+					int val1;
+					memcpy(&val1, b, sizeof(int));
+					int val2 = where->expr2->ival;
+					doit = doOperation(where->opChar, val1, val2);
+				}
+
+				if(doit) {
+					count++;
+					ss << t->parseRecord(buf,fieldList) << "\n";
+				}
 			}
 		}
+		ifs.close();
 	}
-	ifs.close();
+
+	if(print)
+		std::cout << ss.str();
 	return count;
 }
 

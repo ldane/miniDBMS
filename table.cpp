@@ -200,26 +200,26 @@ void Table::incrementRecords(){
 }
 
 void Table::print(){
-	//std::cout << "Printing a table..." << std::endl;
-	std::cout << "tablename=" << tableName << std::endl;
-	// build the string for columns.
-	std::cout << "columns=";
-	bool isFirstTime = true;
-	for (std::string clmn : columnNames){
-		if (isFirstTime){
-			isFirstTime = false;
-		} else {
-			std::cout << ",";
-		}
-		std::cout << clmn << ":" << columnTypesMap[clmn];
-	}
-	std::cout << std::endl;
-	std::cout << "primary key=" << primaryKey << std::endl;
-	std::cout << "recordsize=" << recordSize << std::endl;
-	std::cout << "totalsize=" << totalSize << std::endl;
-	std::cout << "records=" << numOfRecords << std::endl;
+	std::cout << getFormattedMetaData();
 }
 
+std::string Table::getRecordColumn(char* buffer, std::string col) {
+	std::ostringstream ss;
+	size_t m = getColumnBytePosition(col);
+	char *nbuf= buffer+m;
+	std::string focus = getColumnType(col);
+	if(focus == "INT") {
+		int *i = (int *)nbuf;
+		ss << *i;
+	} else if (focus.substr(0,4) == "CHAR") {
+		size_t pos = focus.length();
+		int v = atoi(focus.substr(5,pos-5).c_str());
+		std::string s(nbuf,v);
+		//ss << c.first << ":" << s << "\n";
+		ss << "'" << s << "'";
+	}
+	return ss.str();
+}	
 std::string Table::parseRecord(char* buffer, std::string fieldList) {
 	std::ostringstream ss;
 	for (auto const& value : columnNames){
@@ -245,7 +245,6 @@ std::string Table::parseRecord(char* buffer, std::string fieldList) {
 		}
 		ss << " ";
 	}
-	ss << "\n";
 	return ss.str();
 }
 
