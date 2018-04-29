@@ -278,7 +278,7 @@ void updateData(const hsql::UpdateStatement* stmt) {
 			int pos = t->getColumnBytePosition(column0);
 			char *b=buffer+pos;
 			bool doit=false;
-			switch(where->opChar) {
+			switch(stmt->where->opChar) {
 				case '=':
 					if(stmt->updates->at(0)->value->isType(kExprLiteralString)) {
 						std::string val1(b);
