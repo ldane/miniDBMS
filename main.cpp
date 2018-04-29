@@ -32,6 +32,7 @@ using hsql::kTableSelect;
 using hsql::kExprLiteralInt;
 using hsql::kExprLiteralString;
 using hsql::ColumnDefinition;
+using hsql::kStmtUpdate;
 
 /* Helper functions */
 bool icompare_pred(unsigned char a, unsigned char b) {
