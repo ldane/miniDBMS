@@ -248,11 +248,11 @@ void updateData(const hsql::UpdateStatement* stmt) {
 	char* buffer;
 	int recordsize;
 	int count=0;
-	std::string fileName = stmt->fromTable->name;
+	std::string fileName = stmt->table->name;
 	trim(fileName);
 	fileName += ".tbl";
-	std::ifstream fs(fileName, std::ifstream::binary | std::ifstream::in | std::ifstream::out);
-	Table *t = ctlg.findTable(stmt->fromTable->name);
+	std::ifstream ifs(fileName, std::ifstream::binary | std::ifstream::in | std::ifstream::out);
+	Table *t = ctlg.findTable(stmt->table->name);
 	if( t == NULL ) {
 		//table doesnt exist = update should fail = transaction should fail
 		return;
@@ -273,8 +273,8 @@ void updateData(const hsql::UpdateStatement* stmt) {
 		ifs.read(buffer, recordsize);
 		if(ifs.eof())
 			break;
-		if(stmt->whereClause==NULL) {
-			count++;
+		if(stmt->where==NULL) {
+			break;
 		} else {
 			int pos = t->getColumnBytePosition(column0);
 			char *b=buffer+pos;
