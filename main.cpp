@@ -267,8 +267,7 @@ void updateData(const hsql::UpdateStatement* stmt) {
 	} else if (stmt->updates->at(0)->value->isType(kExprLiteralString)){
 		
 	}
-	int fposition = -1;
-	std::cout << ifs.seekg() << "- one \n";
+	std::cout << ifs.tellg() << "- one \n";
 	while (true) {
 		ifs.read(buffer, recordsize);
 		if(ifs.eof())
@@ -317,12 +316,12 @@ void updateData(const hsql::UpdateStatement* stmt) {
 			}
 			if(doit) {
 				count++;
-				std::cout << ifs.seekg() << "- match \n";
+				std::cout << ifs.tellg() << "- match \n";
 			}
 		}
 	}
 	ifs.close();
-	return count;
+	return;
 }
 
 void createTable(const std::string query) {
