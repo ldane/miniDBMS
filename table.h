@@ -8,6 +8,8 @@
 #include <map>
 #include <iostream>
 #include <unordered_map>
+#include <set>
+#include <fstream>
 
 
 class Table{
@@ -19,6 +21,7 @@ class Table{
 		int numOfRecords;
 		std::vector<std::string> columnNames;
 		std::map<std::string, std::string> columnTypesMap;
+		std::set<int> lockedItems;
 		bool temporary;
 		bool dropped;
 	
@@ -32,6 +35,10 @@ class Table{
 		void addColumn(std::string clmn);
 		void setColumnTypes(std::string columnName, std::string ctm);
 		void parseAndSetPrimaryKey(std::string pk);
+		void createTableFile();
+		std::ifstream getiFile();
+		char* getNextRow(std::ifstream& ifs);
+		char* getNthRow(std::ifstream& ifs, int n);
 		std::string getTableName();
 		std::string getPrimaryKey();
 		int getRecordSize();
@@ -45,10 +52,14 @@ class Table{
 		bool isDropped();
 		std::string getFormattedMetaData();
 		std::string parseRecord(char* buffer, std::string fieldList);
+		bool updateRecord(std::string pk, char* buffer);
 		size_t getColumnByteSizeAt(int columnIndex);
 		size_t getColumnBytePosition(std::string clmn);
 		size_t getColumnByteSize(std::string);
 		size_t getIndexOfPrimaryKey();
+		bool isLocked(int pk_target);
+		bool lock(int pk_target);
+		bool unlock(int pk_target);
 };
 
 #endif

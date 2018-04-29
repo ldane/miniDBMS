@@ -2,6 +2,7 @@
 #include "table.h"
 //
 #include <sstream>
+#include <fstream>
 #include <cstring>
 
 Table::Table(std::string tn, bool temp) : columnTypesMap(){
@@ -14,6 +15,34 @@ Table::Table(std::string tn, bool temp) : columnTypesMap(){
 	dropped = false;
 	//columnNames columnTypesMap
 }
+
+void Table::createTableFile(){
+	std::string fileName = tableName;
+	fileName += ".tbl";
+	std::ofstream ofs(fileName);
+	ofs.close();
+}
+
+std::ifstream Table::getiFile() {
+	std::ifstream ifs(tableName+".tbl", std::ofstream::binary | std::ofstream::in);
+	return ifs;
+}
+
+char* Table::getNextRow(std::ifstream& ifs) {
+	char *buf = new char[recordSize];
+	ifs.read(buf, recordSize);
+	if(ifs.eof())
+		return NULL;
+	return buf;
+}
+
+char* Table::getNthRow(std::ifstream& ifs, int n) {
+	char *buf;
+	for(int i=0; i<n; i++)
+		buf=getNextRow(ifs);
+	return buf;
+}
+
 void Table::setPrimaryKey(std::string pk){
 	primaryKey = pk;
 }
@@ -25,12 +54,15 @@ void Table::parseAndSetPrimaryKey(std::string pk){
 void Table::setRecordSize(int size){
 	recordSize = size;
 }
+
 void Table::setTotalSize(int size){
 	totalSize = size;
 }
+
 void Table::setNumOfRecords(int num){
 	numOfRecords = num;
 }
+
 void Table::addColumn(std::string clmn){
 	// passed in value will be of format C1=INT
 	// left of = is column name
@@ -217,6 +249,10 @@ std::string Table::parseRecord(char* buffer, std::string fieldList) {
 	return ss.str();
 }
 
+bool Table::updateRecord(std::string pk, char* buffer){
+	return true;	
+}
+
 size_t Table::getColumnByteSizeAt(int columnIndex){
 	std::string focus = getColumnType(columnNames.at(columnIndex));
 	std::size_t pos;
@@ -274,4 +310,34 @@ size_t Table::getIndexOfPrimaryKey(){
 		}
 	}
 	return 0;
+}
+
+bool Table::isLocked(int pk_target){
+	// returns true if locked 
+	// returns false if unlocked
+	if (lockedItems.find(pk_target) == lockedItems.end()){
+		return false;
+	} else {
+		return true;
+	}
+}
+bool Table::lock(int pk_target){
+	// returns true if successfully locked row
+	// returns false if row is already locked
+	if (isLocked(pk_target)){
+		return false;
+	} else {
+		lockedItems.insert(pk_target);
+		return true;
+	}
+}
+bool Table::unlock(int pk_target){
+	// returns true if successfully unlocks row
+	// returns false if row is already unlocked (shouldn't happen)
+	if (isLocked(pk_target)){
+		lockedItems.erase(pk_target);
+		return true;
+	} else {
+		return false;
+	}
 }
