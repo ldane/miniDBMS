@@ -48,6 +48,7 @@ class Table{
 		bool isDropped();
 		std::string getFormattedMetaData();
 		std::string parseRecord(char* buffer, std::string fieldList);
+		bool updateRecord(std::string pk, char* buffer);
 		size_t getColumnByteSizeAt(int columnIndex);
 		size_t getColumnBytePosition(std::string clmn);
 		size_t getColumnByteSize(std::string);

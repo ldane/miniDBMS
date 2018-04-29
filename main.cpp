@@ -245,6 +245,86 @@ void deleteData(const hsql::DeleteStatement* stmt) {
 
 void updateData(const hsql::UpdateStatement* stmt) {
 	printf("do update\n");
+	char* buffer;
+	int recordsize;
+	int count=0;
+	std::string fileName = stmt->fromTable->name;
+	trim(fileName);
+	fileName += ".tbl";
+	std::ifstream fs(fileName, std::ifstream::binary | std::ifstream::in | std::ifstream::out);
+	Table *t = ctlg.findTable(stmt->fromTable->name);
+	if( t == NULL ) {
+		//table doesnt exist = update should fail = transaction should fail
+		return;
+	}	
+	recordsize = t->getRecordSize();	
+	buffer = new char[recordsize];
+
+	// prepare update fields/values
+	std::string column0 = stmt->updates->at(0)->column;
+	if (stmt->updates->at(0)->value->isType(kExprLiteralInt)){
+		
+	} else if (stmt->updates->at(0)->value->isType(kExprLiteralString)){
+		
+	}
+	int fposition = -1;
+	std::cout << ifs.seekg() << "- one \n";
+	while (true) {
+		ifs.read(buffer, recordsize);
+		if(ifs.eof())
+			break;
+		if(stmt->whereClause==NULL) {
+			count++;
+		} else {
+			auto where = stmt->whereClause;
+			auto field = where->expr->name;
+			int pos = t->getColumnBytePosition(column0);
+			char *b=buffer+pos;
+			bool doit=false;
+			switch(where->opChar) {
+				case '=':
+					if(where->expr2->type==kExprLiteralString) {
+						std::string val1(b);
+						std::string val2(where->expr2->name);
+						if(val1 == val2)
+							doit=true;
+					} else if(where->expr2->type==kExprLiteralInt) {
+						int val1;
+						memcpy(&val1, b, sizeof(int));
+						int val2 = where->expr2->ival;
+						if(val1==val2)
+							doit=true;
+					}
+					break;
+				case '<':
+					if(where->expr2->type==kExprLiteralInt) {
+						int val1;
+						memcpy(&val1, b, sizeof(int));
+						int val2 = where->expr2->ival;
+						if(val1<val2)
+							doit=true;
+					}
+					break;
+				case '>':
+					if(where->expr2->type==kExprLiteralInt) {
+						int val1;
+						memcpy(&val1, b, sizeof(int));
+						int val2 = where->expr2->ival;
+						if(val1>val2)
+							doit=true;
+					}
+					break;
+				default:
+					break;
+			}
+			if(doit) {
+				count++;
+				std::cout << ifs.seekg() << "- match \n";
+			}
+		}
+	}
+	ifs.close();
+	return count;
 }
 
 void createTable(const std::string query) {

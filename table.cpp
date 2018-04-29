@@ -229,6 +229,10 @@ std::string Table::parseRecord(char* buffer, std::string fieldList) {
 	return ss.str();
 }
 
+bool Table::updateRecord(std::string pk, char* buffer){
+	
+}
+
 size_t Table::getColumnByteSizeAt(int columnIndex){
 	std::string focus = getColumnType(columnNames.at(columnIndex));
 	std::size_t pos;
