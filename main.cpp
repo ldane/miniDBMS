@@ -276,19 +276,17 @@ void updateData(const hsql::UpdateStatement* stmt) {
 		if(stmt->whereClause==NULL) {
 			count++;
 		} else {
-			auto where = stmt->whereClause;
-			auto field = where->expr->name;
 			int pos = t->getColumnBytePosition(column0);
 			char *b=buffer+pos;
 			bool doit=false;
 			switch(where->opChar) {
 				case '=':
-					if(where->expr2->type==kExprLiteralString) {
+					if(stmt->updates->at(0)->value->isType(kExprLiteralString)) {
 						std::string val1(b);
 						std::string val2(where->expr2->name);
 						if(val1 == val2)
 							doit=true;
-					} else if(where->expr2->type==kExprLiteralInt) {
+					} else if(stmt->updates->at(0)->value->isType(kExprLiteralInt)) {
 						int val1;
 						memcpy(&val1, b, sizeof(int));
 						int val2 = where->expr2->ival;
@@ -297,7 +295,7 @@ void updateData(const hsql::UpdateStatement* stmt) {
 					}
 					break;
 				case '<':
-					if(where->expr2->type==kExprLiteralInt) {
+					if(stmt->updates->at(0)->value->isType(kExprLiteralInt)) {
 						int val1;
 						memcpy(&val1, b, sizeof(int));
 						int val2 = where->expr2->ival;
@@ -306,7 +304,7 @@ void updateData(const hsql::UpdateStatement* stmt) {
 					}
 					break;
 				case '>':
-					if(where->expr2->type==kExprLiteralInt) {
+					if(stmt->updates->at(0)->value->isType(kExprLiteralInt)) {
 						int val1;
 						memcpy(&val1, b, sizeof(int));
 						int val2 = where->expr2->ival;
