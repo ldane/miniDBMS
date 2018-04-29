@@ -9,6 +9,7 @@
 #include <iostream>
 #include <unordered_map>
 #include <set>
+#include <fstream>
 
 
 class Table{
@@ -35,6 +36,9 @@ class Table{
 		void setColumnTypes(std::string columnName, std::string ctm);
 		void parseAndSetPrimaryKey(std::string pk);
 		void createTableFile();
+		std::ifstream getiFile();
+		char* getNextRow(std::ifstream& ifs);
+		char* getNthRow(std::ifstream& ifs, int n);
 		std::string getTableName();
 		std::string getPrimaryKey();
 		int getRecordSize();

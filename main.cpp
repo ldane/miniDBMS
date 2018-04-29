@@ -28,11 +28,12 @@ using hsql::kStmtSelect;
 using hsql::kStmtInsert;
 using hsql::kStmtDelete;
 using hsql::kStmtDrop;
+using hsql::kStmtUpdate;
 using hsql::kTableSelect;
 using hsql::kExprLiteralInt;
 using hsql::kExprLiteralString;
 using hsql::ColumnDefinition;
-using hsql::kStmtUpdate;
+using hsql::Expr;
 
 /* Helper functions */
 bool icompare_pred(unsigned char a, unsigned char b) {
@@ -68,49 +69,52 @@ static inline void trim(std::string &s) {
 
 /* End helper functions */
 
-int selectData(const hsql::SelectStatement* stmt, bool print=true) {
-	char* buffer;
-	int recordsize;
-	int count=0;
-	std::string fileName = stmt->fromTable->name;
-	trim(fileName);
-	fileName += ".tbl";
-	std::ifstream ifs(fileName, std::ofstream::binary | std::ofstream::in);
-	Table *t = ctlg.findTable(stmt->fromTable->name);
-	if( t == NULL ) {
-		if(print)
-			std::cout << "No table found\n";
-		return 0;
-	}	
-	recordsize = t->getRecordSize();	
-	buffer = new char[recordsize];
-
+std::string prepareFieldList(std::vector<hsql::Expr *>* values) {
 	// prepare select list
-	auto values = stmt->selectList;
 	std::ostringstream fields;
 	fields << "";
 	for(auto it = values->begin(); it != values->end(); ++it) {
 		fields << (*it)->name << ",";
 	}
+
 	std::string fieldList = fields.str();
+	
 	if (fieldList.size()!=0)
 		fieldList.pop_back();
 	else
 		fieldList = "*";	
 	//std::cout << fieldList << "\n";
+	return fieldList;
+}
+
+int selectData(const hsql::SelectStatement* stmt, bool print=true) {
+	char* buf;
+	int count=0;
+	Table *t = ctlg.findTable(stmt->fromTable->name);
+	// check if the table exists
+	if( t == NULL ) {
+		if(print)
+			std::cout << "No table found\n";
+		return 0;
+	}
+	
+	std::ifstream ifs = t->getiFile();
+
+	std::string fieldList = prepareFieldList(stmt->selectList);
+		
 	while (true) {
-		ifs.read(buffer, recordsize);
-		if(ifs.eof())
+		buf=t->getNextRow(ifs);
+		if(buf==NULL)
 			break;
 		if(stmt->whereClause==NULL) {
 			count++;
 			if(print)
-				std::cout << t->parseRecord(buffer,fieldList);
+				std::cout << t->parseRecord(buf,fieldList);
 		} else {
 			auto where = stmt->whereClause;
 			auto field = where->expr->name;
 			int pos = t->getColumnBytePosition(field);
-			char *b=buffer+pos;
+			char *b=buf+pos;
 			bool doit=false;
 			switch(where->opChar) {
 				case '=':
@@ -151,7 +155,7 @@ int selectData(const hsql::SelectStatement* stmt, bool print=true) {
 			if(doit) {
 				count++;
 				if(print)
-					std::cout << t->parseRecord(buffer,fieldList);
+					std::cout << t->parseRecord(buf,fieldList);
 			}
 		}
 	}
@@ -275,6 +279,7 @@ void updateData(const hsql::UpdateStatement* stmt) {
 		if(stmt->where==NULL) {
 			break;
 		} else {
+			auto where = stmt->where;
 			int pos = t->getColumnBytePosition(column0);
 			char *b=buffer+pos;
 			bool doit=false;

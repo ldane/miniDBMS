@@ -23,6 +23,26 @@ void Table::createTableFile(){
 	ofs.close();
 }
 
+std::ifstream Table::getiFile() {
+	std::ifstream ifs(tableName+".tbl", std::ofstream::binary | std::ofstream::in);
+	return ifs;
+}
+
+char* Table::getNextRow(std::ifstream& ifs) {
+	char *buf = new char[recordSize];
+	ifs.read(buf, recordSize);
+	if(ifs.eof())
+		return NULL;
+	return buf;
+}
+
+char* Table::getNthRow(std::ifstream& ifs, int n) {
+	char *buf;
+	for(int i=0; i<n; i++)
+		buf=getNextRow(ifs);
+	return buf;
+}
+
 void Table::setPrimaryKey(std::string pk){
 	primaryKey = pk;
 }
@@ -230,7 +250,7 @@ std::string Table::parseRecord(char* buffer, std::string fieldList) {
 }
 
 bool Table::updateRecord(std::string pk, char* buffer){
-	
+	return true;	
 }
 
 size_t Table::getColumnByteSizeAt(int columnIndex){
