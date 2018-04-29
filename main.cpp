@@ -69,6 +69,40 @@ static inline void trim(std::string &s) {
 
 /* End helper functions */
 
+bool doOperation(char op, int val1, int val2) {
+	bool check=false;
+	switch(op) {
+		case '=':
+			if(val1 == val2)
+				check=true;
+			break;
+		case '<':
+			if(val1 < val2)
+				check=true;
+			break;
+		case '>':
+			if(val1 > val2)
+				check=true;
+			break;
+		default:
+			break;
+	}
+	return check;
+}
+
+bool doOperation(char op, std::string val1, std::string val2) {
+	bool check=false;
+	switch(op) {
+		case '=':
+			if(val1 == val2)
+				check=true;
+			break;
+		default:
+			break;
+	}
+	return check;
+}
+
 std::string prepareFieldList(std::vector<hsql::Expr *>* values) {
 	// prepare select list
 	std::ostringstream fields;
@@ -88,7 +122,6 @@ std::string prepareFieldList(std::vector<hsql::Expr *>* values) {
 }
 
 int selectData(const hsql::SelectStatement* stmt, bool print=true) {
-	char* buf;
 	int count=0;
 	if(stmt->fromTable->type == hsql::kTableJoin) {
 		// Do Join
@@ -101,6 +134,17 @@ int selectData(const hsql::SelectStatement* stmt, bool print=true) {
 		auto e2 = condition->expr2->name;
 		std::cout << "R:" << right->name << " L:" << left->name << "\n";
 		std::cout << "E1:" << left->name << e1 << op << "E2:" << right->name << e2 << "\n";
+
+
+		Table *rTable = ctlg.findTable(right->name);
+		Table *lTable = ctlg.findTable(left->name);
+		std::ifstream rifs = rTable->getiFile();
+		std::ifstream lifs = lTable->getiFile();
+		for(char* rbuf=rTable->getNextRow(rifs); rbuf!=NULL; rbuf=rTable->getNextRow(rifs)) {
+			for(char* lbuf=lTable->getNextRow(lifs); lbuf!=NULL; lbuf=rTable->getNextRow(lifs)) {
+				//doOperation(op,e1,e2);
+			}
+		}
 		return 0;
 	}
 
@@ -116,10 +160,7 @@ int selectData(const hsql::SelectStatement* stmt, bool print=true) {
 
 	std::string fieldList = prepareFieldList(stmt->selectList);
 		
-	while (true) {
-		buf=t->getNextRow(ifs);
-		if(buf==NULL)
-			break;
+	for(char* buf=t->getNextRow(ifs); buf!=NULL; buf=t->getNextRow(ifs)) {
 		if(stmt->whereClause==NULL) {
 			count++;
 			if(print)
@@ -128,44 +169,21 @@ int selectData(const hsql::SelectStatement* stmt, bool print=true) {
 			auto where = stmt->whereClause;
 			auto field = where->expr->name;
 			int pos = t->getColumnBytePosition(field);
+			//std::string type = t->getColumnType(field);
 			char *b=buf+pos;
 			bool doit=false;
-			switch(where->opChar) {
-				case '=':
-					if(where->expr2->type==kExprLiteralString) {
-						std::string val1(b);
-						std::string val2(where->expr2->name);
-						if(val1 == val2)
-							doit=true;
-					} else if(where->expr2->type==kExprLiteralInt) {
-						int val1;
-						memcpy(&val1, b, sizeof(int));
-						int val2 = where->expr2->ival;
-						if(val1==val2)
-							doit=true;
-					}
-					break;
-				case '<':
-					if(where->expr2->type==kExprLiteralInt) {
-						int val1;
-						memcpy(&val1, b, sizeof(int));
-						int val2 = where->expr2->ival;
-						if(val1<val2)
-							doit=true;
-					}
-					break;
-				case '>':
-					if(where->expr2->type==kExprLiteralInt) {
-						int val1;
-						memcpy(&val1, b, sizeof(int));
-						int val2 = where->expr2->ival;
-						if(val1>val2)
-							doit=true;
-					}
-					break;
-				default:
-					break;
+
+			if(where->expr2->type==kExprLiteralString) {
+				std::string val1(b);
+				std::string val2(where->expr2->name);
+				doit = doOperation(where->opChar, val1, val2);
+			} else if(where->expr2->type==kExprLiteralInt) {
+				int val1;
+				memcpy(&val1, b, sizeof(int));
+				int val2 = where->expr2->ival;
+				doit = doOperation(where->opChar, val1, val2);
 			}
+
 			if(doit) {
 				count++;
 				if(print)
