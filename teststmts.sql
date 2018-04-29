@@ -1,6 +1,6 @@
 CREATE TABLE T1 (K INT,
                  A CHAR(2),
-                 B INT,
+                 Y INT,
                  PRIMARY KEY(K));
 
 INSERT INTO T1 VALUES(1,'ab',20);
@@ -34,6 +34,6 @@ SELECT K2, Y FROM T2 WHERE K1 > 102;
 CREATE TABLE T3(C INT,
                 D INT);
 
-SELECT T1.A,T2.K2,X 
+SELECT * 
 FROM T2 JOIN T1
-ON T2.Y = T1.B;
+ON T2.Y = T1.Y;

@@ -30,6 +30,7 @@ using hsql::kStmtDelete;
 using hsql::kStmtDrop;
 using hsql::kStmtUpdate;
 using hsql::kTableSelect;
+using hsql::kExprStar;
 using hsql::kExprLiteralInt;
 using hsql::kExprLiteralString;
 using hsql::ColumnDefinition;
@@ -103,27 +104,25 @@ bool doOperation(char op, std::string val1, std::string val2) {
 	return check;
 }
 
-std::string prepareFieldList(std::vector<hsql::Expr *>* values) {
+std::vector<std::string> prepareFieldList(std::vector<hsql::Expr *>* values, std::string table="") {
 	// prepare select list
-	std::ostringstream fields;
-	fields << "";
+	std::vector<std::string> fields;
 	for(auto it = values->begin(); it != values->end(); ++it) {
-		fields << (*it)->name << ",";
+		if ((*it)->type == hsql::kExprStar)
+			break;
+		if((*it)->table!=NULL) {
+			std::string eTable((*it)->table);
+			if(table!="")
+				if(table != eTable)
+					continue;
+		}
+		fields.push_back((*it)->name);
 	}
-
-	std::string fieldList = fields.str();
-	
-	if (fieldList.size()!=0)
-		fieldList.pop_back();
-	else
-		fieldList = "*";	
-	//std::cout << fieldList << "\n";
-	return fieldList;
+	return fields;
 }
 
 int selectData(const hsql::SelectStatement* stmt, bool print=true) {
 	int count=0;
-	std::string fieldList = prepareFieldList(stmt->selectList);
 	std::ostringstream ss;
 
 	if(stmt->fromTable->type == hsql::kTableJoin) {
@@ -155,6 +154,9 @@ int selectData(const hsql::SelectStatement* stmt, bool print=true) {
 		std::ifstream rifs = rTable->getiFile();
 		std::ifstream lifs = lTable->getiFile();
 
+		std::vector<std::string> rFieldList = prepareFieldList(stmt->selectList, right->name);
+		std::vector<std::string> lFieldList = prepareFieldList(stmt->selectList, left->name);
+
 		for(char* rbuf=rTable->getNextRow(rifs); rbuf!=NULL; rbuf=rTable->getNextRow(rifs)) {
 			auto val1 = rTable->getRecordColumn(rbuf, e1->name);
 			//restart the file
@@ -163,7 +165,7 @@ int selectData(const hsql::SelectStatement* stmt, bool print=true) {
 			for(char* lbuf=lTable->getNextRow(lifs); lbuf!=NULL; lbuf=lTable->getNextRow(lifs)) {
 				auto val2 = lTable->getRecordColumn(lbuf, e2->name);
 				if(doOperation(op,val1,val2)) {
-					ss << rTable->parseRecord(rbuf, fieldList) << lTable->parseRecord(lbuf, fieldList) << "\n";
+					ss << rTable->parseRecord(rbuf, rFieldList) << lTable->parseRecord(lbuf, lFieldList) << "\n";
 					count++;
 				}
 			}
@@ -181,6 +183,7 @@ int selectData(const hsql::SelectStatement* stmt, bool print=true) {
 		}
 		
 		std::ifstream ifs = t->getiFile();
+		std::vector<std::string> fieldList = prepareFieldList(stmt->selectList);
 			
 		for(char* buf=t->getNextRow(ifs); buf!=NULL; buf=t->getNextRow(ifs)) {
 			if(stmt->whereClause==NULL) {

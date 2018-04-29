@@ -220,12 +220,17 @@ std::string Table::getRecordColumn(char* buffer, std::string col) {
 	}
 	return ss.str();
 }	
-std::string Table::parseRecord(char* buffer, std::string fieldList) {
+std::string Table::parseRecord(char* buffer, std::vector<std::string> fieldList) {
 	std::ostringstream ss;
 	for (auto const& value : columnNames){
 		std::string focus = getColumnType(value);
-		if(fieldList != "*") {
-			if(fieldList.find(value)==std::string::npos) {
+		if(fieldList.size() != 0) {
+			bool found=false;
+			for(auto const& field: fieldList) {
+				if (field == value)
+					found=true;
+			}
+			if(found==false) {
 				buffer+=getColumnByteSize(value);
 				continue;
 			}
