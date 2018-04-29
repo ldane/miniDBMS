@@ -242,6 +242,10 @@ void deleteData(const hsql::DeleteStatement* stmt) {
 	printf("delete\n");
 }
 
+void updateData(const hsql::UpdateStatement* stmt) {
+	printf("do update\n");
+}
+
 void createTable(const std::string query) {
 	std::string tableName, field, lastfield;
 	std::string nQuery = query.substr(12);
@@ -319,6 +323,9 @@ void dispatchStatement(const hsql::SQLStatement* stmt) {
 			break;
 		case kStmtDrop:
 			dropTable((const hsql::DropStatement*) stmt);
+			break;
+		case kStmtUpdate:
+			updateData((const hsql::UpdateStatement*) stmt);
 			break;
 		default:
 			break;
