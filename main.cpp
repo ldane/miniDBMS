@@ -403,9 +403,9 @@ int updateData(const hsql::UpdateStatement* stmt, bool specialCase=false) {
 	int targetRowPos = 0;
 	
 	bool matchFound = false;
-	while (!t->lock(stmt->where->expr2->ival)){
+	/*while (!t->lock(stmt->where->expr2->ival)){
 		usleep(1000);
-	}
+	}*/
 	while (true) {
 		ifs.read(buffer, recordsize);
 		if(ifs.eof())
@@ -448,6 +448,9 @@ int updateData(const hsql::UpdateStatement* stmt, bool specialCase=false) {
 	ifs.close();
 	if (matchFound){
 		//pthread_mutex_lock(&out_m);
+		while (!t->lock(targetRowPos-recordsize)){
+			usleep(1000);
+		}
 		std::fstream fs(fileName, std::fstream::binary | std::fstream::out | std::ofstream::in);
 		fs.seekp(targetRowPos+t->getColumnBytePosition(column0)-recordsize);
 		if (stmt->updates->at(0)->value->isType(kExprLiteralInt)){
@@ -487,6 +490,7 @@ int updateData(const hsql::UpdateStatement* stmt, bool specialCase=false) {
 			}
 		}
 		fs.close();
+		t->unlock(targetRowPos-recordsize);
 		//pthread_mutex_unlock(&out_m);
 		//printf("Successfully updated record\n");
 	} else {
@@ -498,7 +502,7 @@ int updateData(const hsql::UpdateStatement* stmt, bool specialCase=false) {
 			std::cout << "Primary key: " << val2 << " does not exist\n";
 		}
 	}
-	t->unlock(stmt->where->expr2->ival);
+	//t->unlock(stmt->where->expr2->ival);
 	return count;
 }
 
