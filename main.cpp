@@ -341,16 +341,16 @@ void updateData(const hsql::UpdateStatement* stmt) {
 			int pos = t->getColumnBytePosition(column0);
 			char *b=buffer+pos;
 			bool doit=false;
-			if(stmt->where->->isSimpleOp('=')) {
+			if(stmt->where->isSimpleOp('=')) {
 				if(stmt->updates->at(0)->value->isType(kExprLiteralString)) {
 					std::string val1(b);
-					std::string val2(where->expr2->name);
+					std::string val2(stmt->where->expr2->name);
 					if(val1 == val2)
 						doit=true;
 				} else if(stmt->updates->at(0)->value->isType(kExprLiteralInt)) {
 					int val1;
 					memcpy(&val1, b, sizeof(int));
-					int val2 = where->expr2->ival;
+					int val2 = stmt->where->expr2->ival;
 					if(val1==val2)
 						doit=true;
 				}
