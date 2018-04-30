@@ -309,11 +309,12 @@ void deleteData(const hsql::DeleteStatement* stmt) {
 	printf("delete\n");
 }
 
-void updateData(const hsql::UpdateStatement* stmt) {
+void updateData(const hsql::UpdateStatement* stmt, bool specialCase=false) {
 	printf("do update\n");
 	char* buffer;
 	int recordsize;
 	int count=0;
+	int currentValue=0;
     std::string fileName = stmt->table->name;
     trim(fileName);
     fileName += ".tbl";
@@ -366,6 +367,13 @@ void updateData(const hsql::UpdateStatement* stmt) {
 				matchFound = true;
 				std::cout << ifs.tellg() << "- match \n";
 				targetRowPos = ifs.tellg();
+				if (specialCase){
+					//save the value
+					int poss = t->getColumnBytePosition(column0);
+					char* bb = buffer+poss;
+					memcpy(&currentValue, bb, sizeof(int));
+					std::cout << currentValue << " testing123\n";
+				}
 				break;
 			}
 		}
@@ -379,13 +387,34 @@ void updateData(const hsql::UpdateStatement* stmt) {
 		if (stmt->updates->at(0)->value->isType(kExprLiteralInt)){
 			fs.write((char *)&stmt->updates->at(0)->value->ival, t->getColumnByteSize(column0));
 		} else if (stmt->updates->at(0)->value->isType(kExprLiteralString)){
-			char* s;
-			size_t size;
-			size = t->getColumnByteSize(column0);
-			s = new char[size];
-			std::memset(s,0,size);
-			std::strcpy(s,stmt->updates->at(0)->value->name);
-			fs.write(s, size);
+			if (specialCase){
+				//parse this 'balance-1' or 'balance+1' balance+1 WHERE 
+				//first find the - or + operator
+				std::string fullstring = stmt->updates->at(0)->value->name;
+				std::string valueString;
+				int valuepos;
+				int minuspos = fullstring.find('-');
+				int pluspos = fullstring.find('+');
+				int wherepos = myStatement.find("WHERE ");
+				if (minuspos != std::string::npos){
+					//its a decrement function 
+					valuepos = minuspos+1;
+				} else if (pluspos !+ std::string::npos){
+					//its an increment function
+					valuepos = pluspos+1;
+				}
+				valueString = fullstring.substr(valuepos, wherepos-valuepos+1);
+				std::cout << valueString << " valueString\n";
+				currentValue = std::stoi(valueString);
+			} else {
+				char* s;
+				size_t size;
+				size = t->getColumnByteSize(column0);
+				s = new char[size];
+				std::memset(s,0,size);
+				std::strcpy(s,stmt->updates->at(0)->value->name);
+				fs.write(s, size);
+			}
 		}
 		fs.close();
 		printf("Successfully updated record\n");
@@ -457,7 +486,7 @@ void dropTable(const hsql::DropStatement* stmt) {
 	}
 }
 
-void dispatchStatement(const hsql::SQLStatement* stmt) {
+void dispatchStatement(const hsql::SQLStatement* stmt, bool updateSpecialCase=false) {
 	switch (stmt->type()) {
 		case kStmtSelect:
 		    selectData((const hsql::SelectStatement*) stmt);
@@ -472,7 +501,7 @@ void dispatchStatement(const hsql::SQLStatement* stmt) {
 			dropTable((const hsql::DropStatement*) stmt);
 			break;
 		case kStmtUpdate:
-			updateData((const hsql::UpdateStatement*) stmt);
+			updateData((const hsql::UpdateStatement*) stmt, updateSpecialCase);
 			break;
 		default:
 			break;
@@ -480,6 +509,7 @@ void dispatchStatement(const hsql::SQLStatement* stmt) {
 }
 
 void parseCommand(std::string myStatement) {
+	bool updateSpecialCase = false;
 	if (icompare(myStatement.substr(0, 6), "UPDATE")){
 		int colpos = myStatement.find("SET ");
 		int equalpos = myStatement.find('=');
@@ -492,7 +522,7 @@ void parseCommand(std::string myStatement) {
 			myStatement.insert(wherepos-1, "'");
 			myStatement.insert(equalpos+1 ,"'");
 			std::cout << myStatement << "\n";
-			return;
+			updateSpecialCase = true;
 		}
 	}		
 	
@@ -517,7 +547,7 @@ void parseCommand(std::string myStatement) {
 			for (uint i = 0; i < result->size(); ++i) {
 				const hsql::SQLStatement* statement = result->getStatement(i);
 
-				dispatchStatement(statement);
+				dispatchStatement(statement, updateSpecialCase);
 			}
 		} else {
 			fprintf(stderr, "Given string is not a valid SQL query.\n");
