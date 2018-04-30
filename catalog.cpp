@@ -157,14 +157,16 @@ void Catalog::writeToFile(std::string fileName){
 }
 
 bool Catalog::incrementRecordsInTable(std::string tn){
+	bool result=false;
 	pthread_mutex_lock(&m);
 	for (const auto& kv : tables)
 		if(kv.first == tn){
 			kv.second->incrementRecords();
+			result=true;
 			break;
 		}
 	pthread_mutex_unlock(&m);
-	return false;		
+	return result;
 }
 
 void Catalog::showTable(std::string t) {
