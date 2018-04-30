@@ -354,6 +354,7 @@ void updateData(const hsql::UpdateStatement* stmt) {
 					int val1;
 					memcpy(&val1, b, sizeof(int));
 					int val2 = stmt->where->expr2->ival;
+					std::cout << "val1 " << val1 << ", vall2 " << val2 << "\n";
 					if(val1==val2)
 						doit=true;
 				}
