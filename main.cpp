@@ -484,7 +484,7 @@ void parseCommand(std::string myStatement) {
 		int colpos = myStatement.find("SET ");
 		int equalpos = myStatement.find('=');
 		int length = equalpos-colpos-4;
-		std::cout << myStatement.substr(colpos+4, length);
+		std::cout << myStatement.substr(colpos+4, length) << "\n" << myStatement.substr(equalpos+1, length) << "\n";
 		if (true){
 			std::cout << "This is an update with incrementing/decrementing function\n";
 			return;
