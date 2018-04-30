@@ -581,7 +581,6 @@ void parseCommand(std::string myStatement) {
 			}
 		} else {
 			fprintf(stderr, "Given string is not a valid SQL query.\n");
-			fprintf(stderr, myStatement);
 			fprintf(stderr, "%s (L%d:%d)\n", 
 					result->errorMsg(),
 					result->errorLine(),
