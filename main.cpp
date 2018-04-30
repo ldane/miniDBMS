@@ -433,7 +433,7 @@ void updateData(const hsql::UpdateStatement* stmt, bool specialCase=false) {
 			}
 		}
 		fs.close();
-		printf("Successfully updated record\n");
+		//printf("Successfully updated record\n");
 	}
 	t->unlock(stmt->where->expr2->ival);
 	return;
@@ -533,12 +533,10 @@ void parseCommand(std::string myStatement) {
 		int length = equalpos-colpos-4;
 		//std::cout << myStatement.substr(colpos+4, length) << "\n" << myStatement.substr(equalpos+1, length) << "\n";
 		if (icompare(myStatement.substr(colpos+4, length), myStatement.substr(equalpos+1, length))){
-			std::cout << "This is an update with incrementing/decrementing function\n";
 			//add the ' ' around the thing.
 			int wherepos = myStatement.find("WHERE ");
 			myStatement.insert(wherepos-1, "'");
 			myStatement.insert(equalpos+1 ,"'");
-			std::cout << myStatement << "\n";
 			updateSpecialCase = true;
 		}
 	}
