@@ -536,7 +536,7 @@ bool processStream(std::istream &ss, bool single = false) {
 	return true;
 }
 
-void invokeThreads(std::string filename, int maxthread) {
+void processScript(std::string filename, int maxthread) {
 	std::ifstream ss(filename);
 	std::string line;
 	while(true) {
@@ -575,7 +575,7 @@ int main(int argc, char *argv[]) {
 			if(icompare(arg.substr(pos,11), "numthreads=")) {
 				maxthread = std::stoi(arg.substr(pos+11));
 			}
-			invokeThreads(script, maxthread);
+			processScript(script, maxthread);
 			quit=false;
 		} else {
 			std::istringstream ss(argv[1]);
