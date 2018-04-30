@@ -191,9 +191,15 @@ int selectData(const hsql::SelectStatement* stmt, bool print=true) {
 		std::ifstream* ifs = t->getiFile();
 		std::vector<std::string> fieldList = prepareFieldList(stmt->selectList);
 		
-		for (const auto& i: fieldList)
-			std::cout << i << ' ';
-		std::cout << "\n";
+		if (fieldList.size()==0){
+			for (const auto& i: t->getColumnNames())
+				std::cout << i << ' ';
+			std::cout << "\n";
+		} else {
+			for (const auto& i: fieldList)
+				std::cout << i << ' ';
+			std::cout << "\n";
+		}
 			
 		for(char* buf=t->getNextRow(ifs); buf!=NULL; buf=t->getNextRow(ifs)) {
 			if(stmt->whereClause==NULL) {
