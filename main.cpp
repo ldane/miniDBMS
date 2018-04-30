@@ -482,7 +482,7 @@ void dispatchStatement(const hsql::SQLStatement* stmt) {
 void parseCommand(std::string myStatement) {
 	if (icompare(myStatement.substr(0, 6), "UPDATE")){
 		int colpos = myStatement.find("SET ");
-		int equalpos = myStatement.find('"');
+		int equalpos = myStatement.find('=');
 		int length = equalpos-colpos-4;
 		std::cout << myStatement.substr(colpos+4, length);
 		if (true){
