@@ -403,9 +403,9 @@ int updateData(const hsql::UpdateStatement* stmt, bool specialCase=false) {
 	int targetRowPos = 0;
 	
 	bool matchFound = false;
-	/*while (!t->lock(stmt->where->expr2->ival)){
+	while (!t->lock(targetRowPos-recordsize)){
 		usleep(1000);
-	}*/
+	}
 	while (true) {
 		ifs.read(buffer, recordsize);
 		if(ifs.eof())
@@ -448,9 +448,7 @@ int updateData(const hsql::UpdateStatement* stmt, bool specialCase=false) {
 	ifs.close();
 	if (matchFound){
 		//pthread_mutex_lock(&out_m);
-		while (!t->lock(targetRowPos-recordsize)){
-			usleep(1000);
-		}
+		
 		std::fstream fs(fileName, std::fstream::binary | std::fstream::out | std::ofstream::in);
 		fs.seekp(targetRowPos+t->getColumnBytePosition(column0)-recordsize);
 		if (stmt->updates->at(0)->value->isType(kExprLiteralInt)){
@@ -503,6 +501,7 @@ int updateData(const hsql::UpdateStatement* stmt, bool specialCase=false) {
 		}
 	}
 	//t->unlock(stmt->where->expr2->ival);
+	t->unlock(targetRowPos-recordsize);
 	return count;
 }
 
