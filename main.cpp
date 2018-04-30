@@ -327,7 +327,7 @@ void deleteData(const hsql::DeleteStatement* stmt) {
 }
 
 void updateData(const hsql::UpdateStatement* stmt, bool specialCase=false) {
-	printf("do update\n");
+	if (specialCase) printf("Parsed successfully!\n");
 	char* buffer;
 	int recordsize;
 	int count=0;
@@ -349,7 +349,6 @@ void updateData(const hsql::UpdateStatement* stmt, bool specialCase=false) {
 	std::string whereName = stmt->where->expr->name;
 	int targetRowPos = 0;
 	
-	std::cout << ifs.tellg() << "- one \n";
 	bool matchFound = false;
 	while (!t->lock(stmt->where->expr2->ival)){
 		usleep(1000);
@@ -365,19 +364,15 @@ void updateData(const hsql::UpdateStatement* stmt, bool specialCase=false) {
 			char *b=buffer+pos;
 			bool doit=false;
 			if(stmt->where->isSimpleOp('=')) {
-				std::cout << "inside if for isSimpleOp\n";
 				if(stmt->where->expr2->type==kExprLiteralString) {
-					std::cout << "inside if for istypestring\n";
 					std::string val1(b);
 					std::string val2(stmt->where->expr2->name);
 					if(val1 == val2)
 						doit=true;
 				} else if(stmt->where->expr2->type==kExprLiteralInt) {
-					std::cout << "inside if for istypeint\n";
 					int val1;
 					memcpy(&val1, b, sizeof(int));
 					int val2 = stmt->where->expr2->ival;
-					//std::cout << "val1 " << val1 << ", vall2 " << val2 << "\n";
 					if(val1==val2)
 						doit=true;
 				}
@@ -385,14 +380,12 @@ void updateData(const hsql::UpdateStatement* stmt, bool specialCase=false) {
 			if(doit) {
 				count++;
 				matchFound = true;
-				std::cout << ifs.tellg() << "- match \n";
 				targetRowPos = ifs.tellg();
 				if (specialCase){
 					//save the value
 					int poss = t->getColumnBytePosition(column0);
 					char* bb = buffer+poss;
 					memcpy(&currentValue, bb, sizeof(int));
-					std::cout << currentValue << " testing123\n";
 				}
 				break;
 			}
@@ -402,9 +395,7 @@ void updateData(const hsql::UpdateStatement* stmt, bool specialCase=false) {
 	ifs.close();
 	if (matchFound){
 		std::fstream fs(fileName, std::fstream::binary | std::fstream::out | std::ofstream::in);
-		//std::cout << fs.tellp() << " aa \n";
 		fs.seekp(targetRowPos+t->getColumnBytePosition(column0)-recordsize);
-		//std::cout << fs.tellp() << " bb " << stmt->updates->at(0)->value->ival << "\n";
 		if (stmt->updates->at(0)->value->isType(kExprLiteralInt)){
 			fs.write((char *)&stmt->updates->at(0)->value->ival, t->getColumnByteSize(column0));
 		} else if (stmt->updates->at(0)->value->isType(kExprLiteralString)){
@@ -420,7 +411,6 @@ void updateData(const hsql::UpdateStatement* stmt, bool specialCase=false) {
 					//its a decrement function 
 					valuepos = minuspos+1;
 					valueString = fullstring.substr(valuepos);
-					std::cout << valueString << " valueString\n";
 					int modiValue = std::stoi(valueString);
 					int newValue = currentValue-modiValue;
 					fs.write((char *)&newValue, t->getColumnByteSize(column0));
@@ -428,7 +418,6 @@ void updateData(const hsql::UpdateStatement* stmt, bool specialCase=false) {
 					//its an increment function
 					valuepos = pluspos+1;
 					valueString = fullstring.substr(valuepos);
-					std::cout << valueString << " valueString\n";
 					int modiValue = std::stoi(valueString);
 					int newValue = currentValue+modiValue;
 					fs.write((char *)&newValue, t->getColumnByteSize(column0));
