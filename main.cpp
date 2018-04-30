@@ -339,6 +339,7 @@ void updateData(const hsql::UpdateStatement* stmt) {
 		
 	}
 	std::cout << ifs.tellg() << "- one \n";
+	bool matchFound = false;
 	while (true) {
 		ifs.read(buffer, recordsize);
 		if(ifs.eof())
@@ -354,7 +355,7 @@ void updateData(const hsql::UpdateStatement* stmt) {
 				if(stmt->updates->at(0)->value->isType(kExprLiteralString)) {
 					std::cout << "inside if for istypestring\n";
 					std::string val1(b);
-					//std::string val2(stmt->where->expr2->name);
+					std::string val2(stmt->where->expr2->name);
 					if(val1 == val2)
 						doit=true;
 				} else if(stmt->updates->at(0)->value->isType(kExprLiteralInt)) {
@@ -369,6 +370,7 @@ void updateData(const hsql::UpdateStatement* stmt) {
 			}
 			if(doit) {
 				count++;
+				matchFound = true;
 				std::cout << ifs.tellg() << "- match \n";
 				targetRowPos = ifs.tellg();
 				break;
@@ -376,14 +378,13 @@ void updateData(const hsql::UpdateStatement* stmt) {
 		}
 	}
 	ifs.close();
-	if (doit){
+	if (matchFound){
 		std::ofstream ofs(fileName, std::ofstream::binary | std::ofstream::out | std::ofstream::app);
-		ofs.seekg(targetRowPos+getColumnBytePosition(column0)-recordsize);
+		ofs.seekg(targetRowPos+t->getColumnBytePosition(column0)-recordsize);
 		ofs.write((char *)&stmt->updates->at(0)->value->ival, 4);
 		ofs.close();
 		printf("Successfully updated record\n")
 	}
-	ofs.close();
 	return;
 }
 
