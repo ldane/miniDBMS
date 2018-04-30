@@ -381,7 +381,7 @@ void updateData(const hsql::UpdateStatement* stmt) {
 		} else if (stmt->updates->at(0)->value->isType(kExprLiteralString)){
 			char* s;
 			size_t size;
-			size = t->getColumnBteSize(column0);
+			size = t->getColumnByteSize(column0);
 			s = new char[size];
 			std::memset(s,0,size);
 			std::strcpy(s,stmt->updates->at(0)->value->name);
