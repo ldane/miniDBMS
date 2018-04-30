@@ -28,6 +28,8 @@ Catalog ctlg;
 std::list<std::string> work_q;
 pthread_mutex_t work_m;
 
+pthread_mutex_t out_m;
+
 using hsql::kStmtSelect;
 using hsql::kStmtInsert;
 using hsql::kStmtDelete;
@@ -288,12 +290,14 @@ void insertData(const hsql::InsertStatement* stmt) {
 	query << table->getPrimaryKey() << "=";
 	int pos = table->getIndexOfPrimaryKey();
 	int i=0;
+	int pk;
 	for(auto it = values->begin(); it != values->end(); ++it) {
 		const hsql::Expr* v=*it;
 		if(i==pos) {
 			switch(v->type) {
 				case kExprLiteralInt:
 					query << v->ival;
+					pk = v->ival;
 					break;
 				case kExprLiteralString:
 					query << "'" << v->name << "';";
@@ -305,6 +309,10 @@ void insertData(const hsql::InsertStatement* stmt) {
 		}
 		i++;
 	}
+
+	while (!table->lock(pk)){
+		usleep(1000);
+	}
 	
 	hsql::SQLParserResult* result = hsql::SQLParser::parseSQLString(query.str());
 	i=selectData((const hsql::SelectStatement*) result->getStatement(0),false);
@@ -313,10 +321,13 @@ void insertData(const hsql::InsertStatement* stmt) {
 		return;
 	}
 
+	pthread_mutex_lock(&out_m);
 	std::ofstream *ofs = table->getoFile();
 	packRecord(ofs, table, values);
 	ofs->close();
+	pthread_mutex_unlock(&out_m);
 	delete ofs;
+	table->unlock(pk);
 
 	// increment things in catalog
 	if (ctlg.incrementRecordsInTable(tName)) printf("Successfully inserted record\n");
@@ -394,6 +405,7 @@ void updateData(const hsql::UpdateStatement* stmt, bool specialCase=false) {
 	
 	ifs.close();
 	if (matchFound){
+		//pthread_mutex_lock(&out_m);
 		std::fstream fs(fileName, std::fstream::binary | std::fstream::out | std::ofstream::in);
 		fs.seekp(targetRowPos+t->getColumnBytePosition(column0)-recordsize);
 		if (stmt->updates->at(0)->value->isType(kExprLiteralInt)){
@@ -433,6 +445,7 @@ void updateData(const hsql::UpdateStatement* stmt, bool specialCase=false) {
 			}
 		}
 		fs.close();
+		//pthread_mutex_unlock(&out_m);
 		//printf("Successfully updated record\n");
 	}
 	t->unlock(stmt->where->expr2->ival);
