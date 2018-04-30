@@ -11,7 +11,7 @@
 #include <sstream>
 #include <fstream>
 #include <stdio.h>
-
+#include <unistd.h>
 #include <pthread.h>
 
 // include the sql parser
@@ -352,7 +352,7 @@ void updateData(const hsql::UpdateStatement* stmt, bool specialCase=false) {
 	std::cout << ifs.tellg() << "- one \n";
 	bool matchFound = false;
 	while (!t->lock(stmt->where->expr2->ival)){
-		sleep(1);
+		usleep(1);
 	}
 	while (true) {
 		ifs.read(buffer, recordsize);
