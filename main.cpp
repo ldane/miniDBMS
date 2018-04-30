@@ -222,6 +222,37 @@ int selectData(const hsql::SelectStatement* stmt, bool print=true) {
 	return count;
 }
 
+const char* packRecord(Table *t, const std::vector<hsql::Expr *>* values) {
+	std::ostringstream ofs;
+	int ind=0;
+	int i;
+	char* s;
+	for(auto it = values->begin(); it != values->end(); ++it, ++ind) {
+		size_t size;
+		const hsql::Expr* v=*it;
+		switch(v->type) {
+			case kExprLiteralInt:
+				i=v->ival;
+				size = t->getColumnByteSizeAt(ind);
+				//std::cout << v->ival << "\n";
+				ofs.write((char *)&i, size);
+				break;
+			case kExprLiteralString:
+				size = t->getColumnByteSizeAt(ind);
+				s = new char[size];
+				std::memset(s,0,size);
+				std::strcpy(s,v->name);
+				//std::cout << s << "\n";
+				ofs.write(s, size);
+				break;
+			default:
+				break;
+		}
+	}
+	std::string res = ofs.str();
+	return res.c_str();
+}
+
 void insertData(const hsql::InsertStatement* stmt) {
 	std::string fileName = stmt->tableName;
 	trim(fileName);
@@ -233,7 +264,6 @@ void insertData(const hsql::InsertStatement* stmt) {
 		return;
 	}
 	infile.close();
-	std::ofstream ofs(fileName, std::ofstream::binary | std::ofstream::out | std::ofstream::app);
 
 	auto table=ctlg.findTable(stmt->tableName);
 	auto values = stmt->values;
@@ -270,34 +300,10 @@ void insertData(const hsql::InsertStatement* stmt) {
 		return;
 	}
 
-
-	int ind=0;
-	for(auto it = values->begin(); it != values->end(); ++it) {
-		size_t size;
-		int i;
-		char *s;
-		const hsql::Expr* v=*it;
-		switch(v->type) {
-			case kExprLiteralInt:
-				i=v->ival;
-				size = table->getColumnByteSizeAt(ind);
-				//std::cout << v->ival << "\n";
-				ofs.write((char *)&i, size);
-				break;
-			case kExprLiteralString:
-				size = table->getColumnByteSizeAt(ind);
-				s = new char[size];
-				std::memset(s,0,size);
-				std::strcpy(s,v->name);
-				//std::cout << s << "\n";
-				ofs.write(s, size);
-				break;
-			default:
-				break;
-		}
-		ind++;
-	}
+	std::ofstream ofs(fileName, std::ofstream::binary | std::ofstream::out | std::ofstream::app);
+	ofs.write(packRecord(table, values), table->getRecordSize());
 	ofs.close();
+
 	// increment things in catalog
 	if (ctlg.incrementRecordsInTable(tName)) printf("Successfully inserted record\n");
 }
@@ -311,10 +317,10 @@ void updateData(const hsql::UpdateStatement* stmt) {
 	char* buffer;
 	int recordsize;
 	int count=0;
-	std::string fileName = stmt->table->name;
-	trim(fileName);
-	fileName += ".tbl";
-	std::ifstream ifs(fileName, std::ifstream::binary | std::ifstream::in | std::ifstream::out);
+    std::string fileName = stmt->table->name;
+    trim(fileName);
+    fileName += ".tbl";
+    std::ifstream ifs(fileName, std::ifstream::binary | std::ifstream::in | std::ifstream::out);
 	Table *t = ctlg.findTable(stmt->table->name);
 	if( t == NULL ) {
 		//table doesnt exist = update should fail = transaction should fail
