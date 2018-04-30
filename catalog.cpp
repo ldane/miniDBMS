@@ -4,6 +4,7 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include <pthread.h>
 //
 bool iicompare_pred(unsigned char a, unsigned char b)
 {
@@ -22,8 +23,12 @@ bool iicompare(std::string const& a, std::string const& b)
 }
 
 
-Catalog::Catalog(){
+Catalog::Catalog() {
+	pthread_mutex_init(&m, NULL);
 	numOfTables = 0;
+}
+Catalog::~Catalog() {
+	pthread_mutex_destroy(&m);
 }
 
 bool Catalog::addTable(Table* newTable){
@@ -152,11 +157,13 @@ void Catalog::writeToFile(std::string fileName){
 }
 
 bool Catalog::incrementRecordsInTable(std::string tn){
+	pthread_mutex_lock(&m);
 	for (const auto& kv : tables)
 		if(kv.first == tn){
 			kv.second->incrementRecords();
-			return true;
+			break;
 		}
+	pthread_mutex_unlock(&m);
 	return false;		
 }
 

@@ -11,9 +11,11 @@ class Catalog{
 	private:
 		unsigned int numOfTables;
 		std::map<std::string, Table*> tables;
+		pthread_mutex_t m;
 	
 	public:
 		Catalog();
+		~Catalog();
 		bool addTable(Table *newTable);
 		void loadFromFile(std::string fileName);
 		void writeToFile(std::string fileName);
