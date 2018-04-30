@@ -480,6 +480,13 @@ void dispatchStatement(const hsql::SQLStatement* stmt) {
 }
 
 void parseCommand(std::string myStatement) {
+	if (icompare(myStatement.substr(0, 6), "UPDATE")){
+		if (icompare(myStatement.substr(myStatement.find("SET "), myStatement.find('=')-myStatement.find("SET ")), myStatement.substr(myStatement.find('"'), myStatement.find('=')-myStatement.find("SET ")))){
+			std::cout << "This is an update with incrementing/decrementing function\n";
+			return;
+		}
+	}		
+	
 	if (icompare(myStatement.substr(0,12),"create table")) {
 		createTable(myStatement);
 	} else if (icompare(myStatement.substr(0,10),"show table")) {
@@ -493,8 +500,6 @@ void parseCommand(std::string myStatement) {
 			else
 				ctlg.showTable(myStatement);
 		}
-	} else if (icompare(myStatement.substr(myStatement.find("SET "), myStatement.find('=')-myStatement.find("SET ")), myStatement.substr(myStatement.find('"'), myStatement.find('=')-myStatement.find("SET ")))){
-		std::cout << "This is an update with incrementing/decrementing function\n";
 	} else {
 		hsql::SQLParserResult* result = hsql::SQLParser::parseSQLString(myStatement);
 		if (result->isValid()) {
