@@ -396,9 +396,9 @@ void updateData(const hsql::UpdateStatement* stmt, bool specialCase=false) {
 				//first find the - or + operator
 				std::string fullstring = stmt->updates->at(0)->value->name;
 				std::string valueString;
-				int valuepos;
-				int minuspos = fullstring.find('-');
-				int pluspos = fullstring.find('+');
+				std::size_t valuepos;
+				std::size_t minuspos = fullstring.find('-');
+				std::size_t pluspos = fullstring.find('+');
 				if (minuspos != std::string::npos){
 					//its a decrement function 
 					valuepos = minuspos+1;
