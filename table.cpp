@@ -335,7 +335,7 @@ size_t Table::getIndexOfPrimaryKey(){
 	return 0;
 }
 
-bool Table::isLocked(int pk_target, bool inside = false){
+bool Table::isLocked(int pk_target, bool inside){
 	// returns true if locked 
 	// returns false if unlocked
 	bool result;
