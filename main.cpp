@@ -351,6 +351,9 @@ void updateData(const hsql::UpdateStatement* stmt, bool specialCase=false) {
 	
 	std::cout << ifs.tellg() << "- one \n";
 	bool matchFound = false;
+	while (!t->lock(stmt->where->expr2->ival)){
+		sleep(1);
+	}
 	while (true) {
 		ifs.read(buffer, recordsize);
 		if(ifs.eof())
@@ -395,6 +398,7 @@ void updateData(const hsql::UpdateStatement* stmt, bool specialCase=false) {
 			}
 		}
 	}
+	
 	ifs.close();
 	if (matchFound){
 		std::fstream fs(fileName, std::fstream::binary | std::fstream::out | std::ofstream::in);
@@ -442,6 +446,7 @@ void updateData(const hsql::UpdateStatement* stmt, bool specialCase=false) {
 		fs.close();
 		printf("Successfully updated record\n");
 	}
+	t->unlock(stmt->where->expr2->ival);
 	return;
 }
 
