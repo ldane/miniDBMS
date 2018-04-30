@@ -630,11 +630,14 @@ static void* threadFunc(void *ptr) {
 void processScript(std::string filename, int maxthread) {
 	std::ifstream ss(filename);
 	std::string line;
+	std::string rest;
 	pthread_mutex_init(&work_m, NULL);
 	while(true) {
 		std::getline(ss, line);
-		if(ss.eof())
+		if(ss.eof()) {
+			rest+= line;
 			break;
+		}
 
 		if(icompare(line, "BEGIN TRANSACTION")) {
 			std::ostringstream ofs;
@@ -646,6 +649,8 @@ void processScript(std::string filename, int maxthread) {
 					ofs << line << "\n";
 			}
 			work_q.push_back(ofs.str());
+		} else {
+			rest+= line;
 		}
 	}
 	ss.close();
@@ -663,6 +668,7 @@ void processScript(std::string filename, int maxthread) {
 		pthread_join(t, NULL);
 	}
 	pthread_mutex_destroy(&work_m);
+	parseCommand(rest);
 }
 
 int main(int argc, char *argv[]) {
