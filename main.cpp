@@ -76,7 +76,11 @@ static inline void trim(std::string &s) {
 
 //find in a vector
 static inline bool find(std::vector<std::string> vector, std::string item) {
-	return std::find(vector.begin(), vector.end(), item) != vector.end();
+	for(auto it: vector) {
+		if( icompare(it, item) )
+			return true;
+	}
+	return false;
 }
 
 /* End helper functions */
@@ -170,34 +174,27 @@ int selectData(const hsql::SelectStatement* stmt, bool print=true) {
 		std::vector<std::string> lFieldList = prepareFieldList(stmt->selectList, left->name);
 
 		std::list<std::string> headers;
-		std::vector<std::string> target;
-		if (rFieldList.size()!=0){
-			target=rFieldList;
-		} else {
-			target=rTable->getColumnNames();
-		}
-		for(auto it : target) {
+
+		if (rFieldList.size()==0)
+			rFieldList = rTable->getColumnNames();
+		if (lFieldList.size()==0)
+			lFieldList=lTable->getColumnNames();
+
+		for(const auto it : rFieldList)
 			if(find(lFieldList, it)) {
 				std::string buf(right->name);
 				headers.push_back(buf+"."+it);
 			}
 			else
 				headers.push_back(it);
-		}
 
-		if (lFieldList.size()!=0){
-			target=lFieldList;
-		} else {
-			target=lTable->getColumnNames();
-		}
-		for (const auto& it: lTable->getColumnNames()) {
+		for (const auto& it: lFieldList) 
 			if(find(rFieldList, it)) {
 				std::string buf(left->name);
 				headers.push_back(buf+"."+it);
 			}
 			else
 				headers.push_back(it);
-		}
 
 		for (const auto& it: headers)
 			hdr << it << ' ';
@@ -646,7 +643,7 @@ int parseCommand(std::string myStatement) {
 	}
 }
 
-bool processStream(std::istream &ss, bool single = false) {
+bool processStream(std::istream &ss, bool single = false, bool transaction = false) {
 	std::string myStatement;
 	while(true) {
 		std::getline(ss, myStatement, ';');
@@ -660,7 +657,10 @@ bool processStream(std::istream &ss, bool single = false) {
 		if(icompare(myStatement.substr(0,4), "quit")) {
 			return false;
 		}
-		if(parseCommand(myStatement) < 0) return false;
+		int retval = parseCommand(myStatement);
+		if(transaction)
+			if(retval < 0)
+				return false;
 		if (single) return true;
 	}
 	return true;
@@ -693,7 +693,7 @@ static void* threadFunc(void *ptr) {
 			break;
 		}
 		std::istringstream ifs(work);
-		quit=processStream(ifs);
+		quit=processStream(ifs,false,true);
 	}
 	return NULL;
 }
