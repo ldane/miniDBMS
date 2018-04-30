@@ -559,7 +559,7 @@ void parseCommand(std::string myStatement) {
 	} else {
 		hsql::SQLParserResult* result = hsql::SQLParser::parseSQLString(myStatement);
 		if (result->isValid()) {
-			printf("Parsed successfully!\n");
+			//printf("Parsed successfully!\n");
 
 			for (uint i = 0; i < result->size(); ++i) {
 				const hsql::SQLStatement* statement = result->getStatement(i);
