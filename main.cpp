@@ -382,7 +382,7 @@ void updateData(const hsql::UpdateStatement* stmt) {
 		std::ofstream ofs(fileName, std::ofstream::binary | std::ofstream::out | std::ofstream::app);
 		std::cout << ofs.tellp() << " aa \n";
 		ofs.seekp(targetRowPos+t->getColumnBytePosition(column0)-recordsize);
-		std::cout << ofs.tellp() << " bb \n";
+		std::cout << ofs.tellp() << " bb " << stmt->updates->at(0)->value->ival << "\n";
 		ofs.write((char *)&stmt->updates->at(0)->value->ival, 4);
 		ofs.close();
 		printf("Successfully updated record\n");
