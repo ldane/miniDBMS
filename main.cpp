@@ -129,6 +129,7 @@ std::vector<std::string> prepareFieldList(std::vector<hsql::Expr *>* values, std
 
 int selectData(const hsql::SelectStatement* stmt, bool print=true) {
 	int count=0;
+	std::ostringstream hdr;
 	std::ostringstream ss;
 
 	if(stmt->fromTable->type == hsql::kTableJoin) {
@@ -155,7 +156,7 @@ int selectData(const hsql::SelectStatement* stmt, bool print=true) {
 		std::string ltype = lTable->getColumnType(left->name);
 		//If the columns are not same type, no need to do the join
 		if (rtype != ltype)
-			return 0;
+			return -1;
 
 		std::ifstream *rifs = rTable->getiFile();
 		std::ifstream *lifs = lTable->getiFile();
@@ -185,7 +186,7 @@ int selectData(const hsql::SelectStatement* stmt, bool print=true) {
 		if( t == NULL ) {
 			if(print)
 				std::cout << "No table found\n";
-			return 0;
+			return -1;
 		}
 		
 		
@@ -195,12 +196,12 @@ int selectData(const hsql::SelectStatement* stmt, bool print=true) {
 		
 		if (fieldList.size()==0){
 			for (const auto& i: t->getColumnNames())
-				std::cout << i << ' ';
-			std::cout << "\n";
+				hdr << i << ' ';
+			hdr << "\n";
 		} else {
 			for (const auto& i: fieldList)
-				std::cout << i << ' ';
-			std::cout << "\n";
+				hdr << i << ' ';
+			hdr << "\n";
 		}
 			
 		for(char* buf=t->getNextRow(ifs); buf!=NULL; buf=t->getNextRow(ifs)) {
@@ -235,8 +236,11 @@ int selectData(const hsql::SelectStatement* stmt, bool print=true) {
 		ifs->close();
 	}
 
-	if(print)
-		std::cout << ss.str();
+	if(print && count!=0) {
+		std::cout << hdr.str() << ss.str();
+	} else if ( print && count == 0 ) {
+		std::cout << "No column(s) found.\n";
+	}
 	return count;
 }
 
@@ -268,7 +272,7 @@ void packRecord(std::ofstream *ofs, Table *t, const std::vector<hsql::Expr *>* v
 	}
 }
 
-void insertData(const hsql::InsertStatement* stmt) {
+int insertData(const hsql::InsertStatement* stmt) {
 	std::string fileName = stmt->tableName;
 	trim(fileName);
 	std::string tName = fileName;
@@ -276,7 +280,7 @@ void insertData(const hsql::InsertStatement* stmt) {
 	std::ifstream infile(fileName);
 	if (!infile.good()){
 		printf("Table doesn't exist to insert into");
-		return;
+		return -1;
 	}
 	infile.close();
 
@@ -318,7 +322,7 @@ void insertData(const hsql::InsertStatement* stmt) {
 	i=selectData((const hsql::SelectStatement*) result->getStatement(0),false);
 	if(i!=0) {
 		std::cout << "Duplicate Primary Key\n";
-		return;
+		return -1;
 	}
 
 	pthread_mutex_lock(&out_m);
@@ -331,13 +335,15 @@ void insertData(const hsql::InsertStatement* stmt) {
 
 	// increment things in catalog
 	if (ctlg.incrementRecordsInTable(tName)) printf("Successfully inserted record\n");
+	return 1;
 }
 
-void deleteData(const hsql::DeleteStatement* stmt) {
+int deleteData(const hsql::DeleteStatement* stmt) {
 	printf("delete\n");
+	return 0;
 }
 
-void updateData(const hsql::UpdateStatement* stmt, bool specialCase=false) {
+int updateData(const hsql::UpdateStatement* stmt, bool specialCase=false) {
 	//if (specialCase) printf("Parsed successfully!\n");
 	char* buffer;
 	int recordsize;
@@ -350,7 +356,7 @@ void updateData(const hsql::UpdateStatement* stmt, bool specialCase=false) {
 	Table *t = ctlg.findTable(stmt->table->name);
 	if( t == NULL ) {
 		//table doesnt exist = update should fail = transaction should fail
-		return;
+		return -1;
 	}	
 	recordsize = t->getRecordSize();	
 	buffer = new char[recordsize];
@@ -447,12 +453,12 @@ void updateData(const hsql::UpdateStatement* stmt, bool specialCase=false) {
 		fs.close();
 		//pthread_mutex_unlock(&out_m);
 		//printf("Successfully updated record\n");
-	}
+	} 
 	t->unlock(stmt->where->expr2->ival);
-	return;
+	return count;
 }
 
-void createTable(const std::string query) {
+int createTable(const std::string query) {
 	std::string tableName, field, lastfield;
 	std::string nQuery = query.substr(12);
 	std::size_t pos;
@@ -493,13 +499,15 @@ void createTable(const std::string query) {
 	if (ctlg.addTable(pTable)){
 		pTable->createTableFile();
 		std::cout << "Created TABLE " << tableName << " Successfully\n";
+		return 0;
 	} else {
 		std::cout << "Duplicate TABLE " << tableName << " exists already\n";
+		return -1;
 	}
-	//pTable->print();
+	return 0;
 }
 
-void dropTable(const hsql::DropStatement* stmt) {
+int dropTable(const hsql::DropStatement* stmt) {
 	//update catalog
 	//no need to use drop flag, just delete entry entirely
 	std::string tName = stmt->name;
@@ -510,35 +518,40 @@ void dropTable(const hsql::DropStatement* stmt) {
 	tName += ".tbl";
 	if( std::remove( tName.c_str() ) != 0 ){
 		perror( "Error deleting file" );
+		return -1;
 	} else {
 		puts( "File successfully deleted" );
 		printf("Dropped table successfully\n");
 	}
+	return 0;
 }
 
-void dispatchStatement(const hsql::SQLStatement* stmt, bool updateSpecialCase=false) {
+int dispatchStatement(const hsql::SQLStatement* stmt, bool updateSpecialCase=false) {
+	int result=-1;
 	switch (stmt->type()) {
 		case kStmtSelect:
-		    selectData((const hsql::SelectStatement*) stmt);
+		    result=selectData((const hsql::SelectStatement*) stmt);
 			break;
 		case kStmtInsert:
-		    insertData((const hsql::InsertStatement*) stmt);
+		    result=insertData((const hsql::InsertStatement*) stmt);
 			break;
 		case kStmtDelete:
-		    deleteData((const hsql::DeleteStatement*) stmt);
+		    result=deleteData((const hsql::DeleteStatement*) stmt);
 			break;
 		case kStmtDrop:
-			dropTable((const hsql::DropStatement*) stmt);
+			result=dropTable((const hsql::DropStatement*) stmt);
 			break;
 		case kStmtUpdate:
-			updateData((const hsql::UpdateStatement*) stmt, updateSpecialCase);
+			result=updateData((const hsql::UpdateStatement*) stmt, updateSpecialCase);
 			break;
 		default:
 			break;
 	}
+
+	return result;
 }
 
-void parseCommand(std::string myStatement) {
+int parseCommand(std::string myStatement) {
 	bool updateSpecialCase = false;
 	if (icompare(myStatement.substr(0, 6), "UPDATE")){
 		int colpos = myStatement.find("SET ");
@@ -555,9 +568,9 @@ void parseCommand(std::string myStatement) {
 	}
 	
 	if (icompare(myStatement.substr(0,12),"create table")) {
-		createTable(myStatement);
+		return createTable(myStatement);
 	} else if (icompare(myStatement.substr(0,6),"commit")) {
-		return;
+		return 0;
 	} else if (icompare(myStatement.substr(0,10),"show table")) {
 		if(icompare(myStatement.substr(0,11),"show tables")) {
 			ctlg.showTables();
@@ -569,7 +582,9 @@ void parseCommand(std::string myStatement) {
 			else
 				ctlg.showTable(myStatement);
 		}
+		return 0;
 	} else {
+		int retval=0;
 		hsql::SQLParserResult* result = hsql::SQLParser::parseSQLString(myStatement);
 		if (result->isValid()) {
 			//printf("Parsed successfully!\n");
@@ -577,7 +592,7 @@ void parseCommand(std::string myStatement) {
 			for (uint i = 0; i < result->size(); ++i) {
 				const hsql::SQLStatement* statement = result->getStatement(i);
 
-				dispatchStatement(statement, updateSpecialCase);
+				retval = dispatchStatement(statement, updateSpecialCase);
 			}
 		} else {
 			fprintf(stderr, "Given string is not a valid SQL query.\n");
@@ -585,8 +600,10 @@ void parseCommand(std::string myStatement) {
 					result->errorMsg(),
 					result->errorLine(),
 					result->errorColumn());
+			retval=-1;
 		}
 		delete result;
+		return retval;
 	}
 }
 
@@ -604,7 +621,7 @@ bool processStream(std::istream &ss, bool single = false) {
 		if(icompare(myStatement.substr(0,4), "quit")) {
 			return false;
 		}
-		parseCommand(myStatement);
+		if(parseCommand(myStatement) < 0) return false;
 		if (single) return true;
 	}
 	return true;
@@ -629,13 +646,15 @@ int workSize() {
 }
 
 static void* threadFunc(void *ptr) {
-	while(true) {
+	bool quit=true;
+	while(quit) {
 		std::string work = getWork(1);
 		if(work.size() == 0) {
-			return NULL;
+			quit=false;
+			break;
 		}
 		std::istringstream ifs(work);
-		processStream(ifs);
+		quit=processStream(ifs);
 	}
 	return NULL;
 }
