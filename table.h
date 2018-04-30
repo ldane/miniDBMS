@@ -23,6 +23,7 @@ class Table{
 		std::map<std::string, std::string> columnTypesMap;
 		pthread_mutex_t m_lock;
 		std::set<int> lockedItems;
+		std::set<std::string> lockedItemsStr;
 		bool temporary;
 		bool dropped;
 	
@@ -64,6 +65,9 @@ class Table{
 		bool isLocked(int rowpos_target, bool inside = false);
 		bool lock(int rowpos_target);
 		bool unlock(int rowpos_target);
+		bool isLocked(std::string rowpos_target, bool inside = false);
+		bool lock(std::string rowpos_target);
+		bool unlock(std::string rowpos_target);
 };
 
 #endif

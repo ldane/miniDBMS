@@ -385,3 +385,54 @@ bool Table::unlock(int rowpos_target){
 	pthread_mutex_unlock(&m_lock);
 	return result;
 }
+
+bool Table::isLocked(std::string rowpos_target, bool inside){
+	// returns true if locked 
+	// returns false if unlocked
+	bool result;
+	if (inside){
+		if (lockedItemsStr.find(rowpos_target) == lockedItemsStr.end()) {
+			result = false;
+		} else {
+			result = true;
+		}
+		return result;
+	} else {
+		pthread_mutex_lock(&m_lock);
+		if (lockedItemsStr.find(rowpos_target) == lockedItemsStr.end()) {
+			result = false;
+		} else {
+			result = true;
+		}
+		pthread_mutex_unlock(&m_lock);
+		return result;
+	}
+}
+bool Table::lock(std::string rowpos_target){
+	// returns true if successfully locked row
+	// returns false if row is already locked
+	bool result;
+	pthread_mutex_lock(&m_lock);
+	if (isLocked(rowpos_target, true)){
+		result = false;
+	} else {
+		lockedItemsStr.insert(rowpos_target);
+		result = true;
+	}
+	pthread_mutex_unlock(&m_lock);
+	return result;
+}
+bool Table::unlock(std::string rowpos_target){
+	// returns true if successfully unlocks row
+	// returns false if row is already unlocked (shouldn't happen)
+	bool result;
+	pthread_mutex_lock(&m_lock);
+	if (isLocked(rowpos_target, true)){
+		lockedItemsStr.erase(rowpos_target);
+		result = true;
+	} else {
+		result = false;
+	}
+	pthread_mutex_unlock(&m_lock);
+	return result;
+}
