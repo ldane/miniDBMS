@@ -330,11 +330,7 @@ void updateData(const hsql::UpdateStatement* stmt) {
 	std::string column0 = stmt->updates->at(0)->column;
 	std::string whereName = stmt->where->expr->name;
 	int targetRowPos = 0;
-	if (stmt->updates->at(0)->value->isType(kExprLiteralInt)){
-		
-	} else if (stmt->updates->at(0)->value->isType(kExprLiteralString)){
-		
-	}
+	
 	std::cout << ifs.tellg() << "- one \n";
 	bool matchFound = false;
 	while (true) {
@@ -377,10 +373,20 @@ void updateData(const hsql::UpdateStatement* stmt) {
 	ifs.close();
 	if (matchFound){
 		std::fstream fs(fileName, std::fstream::binary | std::fstream::out | std::ofstream::in);
-		std::cout << fs.tellp() << " aa \n";
+		//std::cout << fs.tellp() << " aa \n";
 		fs.seekp(targetRowPos+t->getColumnBytePosition(column0)-recordsize);
-		std::cout << fs.tellp() << " bb " << stmt->updates->at(0)->value->ival << "\n";
-		fs.write((char *)&stmt->updates->at(0)->value->ival, 4);
+		//std::cout << fs.tellp() << " bb " << stmt->updates->at(0)->value->ival << "\n";
+		if (stmt->updates->at(0)->value->isType(kExprLiteralInt)){
+			fs.write((char *)&stmt->updates->at(0)->value->ival, t->getColumnByteSize(column0));
+		} else if (stmt->updates->at(0)->value->isType(kExprLiteralString)){
+			char* s;
+			size_t size;
+			size = t->getColumnBteSize(column0);
+			s = new char[size];
+			std::memset(s,0,size);
+			std::strcpy(s,stmt->updates->at(0)->value->name);
+			fs.write(s, size);
+		}
 		fs.close();
 		printf("Successfully updated record\n");
 	}
