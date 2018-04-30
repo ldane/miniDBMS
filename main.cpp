@@ -402,14 +402,20 @@ void updateData(const hsql::UpdateStatement* stmt, bool specialCase=false) {
 				if (minuspos != std::string::npos){
 					//its a decrement function 
 					valuepos = minuspos+1;
+					valueString = fullstring.substr(valuepos);
+					std::cout << valueString << " valueString\n";
+					int modiValue = std::stoi(valueString);
+					int newValue = currentValue-modiValue;
+					fs.write((char *)&newValue, t->getColumnByteSize(column0));
 				} else if (pluspos != std::string::npos){
 					//its an increment function
 					valuepos = pluspos+1;
+					valueString = fullstring.substr(valuepos);
+					std::cout << valueString << " valueString\n";
+					int modiValue = std::stoi(valueString);
+					int newValue = currentValue+modiValue;
+					fs.write((char *)&newValue, t->getColumnByteSize(column0));
 				}
-				valueString = fullstring.substr(valuepos);
-				std::cout << valueString << " valueString\n";
-				currentValue = std::stoi(valueString);
-				fs.write((char *)&currentValue, t->getColumnByteSize(column0));
 			} else {
 				char* s;
 				size_t size;
