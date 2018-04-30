@@ -488,7 +488,7 @@ void parseCommand(std::string myStatement) {
 		if (icompare(myStatement.substr(colpos+4, length), myStatement.substr(equalpos+1, length))){
 			std::cout << "This is an update with incrementing/decrementing function\n";
 			//add the ' ' around the thing.
-			myStatement.insert(equalpos+1+length+1), "'");
+			myStatement.insert(equalpos+1+length+1, "'");
 			myStatement.insert(equalpos+1 ,"'");
 			std::cout << myStatement << "\n";
 			return;
