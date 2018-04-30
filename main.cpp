@@ -528,6 +528,28 @@ bool processStream(std::istream &ss, bool single = false) {
 	return true;
 }
 
+void invokeThreads(std::string filename, int maxthread) {
+	std::ifstream ss(filename);
+	std::string line;
+	while(true) {
+		std::getline(ss, line);
+		if(icompare(line, "BEGIN TRANSACTION")) {
+			std::ostringstream ofs;
+			while(true) {
+				std::getline(ss, line);
+				if(icompare(line, "END TRANSACTION;"))
+					break;
+				else
+					ofs << line << "\n";
+			}
+			std::cout << "thread" << ofs.str().size()<< "\n";
+		}
+		if(ss.eof())
+			break;
+	}
+	ss.close();
+}
+
 int main(int argc, char *argv[]) {
 	ctlg.loadFromFile("catalog.txt");
 	bool quit=true;
@@ -537,6 +559,16 @@ int main(int argc, char *argv[]) {
 		if(icompare(arg.substr(len-4),".sql")) {
 			std::ifstream ss(arg);
 			quit=processStream(ss);
+		} else if (icompare(arg.substr(0,7), "script=")) {
+			int pos = arg.find(':');
+			int maxthread = 0;
+			std::string script = arg.substr(7,pos-7);
+			pos+=1;
+			if(icompare(arg.substr(pos,11), "numthreads=")) {
+				maxthread = std::stoi(arg.substr(pos+11));
+			}
+			invokeThreads(script, maxthread);
+			quit=false;
 		} else {
 			std::istringstream ss(argv[1]);
 			quit=processStream(ss);
