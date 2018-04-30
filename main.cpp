@@ -352,7 +352,7 @@ void updateData(const hsql::UpdateStatement* stmt, bool specialCase=false) {
 	std::cout << ifs.tellg() << "- one \n";
 	bool matchFound = false;
 	while (!t->lock(stmt->where->expr2->ival)){
-		usleep(1);
+		usleep(1000);
 	}
 	while (true) {
 		ifs.read(buffer, recordsize);
