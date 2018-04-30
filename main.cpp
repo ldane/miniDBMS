@@ -345,13 +345,13 @@ void updateData(const hsql::UpdateStatement* stmt) {
 			bool doit=false;
 			if(stmt->where->isSimpleOp('=')) {
 				std::cout << "inside if for isSimpleOp\n";
-				if(stmt->updates->at(0)->value->isType(kExprLiteralString)) {
+				if(stmt->where->expr2->type==kExprLiteralString) {
 					std::cout << "inside if for istypestring\n";
 					std::string val1(b);
 					std::string val2(stmt->where->expr2->name);
 					if(val1 == val2)
 						doit=true;
-				} else if(stmt->updates->at(0)->value->isType(kExprLiteralInt)) {
+				} else if(stmt->where->expr2->type==kExprLiteralInt) {
 					std::cout << "inside if for istypeint\n";
 					int val1;
 					memcpy(&val1, b, sizeof(int));
