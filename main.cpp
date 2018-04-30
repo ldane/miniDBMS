@@ -5,11 +5,14 @@
 #include <functional> 
 #include <cctype>
 #include <cstring>
+#include <list>
 #include <locale>
 #include <iostream>
 #include <sstream>
 #include <fstream>
 #include <stdio.h>
+
+#include <pthread.h>
 
 // include the sql parser
 #include "SQLParser.h"
@@ -22,7 +25,8 @@
 #include "sqlhelper.h"
 
 Catalog ctlg;
-
+std::list<std::string> work_q;
+pthread_mutex_t work_m;
 
 using hsql::kStmtSelect;
 using hsql::kStmtInsert;
@@ -550,11 +554,43 @@ bool processStream(std::istream &ss, bool single = false) {
 	return true;
 }
 
+std::string getWork(int threadNumber) {
+	std::string item;
+	pthread_mutex_lock(&work_m);
+	if(work_q.size() != 0) {
+		item = work_q.front();
+		work_q.pop_front();
+	}
+	pthread_mutex_unlock(&work_m);
+	return item;
+}
+
+int workSize() {
+	pthread_mutex_lock(&work_m);
+	int size = work_q.size();
+	pthread_mutex_unlock(&work_m);
+	return size;
+}
+
+static void* threadFunc(void *ptr) {
+	while(true) {
+		std::string work = getWork(1);
+		if(work.size() == 0) {
+			return NULL;
+		}
+	}
+	return NULL;
+}
+
 void processScript(std::string filename, int maxthread) {
 	std::ifstream ss(filename);
 	std::string line;
+	pthread_mutex_init(&work_m, NULL);
 	while(true) {
 		std::getline(ss, line);
+		if(ss.eof())
+			break;
+
 		if(icompare(line, "BEGIN TRANSACTION")) {
 			std::ostringstream ofs;
 			while(true) {
@@ -564,12 +600,24 @@ void processScript(std::string filename, int maxthread) {
 				else
 					ofs << line << "\n";
 			}
-			std::cout << "thread" << ofs.str().size()<< "\n";
+			work_q.push_back(ofs.str());
 		}
-		if(ss.eof())
-			break;
 	}
 	ss.close();
+	//std::cout << "Work: " << work_q.size() << "\n";
+
+	std::list<pthread_t> threadList;
+	for(int i=0; i<maxthread; i++) {
+		pthread_t tid;
+		int result = pthread_create(&tid, NULL, threadFunc, NULL);
+		threadList.push_back(tid);
+		if( result!=0 )
+			std::cout <<"Ups\n";
+	}
+	for(auto t : threadList) {
+		pthread_join(t, NULL);
+	}
+	pthread_mutex_destroy(&work_m);
 }
 
 int main(int argc, char *argv[]) {
