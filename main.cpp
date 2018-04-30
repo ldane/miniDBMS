@@ -222,8 +222,7 @@ int selectData(const hsql::SelectStatement* stmt, bool print=true) {
 	return count;
 }
 
-const char* packRecord(Table *t, const std::vector<hsql::Expr *>* values) {
-	std::ostringstream ofs;
+void packRecord(std::ofstream *ofs, Table *t, const std::vector<hsql::Expr *>* values) {
 	int ind=0;
 	int i;
 	char* s;
@@ -235,7 +234,7 @@ const char* packRecord(Table *t, const std::vector<hsql::Expr *>* values) {
 				i=v->ival;
 				size = t->getColumnByteSizeAt(ind);
 				//std::cout << v->ival << "\n";
-				ofs.write((char *)&i, size);
+				ofs->write((char *)&i, size);
 				break;
 			case kExprLiteralString:
 				size = t->getColumnByteSizeAt(ind);
@@ -243,14 +242,12 @@ const char* packRecord(Table *t, const std::vector<hsql::Expr *>* values) {
 				std::memset(s,0,size);
 				std::strcpy(s,v->name);
 				//std::cout << s << "\n";
-				ofs.write(s, size);
+				ofs->write(s, size);
 				break;
 			default:
 				break;
 		}
 	}
-	std::string res = ofs.str();
-	return res.c_str();
 }
 
 void insertData(const hsql::InsertStatement* stmt) {
@@ -300,9 +297,9 @@ void insertData(const hsql::InsertStatement* stmt) {
 		return;
 	}
 
-	std::ofstream ofs(fileName, std::ofstream::binary | std::ofstream::out | std::ofstream::app);
-	ofs.write(packRecord(table, values), table->getRecordSize());
-	ofs.close();
+	std::ofstream *ofs = new std::ofstream(fileName, std::ofstream::binary | std::ofstream::out | std::ofstream::app);
+	packRecord(ofs, table, values);
+	ofs->close();
 
 	// increment things in catalog
 	if (ctlg.incrementRecordsInTable(tName)) printf("Successfully inserted record\n");
@@ -531,6 +528,28 @@ bool processStream(std::istream &ss, bool single = false) {
 	return true;
 }
 
+void invokeThreads(std::string filename, int maxthread) {
+	std::ifstream ss(filename);
+	std::string line;
+	while(true) {
+		std::getline(ss, line);
+		if(icompare(line, "BEGIN TRANSACTION")) {
+			std::ostringstream ofs;
+			while(true) {
+				std::getline(ss, line);
+				if(icompare(line, "END TRANSACTION;"))
+					break;
+				else
+					ofs << line << "\n";
+			}
+			std::cout << "thread" << ofs.str().size()<< "\n";
+		}
+		if(ss.eof())
+			break;
+	}
+	ss.close();
+}
+
 int main(int argc, char *argv[]) {
 	ctlg.loadFromFile("catalog.txt");
 	bool quit=true;
@@ -540,6 +559,16 @@ int main(int argc, char *argv[]) {
 		if(icompare(arg.substr(len-4),".sql")) {
 			std::ifstream ss(arg);
 			quit=processStream(ss);
+		} else if (icompare(arg.substr(0,7), "script=")) {
+			int pos = arg.find(':');
+			int maxthread = 0;
+			std::string script = arg.substr(7,pos-7);
+			pos+=1;
+			if(icompare(arg.substr(pos,11), "numthreads=")) {
+				maxthread = std::stoi(arg.substr(pos+11));
+			}
+			invokeThreads(script, maxthread);
+			quit=false;
 		} else {
 			std::istringstream ss(argv[1]);
 			quit=processStream(ss);
