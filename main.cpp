@@ -403,7 +403,7 @@ int updateData(const hsql::UpdateStatement* stmt, bool specialCase=false) {
 	int targetRowPos = 0;
 	
 	bool matchFound = false;
-	while (!t->lock(targetRowPos-recordsize)){
+	while (!t->lock(stmt->where->expr2->ival)){
 		usleep(1000);
 	}
 	while (true) {
@@ -499,8 +499,7 @@ int updateData(const hsql::UpdateStatement* stmt, bool specialCase=false) {
 			std::cout << "Primary key: " << val2 << " does not exist\n";
 		}
 	}
-	//t->unlock(stmt->where->expr2->ival);
-	t->unlock(targetRowPos-recordsize);
+	t->unlock(stmt->where->expr2->ival);
 	return count;
 }
 
