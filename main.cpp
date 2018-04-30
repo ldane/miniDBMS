@@ -186,7 +186,7 @@ int selectData(const hsql::SelectStatement* stmt, bool print=true) {
 			return 0;
 		}
 		
-		for (const auto& i: t->getColumnNames())
+		for (const auto& i: stmt->selectList)
 			std::cout << i << ' ';
 		std::cout << "\n";
 		
