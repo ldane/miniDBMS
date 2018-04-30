@@ -488,7 +488,6 @@ int updateData(const hsql::UpdateStatement* stmt, bool specialCase=false) {
 			}
 		}
 		fs.close();
-		t->unlock(targetRowPos-recordsize);
 		//pthread_mutex_unlock(&out_m);
 		//printf("Successfully updated record\n");
 	} else {
