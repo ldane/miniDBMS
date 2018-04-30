@@ -380,10 +380,10 @@ void updateData(const hsql::UpdateStatement* stmt) {
 	ifs.close();
 	if (matchFound){
 		std::ofstream ofs(fileName, std::ofstream::binary | std::ofstream::out | std::ofstream::app);
-		ofs.seekg(targetRowPos+t->getColumnBytePosition(column0)-recordsize);
+		ofs.seekp(targetRowPos+t->getColumnBytePosition(column0)-recordsize);
 		ofs.write((char *)&stmt->updates->at(0)->value->ival, 4);
 		ofs.close();
-		printf("Successfully updated record\n")
+		printf("Successfully updated record\n");
 	}
 	return;
 }
