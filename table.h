@@ -61,7 +61,7 @@ class Table{
 		size_t getColumnBytePosition(std::string clmn);
 		size_t getColumnByteSize(std::string);
 		size_t getIndexOfPrimaryKey();
-		bool isLocked(int pk_target);
+		bool isLocked(int pk_target, bool inside = false);
 		bool lock(int pk_target);
 		bool unlock(int pk_target);
 };

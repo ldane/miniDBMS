@@ -335,25 +335,34 @@ size_t Table::getIndexOfPrimaryKey(){
 	return 0;
 }
 
-bool Table::isLocked(int pk_target){
+bool Table::isLocked(int pk_target, bool inside = false){
 	// returns true if locked 
 	// returns false if unlocked
 	bool result;
-	pthread_mutex_lock(&m_lock);
-	if (lockedItems.find(pk_target) == lockedItems.end()) {
-		result = false;
+	if (inside){
+		if (lockedItems.find(pk_target) == lockedItems.end()) {
+			result = false;
+		} else {
+			result = true;
+		}
+		return result;
 	} else {
-		result = true;
+		pthread_mutex_lock(&m_lock);
+		if (lockedItems.find(pk_target) == lockedItems.end()) {
+			result = false;
+		} else {
+			result = true;
+		}
+		pthread_mutex_unlock(&m_lock);
+		return result;
 	}
-	pthread_mutex_unlock(&m_lock);
-	return result;
 }
 bool Table::lock(int pk_target){
 	// returns true if successfully locked row
 	// returns false if row is already locked
 	bool result;
 	pthread_mutex_lock(&m_lock);
-	if (isLocked(pk_target)){
+	if (isLocked(pk_target, true)){
 		result = false;
 	} else {
 		lockedItems.insert(pk_target);
@@ -367,7 +376,7 @@ bool Table::unlock(int pk_target){
 	// returns false if row is already unlocked (shouldn't happen)
 	bool result;
 	pthread_mutex_lock(&m_lock);
-	if (isLocked(pk_target)){
+	if (isLocked(pk_target, true)){
 		lockedItems.erase(pk_target);
 		result = true;
 	} else {
