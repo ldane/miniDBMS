@@ -399,15 +399,14 @@ void updateData(const hsql::UpdateStatement* stmt, bool specialCase=false) {
 				int valuepos;
 				int minuspos = fullstring.find('-');
 				int pluspos = fullstring.find('+');
-				int wherepos = myStatement.find("WHERE ");
 				if (minuspos != std::string::npos){
 					//its a decrement function 
 					valuepos = minuspos+1;
-				} else if (pluspos !+ std::string::npos){
+				} else if (pluspos != std::string::npos){
 					//its an increment function
 					valuepos = pluspos+1;
 				}
-				valueString = fullstring.substr(valuepos, wherepos-valuepos+1);
+				valueString = fullstring.substr(valuepos);
 				std::cout << valueString << " valueString\n";
 				currentValue = std::stoi(valueString);
 			} else {
