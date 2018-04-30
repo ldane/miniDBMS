@@ -74,6 +74,11 @@ static inline void trim(std::string &s) {
     ltrim(s);
 }
 
+//find in a vector
+static inline bool find(std::vector<std::string> vector, std::string item) {
+	return std::find(vector.begin(), vector.end(), item) != vector.end();
+}
+
 /* End helper functions */
 
 bool doOperation(char op, int val1, int val2) {
@@ -164,6 +169,40 @@ int selectData(const hsql::SelectStatement* stmt, bool print=true) {
 		std::vector<std::string> rFieldList = prepareFieldList(stmt->selectList, right->name);
 		std::vector<std::string> lFieldList = prepareFieldList(stmt->selectList, left->name);
 
+		std::list<std::string> headers;
+		std::vector<std::string> target;
+		if (rFieldList.size()!=0){
+			target=rFieldList;
+		} else {
+			target=rTable->getColumnNames();
+		}
+		for(auto it : target) {
+			if(find(lFieldList, it)) {
+				std::string buf(right->name);
+				headers.push_back(buf+"."+it);
+			}
+			else
+				headers.push_back(it);
+		}
+
+		if (lFieldList.size()!=0){
+			target=lFieldList;
+		} else {
+			target=lTable->getColumnNames();
+		}
+		for (const auto& it: lTable->getColumnNames()) {
+			if(find(rFieldList, it)) {
+				std::string buf(left->name);
+				headers.push_back(buf+"."+it);
+			}
+			else
+				headers.push_back(it);
+		}
+
+		for (const auto& it: headers)
+			hdr << it << ' ';
+		hdr << "\n";
+		
 		for(char* rbuf=rTable->getNextRow(rifs); rbuf!=NULL; rbuf=rTable->getNextRow(rifs)) {
 			auto val1 = rTable->getRecordColumn(rbuf, e1->name);
 			//restart the file
