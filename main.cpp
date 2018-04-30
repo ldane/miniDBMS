@@ -493,6 +493,8 @@ void parseCommand(std::string myStatement) {
 			else
 				ctlg.showTable(myStatement);
 		}
+	} else if (icompare(myStatement.substr(myStatement.find("SET "), myStatement.find('=')-myStatement.find("SET ")), myStatement.substr(myStatement.find('"'), myStatement.find('=')-myStatement.find("SET ")))){
+		std::cout << "This is an update with incrementing/decrementing function\n";
 	} else {
 		hsql::SQLParserResult* result = hsql::SQLParser::parseSQLString(myStatement);
 		if (result->isValid()) {
