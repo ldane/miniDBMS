@@ -409,6 +409,7 @@ void updateData(const hsql::UpdateStatement* stmt, bool specialCase=false) {
 				valueString = fullstring.substr(valuepos);
 				std::cout << valueString << " valueString\n";
 				currentValue = std::stoi(valueString);
+				fs.write((char *)&currentValue, t->getColumnByteSize(column0));
 			} else {
 				char* s;
 				size_t size;
