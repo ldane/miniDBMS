@@ -327,7 +327,7 @@ void deleteData(const hsql::DeleteStatement* stmt) {
 }
 
 void updateData(const hsql::UpdateStatement* stmt, bool specialCase=false) {
-	if (specialCase) printf("Parsed successfully!\n");
+	//if (specialCase) printf("Parsed successfully!\n");
 	char* buffer;
 	int recordsize;
 	int count=0;
@@ -559,7 +559,7 @@ void parseCommand(std::string myStatement) {
 	} else {
 		hsql::SQLParserResult* result = hsql::SQLParser::parseSQLString(myStatement);
 		if (result->isValid()) {
-			//printf("Parsed successfully!\n");
+			printf("Parsed successfully!\n");
 
 			for (uint i = 0; i < result->size(); ++i) {
 				const hsql::SQLStatement* statement = result->getStatement(i);
