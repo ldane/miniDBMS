@@ -5,6 +5,8 @@
 #include <fstream>
 #include <cstring>
 
+#include <pthread.h>
+
 Table::Table(std::string tn, bool temp) : columnTypesMap(){
 	tableName = tn;
 	primaryKey = "";
@@ -14,6 +16,11 @@ Table::Table(std::string tn, bool temp) : columnTypesMap(){
 	temporary = temp;
 	dropped = false;
 	//columnNames columnTypesMap
+	pthread_mutex_init(&m_lock, NULL);
+}
+
+Table::~Table() {
+	pthread_mutex_destroy(&m_lock);
 }
 
 void Table::createTableFile(){
@@ -28,6 +35,15 @@ std::ifstream* Table::getiFile() {
 	return ifs;
 }
 
+std::ofstream* Table::getoFile(bool append) {
+	std::ofstream *ofs;
+	if(append==true)
+		ofs = new std::ofstream(tableName+".tbl", std::ofstream::binary | std::ofstream::out | std::ofstream::app);
+	else
+		ofs = new std::ofstream(tableName+".tbl", std::ofstream::binary | std::ofstream::out);
+	return ofs;
+
+}
 char* Table::getNextRow(std::ifstream* ifs) {
 	char *buf = new char[recordSize];
 	ifs->read(buf, recordSize);
@@ -322,29 +338,41 @@ size_t Table::getIndexOfPrimaryKey(){
 bool Table::isLocked(int pk_target){
 	// returns true if locked 
 	// returns false if unlocked
-	if (lockedItems.find(pk_target) == lockedItems.end()){
-		return false;
+	bool result;
+	pthread_mutex_lock(&m_lock);
+	if (lockedItems.find(pk_target) == lockedItems.end()) {
+		result = false;
 	} else {
-		return true;
+		result = true;
 	}
+	pthread_mutex_unlock(&m_lock);
+	return result;
 }
 bool Table::lock(int pk_target){
 	// returns true if successfully locked row
 	// returns false if row is already locked
+	bool result;
+	pthread_mutex_lock(&m_lock);
 	if (isLocked(pk_target)){
-		return false;
+		result = false;
 	} else {
 		lockedItems.insert(pk_target);
-		return true;
+		result = true;
 	}
+	pthread_mutex_unlock(&m_lock);
+	return result;
 }
 bool Table::unlock(int pk_target){
 	// returns true if successfully unlocks row
 	// returns false if row is already unlocked (shouldn't happen)
+	bool result;
+	pthread_mutex_lock(&m_lock);
 	if (isLocked(pk_target)){
 		lockedItems.erase(pk_target);
-		return true;
+		result = true;
 	} else {
-		return false;
+		result = false;
 	}
+	pthread_mutex_unlock(&m_lock);
+	return result;
 }

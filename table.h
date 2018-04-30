@@ -21,12 +21,14 @@ class Table{
 		int numOfRecords;
 		std::vector<std::string> columnNames;
 		std::map<std::string, std::string> columnTypesMap;
+		pthread_mutex_t m_lock;
 		std::set<int> lockedItems;
 		bool temporary;
 		bool dropped;
 	
 	public :
 		Table(std::string tn, bool temp = false);
+		~Table();
 		void setPrimaryKey(std::string pk);
 		void setRecordSize(int size);
 		void incrementRecords();
@@ -37,6 +39,7 @@ class Table{
 		void parseAndSetPrimaryKey(std::string pk);
 		void createTableFile();
 		std::ifstream* getiFile();
+		std::ofstream* getoFile(bool append=true);
 		char* getNextRow(std::ifstream* ifs);
 		char* getNthRow(std::ifstream* ifs, int n);
 		std::string getRecordColumn(char* buffer, std::string col);

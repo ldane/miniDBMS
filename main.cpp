@@ -313,9 +313,10 @@ void insertData(const hsql::InsertStatement* stmt) {
 		return;
 	}
 
-	std::ofstream *ofs = new std::ofstream(fileName, std::ofstream::binary | std::ofstream::out | std::ofstream::app);
+	std::ofstream *ofs = table->getoFile();
 	packRecord(ofs, table, values);
 	ofs->close();
+	delete ofs;
 
 	// increment things in catalog
 	if (ctlg.incrementRecordsInTable(tName)) printf("Successfully inserted record\n");
@@ -546,10 +547,12 @@ void parseCommand(std::string myStatement) {
 			std::cout << myStatement << "\n";
 			updateSpecialCase = true;
 		}
-	}		
+	}
 	
 	if (icompare(myStatement.substr(0,12),"create table")) {
 		createTable(myStatement);
+	} else if (icompare(myStatement.substr(0,6),"commit")) {
+		return;
 	} else if (icompare(myStatement.substr(0,10),"show table")) {
 		if(icompare(myStatement.substr(0,11),"show tables")) {
 			ctlg.showTables();
@@ -626,6 +629,8 @@ static void* threadFunc(void *ptr) {
 		if(work.size() == 0) {
 			return NULL;
 		}
+		std::istringstream ifs(work);
+		processStream(ifs);
 	}
 	return NULL;
 }
