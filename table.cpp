@@ -23,23 +23,25 @@ void Table::createTableFile(){
 	ofs.close();
 }
 
-std::ifstream Table::getiFile() {
-	std::ifstream ifs(tableName+".tbl", std::ofstream::binary | std::ofstream::in);
+std::ifstream* Table::getiFile() {
+	std::ifstream *ifs = new std::ifstream(tableName+".tbl", std::ofstream::binary | std::ofstream::in);
 	return ifs;
 }
 
-char* Table::getNextRow(std::ifstream& ifs) {
+char* Table::getNextRow(std::ifstream* ifs) {
 	char *buf = new char[recordSize];
-	ifs.read(buf, recordSize);
-	if(ifs.eof())
+	ifs->read(buf, recordSize);
+	if(ifs->eof())
 		return NULL;
 	return buf;
 }
 
-char* Table::getNthRow(std::ifstream& ifs, int n) {
+char* Table::getNthRow(std::ifstream* ifs, int n) {
 	char *buf;
-	for(int i=0; i<n; i++)
-		buf=getNextRow(ifs);
+	ifs->clear();
+	ifs->seekg(0, ifs->beg);
+	ifs->seekg(getRecordSize()*n-1,ifs->beg);
+	buf=getNextRow(ifs);
 	return buf;
 }
 
@@ -220,6 +222,7 @@ std::string Table::getRecordColumn(char* buffer, std::string col) {
 	}
 	return ss.str();
 }	
+
 std::string Table::parseRecord(char* buffer, std::vector<std::string> fieldList) {
 	std::ostringstream ss;
 	for (auto const& value : columnNames){

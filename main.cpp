@@ -151,8 +151,8 @@ int selectData(const hsql::SelectStatement* stmt, bool print=true) {
 		if (rtype != ltype)
 			return 0;
 
-		std::ifstream rifs = rTable->getiFile();
-		std::ifstream lifs = lTable->getiFile();
+		std::ifstream *rifs = rTable->getiFile();
+		std::ifstream *lifs = lTable->getiFile();
 
 		std::vector<std::string> rFieldList = prepareFieldList(stmt->selectList, right->name);
 		std::vector<std::string> lFieldList = prepareFieldList(stmt->selectList, left->name);
@@ -160,8 +160,8 @@ int selectData(const hsql::SelectStatement* stmt, bool print=true) {
 		for(char* rbuf=rTable->getNextRow(rifs); rbuf!=NULL; rbuf=rTable->getNextRow(rifs)) {
 			auto val1 = rTable->getRecordColumn(rbuf, e1->name);
 			//restart the file
-			lifs.clear();
-			lifs.seekg (0, lifs.beg);
+			lifs->clear();
+			lifs->seekg (0, lifs->beg);
 			for(char* lbuf=lTable->getNextRow(lifs); lbuf!=NULL; lbuf=lTable->getNextRow(lifs)) {
 				auto val2 = lTable->getRecordColumn(lbuf, e2->name);
 				if(doOperation(op,val1,val2)) {
@@ -170,8 +170,8 @@ int selectData(const hsql::SelectStatement* stmt, bool print=true) {
 				}
 			}
 		}
-		rifs.close();
-		lifs.close();
+		rifs->close();
+		lifs->close();
 	} else {
 
 		Table *t = ctlg.findTable(stmt->fromTable->name);
@@ -182,7 +182,7 @@ int selectData(const hsql::SelectStatement* stmt, bool print=true) {
 			return 0;
 		}
 		
-		std::ifstream ifs = t->getiFile();
+		std::ifstream* ifs = t->getiFile();
 		std::vector<std::string> fieldList = prepareFieldList(stmt->selectList);
 			
 		for(char* buf=t->getNextRow(ifs); buf!=NULL; buf=t->getNextRow(ifs)) {
@@ -214,7 +214,7 @@ int selectData(const hsql::SelectStatement* stmt, bool print=true) {
 				}
 			}
 		}
-		ifs.close();
+		ifs->close();
 	}
 
 	if(print)
