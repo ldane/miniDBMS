@@ -379,12 +379,12 @@ void updateData(const hsql::UpdateStatement* stmt) {
 	}
 	ifs.close();
 	if (matchFound){
-		std::ofstream ofs(fileName, std::ofstream::binary | std::ofstream::out | std::ofstream::ate);
-		std::cout << ofs.tellp() << " aa \n";
-		ofs.seekp(targetRowPos+t->getColumnBytePosition(column0)-recordsize);
-		std::cout << ofs.tellp() << " bb " << stmt->updates->at(0)->value->ival << "\n";
-		ofs.write((char *)&stmt->updates->at(0)->value->ival, 4);
-		ofs.close();
+		std::fstream fs(fileName, std::fstream::binary | std::fstream::out | std::ofstream::in);
+		std::cout << fs.tellp() << " aa \n";
+		fs.seekp(targetRowPos+t->getColumnBytePosition(column0)-recordsize);
+		std::cout << fs.tellp() << " bb " << stmt->updates->at(0)->value->ival << "\n";
+		fs.write((char *)&stmt->updates->at(0)->value->ival, 4);
+		fs.close();
 		printf("Successfully updated record\n");
 	}
 	return;
