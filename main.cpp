@@ -222,8 +222,7 @@ int selectData(const hsql::SelectStatement* stmt, bool print=true) {
 	return count;
 }
 
-const char* packRecord(Table *t, const std::vector<hsql::Expr *>* values) {
-	std::ostringstream ofs;
+void packRecord(std::ofstream *ofs, Table *t, const std::vector<hsql::Expr *>* values) {
 	int ind=0;
 	int i;
 	char* s;
@@ -235,7 +234,7 @@ const char* packRecord(Table *t, const std::vector<hsql::Expr *>* values) {
 				i=v->ival;
 				size = t->getColumnByteSizeAt(ind);
 				//std::cout << v->ival << "\n";
-				ofs.write((char *)&i, size);
+				ofs->write((char *)&i, size);
 				break;
 			case kExprLiteralString:
 				size = t->getColumnByteSizeAt(ind);
@@ -243,14 +242,12 @@ const char* packRecord(Table *t, const std::vector<hsql::Expr *>* values) {
 				std::memset(s,0,size);
 				std::strcpy(s,v->name);
 				//std::cout << s << "\n";
-				ofs.write(s, size);
+				ofs->write(s, size);
 				break;
 			default:
 				break;
 		}
 	}
-	std::string res = ofs.str();
-	return res.c_str();
 }
 
 void insertData(const hsql::InsertStatement* stmt) {
@@ -300,9 +297,9 @@ void insertData(const hsql::InsertStatement* stmt) {
 		return;
 	}
 
-	std::ofstream ofs(fileName, std::ofstream::binary | std::ofstream::out | std::ofstream::app);
-	ofs.write(packRecord(table, values), table->getRecordSize());
-	ofs.close();
+	std::ofstream *ofs = new std::ofstream(fileName, std::ofstream::binary | std::ofstream::out | std::ofstream::app);
+	packRecord(ofs, table, values);
+	ofs->close();
 
 	// increment things in catalog
 	if (ctlg.incrementRecordsInTable(tName)) printf("Successfully inserted record\n");
