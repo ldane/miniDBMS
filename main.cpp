@@ -701,6 +701,7 @@ static void* threadFunc(void *ptr) {
 }
 
 void processScript(std::string filename, int maxthread) {
+	std::cout << "Loading script: " << filename << "\n";
 	std::ifstream ss(filename);
 	std::string line;
 	std::string rest;
