@@ -1,19 +1,28 @@
 # miniDBMS
 miniDBMS written in C++
 
-#
+# grading
+we will try to remove any leftover .tbl files and clear the catalog prior to the deadline.
+however, you may have to remove .tbl and "catalog.txt" files before executing anything to "clear" the database
+
+# to compile (if you are not executing directly from our folder)
+you will need to do a git pull on our repository 
+then follow the instructions to clone the included sql parser repository and set that up. the instructions for that can be found in their repository.
+
+
+# execution
 ./main file.sql 
 ./main
 ./main "SQL STATEMENT"
-./main script=script.sql:numthreads=10;
+./main script=script.sql:numthreads=10
 
 # Limitations
 single PK in tables
 a stored CHAR can not contain ';' ( example: 'ab;c' will cause complications )
 for transactions:
 	when attempting to process a transaction sql file, the execution command must use ':' not ';'
-		valid example: ./main script=script.sql:numthreads=10;
-		invalid example: ./main script=script.sql;numthreads=10;
+		valid example: ./main script=script.sql:numthreads=10
+		invalid example: ./main script=script.sql;numthreads=10
 	when a query is invalid, it will not execute. any other queries in the same transaction as the failed query are still executed however.
 	we did not set a hard check on if a column named 'balance' cannot go negative. so negative balances will not throw an error.
 
