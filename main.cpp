@@ -482,13 +482,13 @@ int updateData(const hsql::UpdateStatement* stmt, bool specialCase=false) {
 		//pthread_mutex_unlock(&out_m);
 		//printf("Successfully updated record\n");
 	} else {
-		if(stmt->where->expr2->type==kExprLiteralString) {
+		/*if(stmt->where->expr2->type==kExprLiteralString) {
 			std::string val2(stmt->where->expr2->name);
 			std::cout << "Primary key: " << val2 << " does not exist\n";
 		} else if(stmt->where->expr2->type==kExprLiteralInt) {
 			int val2 = stmt->where->expr2->ival;
 			std::cout << "Primary key: " << val2 << " does not exist\n";
-		}
+		}*/
 	}
 	t->unlock(stmt->where->expr2->ival);
 	return count;
