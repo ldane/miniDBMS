@@ -484,10 +484,10 @@ int updateData(const hsql::UpdateStatement* stmt, bool specialCase=false) {
 	} else {
 		if(stmt->where->expr2->type==kExprLiteralString) {
 			std::string val2(stmt->where->expr2->name);
-			std::cout << "Primary key: " << val2 << " not found, no row modified. ";
+			//std::cout << "Primary key: " << val2 << " not found, no row modified. ";
 		} else if(stmt->where->expr2->type==kExprLiteralInt) {
 			int val2 = stmt->where->expr2->ival;
-			std::cout << "Primary key: " << val2 << " not found, no row modified. ";
+			//std::cout << "Primary key: " << val2 << " not found, no row modified. ";
 		}
 	}
 	t->unlock(stmt->where->expr2->ival);
@@ -630,7 +630,8 @@ int parseCommand(std::string myStatement) {
 
 				retval = dispatchStatement(statement, updateSpecialCase);
 			}
-			std::cout << " ...Finished transaction\n";
+			if (updateSpecialCase)
+				std::cout << " ...Finished transaction\n";
 		} else {
 			fprintf(stderr, "Given string is not a valid SQL query.\n");
 			fprintf(stderr, "%s (L%d:%d)\n", 
