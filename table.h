@@ -22,6 +22,7 @@ class Table{
 		std::vector<std::string> columnNames;
 		std::map<std::string, std::string> columnTypesMap;
 		pthread_mutex_t m_lock;
+		pthread_mutex_t m_out;
 		std::set<int> lockedItems;
 		std::set<std::string> lockedItemsStr;
 		bool temporary;
@@ -41,6 +42,8 @@ class Table{
 		void createTableFile();
 		std::ifstream* getiFile();
 		std::ofstream* getoFile(bool append=true);
+		void lockAppend();
+		void unlockAppend();
 		char* getNextRow(std::ifstream* ifs);
 		char* getNthRow(std::ifstream* ifs, int n);
 		std::string getRecordColumn(char* buffer, std::string col);

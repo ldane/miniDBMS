@@ -17,10 +17,12 @@ Table::Table(std::string tn, bool temp) : columnTypesMap(){
 	dropped = false;
 	//columnNames columnTypesMap
 	pthread_mutex_init(&m_lock, NULL);
+	pthread_mutex_init(&m_out, NULL);
 }
 
 Table::~Table() {
 	pthread_mutex_destroy(&m_lock);
+	pthread_mutex_destroy(&m_out);
 }
 
 void Table::createTableFile(){
@@ -33,6 +35,14 @@ void Table::createTableFile(){
 std::ifstream* Table::getiFile() {
 	std::ifstream *ifs = new std::ifstream(tableName+".tbl", std::ofstream::binary | std::ofstream::in);
 	return ifs;
+}
+
+void Table::lockAppend() {
+	pthread_mutex_lock(&m_out);
+}
+
+void Table::unlockAppend() {
+	pthread_mutex_unlock(&m_out);
 }
 
 std::ofstream* Table::getoFile(bool append) {
