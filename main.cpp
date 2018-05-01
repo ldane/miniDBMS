@@ -727,7 +727,10 @@ void processScript(std::string filename, int maxthread) {
 					ofs << line << "\n";
 			}
 			work_q.push_back(ofs.str());
-			std::cout << "Processing transaction with " << updateCount << " updates.\n";
+			if (updateCount == 1)
+				std::cout << "Processing transaction with " << updateCount << " update.\n";
+			else if (updateCount > 1)
+				std::cout << "Processing transaction with " << updateCount << " updates.\n";
 		} else {
 			rest+= line;
 		}
