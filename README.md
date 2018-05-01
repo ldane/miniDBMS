@@ -10,11 +10,12 @@ miniDBMS written in C++
 # Limitations
 single PK in tables
 a stored CHAR can not contain ';' ( example: 'ab;c' will cause complications )
-when attempting to process a transaction sql file, the execution command must use ':' not ';'
-	valid example: ./main script=script.sql:numthreads=10;
-	invalid example: ./main script=script.sql;numthreads=10;
-when a query is invalid, it will not execute. any previous queries prior to the failed query are still executed however.
-we did not set a hard check on if a column named 'balance' cannot go negative. so negative balances will not throw an error.
+for transactions:
+	when attempting to process a transaction sql file, the execution command must use ':' not ';'
+		valid example: ./main script=script.sql:numthreads=10;
+		invalid example: ./main script=script.sql;numthreads=10;
+	when a query is invalid, it will not execute. any other queries in the same transaction as the failed query are still executed however.
+	we did not set a hard check on if a column named 'balance' cannot go negative. so negative balances will not throw an error.
 
 # Links/references
 https://stackoverflow.com/questions/5455802/how-to-read-a-complete-line-from-the-user-using-cin
