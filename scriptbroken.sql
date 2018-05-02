@@ -2,6 +2,15 @@ BEGIN TRANSACTION
 
 UPDATE account
 SET balance=balance-1
+WHERE accountid=3;
+
+COMMIT;
+END TRANSACTION;
+
+BEGIN TRANSACTION
+
+UPDATE account
+SET balance=balance-1
 WHERE accountid='6';
 
 COMMIT;
