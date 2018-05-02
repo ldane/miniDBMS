@@ -743,7 +743,7 @@ static void* threadFunc(void *ptr) {
 			break;
 		}
 		std::istringstream ifs(work);
-		quit=processStream(ifs,false,true);
+		processStream(ifs,false,true);
 	}
 	return NULL;
 }
