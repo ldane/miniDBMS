@@ -817,8 +817,6 @@ int main(int argc, char *argv[]) {
 			pos+=1;
 			if(icompare(arg.substr(pos,11), "numthreads=")) {
 				maxthread = std::stoi(arg.substr(pos+11));
-			} else {
-				maxthread=10;
 			}
 			processScript(script, maxthread);
 			quit=false;
