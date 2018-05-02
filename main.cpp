@@ -808,7 +808,7 @@ int main(int argc, char *argv[]) {
 		std::string arg = argv[1];
 		size_t len = arg.size();
 		if (icompare(arg.substr(0,7), "script=")) {
-			int pos = arg.find(':');
+			std::size_t pos = arg.find(':');
 			int maxthread = 0;
 			std::string script = arg.substr(7,pos-7);
 			pos+=1;
