@@ -417,9 +417,15 @@ int updateData(const hsql::UpdateStatement* stmt, bool specialCase=false) {
 	}	
 	
 	if( t->getColumnType(t->getPrimaryKey()) == "INT"){
-		if (!stmt->where->expr2->type==kExprLiteralInt) return -1;
+		if (!stmt->where->expr2->type==kExprLiteralInt){
+			std::cout << "PK is of wrong type\n";
+			return -1;
+		}
 	} else if (t->getColumnType(t->getPrimaryKey()).substr(0, 4) == "CHAR"){
-		if (!stmt->where->expr2->type==kExprLiteralString) return -1;
+		if (!stmt->where->expr2->type==kExprLiteralString){
+			std::cout << "PK is of wrong type\n";
+			return -1;
+		}
 	}
 	recordsize = t->getRecordSize();	
 	buffer = new char[recordsize];
