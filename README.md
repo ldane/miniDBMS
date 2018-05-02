@@ -1,9 +1,9 @@
 # miniDBMS
 miniDBMS written in C++
 
-# grading
+# before grading/testing
 we will try to remove any leftover .tbl files and clear the catalog prior to the deadline.
-however, you may have to remove .tbl and "catalog.txt" files before executing anything to "clear" the database
+however, you may have to remove .tbl files and "catalog.txt" before executing anything to "clear" the database
 
 # to compile 
 should not be necessary to compile if running on server
@@ -18,6 +18,7 @@ if compilation is needed, call "make" in folder
 # Limitations
 single PK in tables
 a stored CHAR can not contain ';' ( example: 'ab;c' will cause complications )
+Syntax for executing sql scripts in the database are limited. See the execution subsection for examples.
 for transactions:
 	when attempting to process a transaction sql file, the execution command must use ':' not ';'
 		valid example: ./main script=script.sql:numthreads=10
