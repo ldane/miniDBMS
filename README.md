@@ -5,16 +5,15 @@ miniDBMS written in C++
 we will try to remove any leftover .tbl files and clear the catalog prior to the deadline.
 however, you may have to remove .tbl and "catalog.txt" files before executing anything to "clear" the database
 
-# to compile (if you are not executing directly from our folder)
-you will need to do a git pull on our repository 
-then follow the instructions to clone the included sql parser repository and set that up. the instructions for that can be found in their repository.
-
+# to compile 
+should not be necessary to compile if running on server
+if compilation is needed, call "make" in folder
 
 # execution
-./main file.sql 
+./main file.sql //USE THIS FOR EXECUTING CREATE/INSERT sqls such as "create.sql"
 ./main
 ./main "SQL STATEMENT"
-./main script=script.sql:numthreads=10
+./main script=script.sql:numthreads=10 //USE THIS FOR TRANSACTIONS sqls such as "script.sql"
 
 # Limitations
 single PK in tables
@@ -25,6 +24,7 @@ for transactions:
 		invalid example: ./main script=script.sql;numthreads=10
 	when a query is invalid, it will not execute. any other queries in the same transaction as the failed query are still executed however.
 	we did not set a hard check on if a column named 'balance' cannot go negative. so negative balances will not throw an error.
+	MUST USE "./main script=x.sql:numthreads=y" to process as a transaction. cannot use "./main script=x.sql" if the script contains transactions
 
 # Links/references
 https://stackoverflow.com/questions/5455802/how-to-read-a-complete-line-from-the-user-using-cin
@@ -39,3 +39,4 @@ https://stackoverflow.com/questions/12774207/fastest-way-to-check-if-a-file-exis
 http://www.cplusplus.com/reference/cstdio/remove/
 https://stackoverflow.com/questions/544928/reading-integer-size-bytes-from-a-char-array
 https://stackoverflow.com/questions/21647/reading-from-text-file-until-eof-repeats-last-line
+https://vichargrave.github.io/multithreaded-work-queue-in-cpp/
