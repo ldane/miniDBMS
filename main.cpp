@@ -813,9 +813,7 @@ int main(int argc, char *argv[]) {
 			std::string script = arg.substr(7,pos-7);
 			pos+=1;
 			if(icompare(arg.substr(pos,11), "numthreads=")) {
-				//13
-				std::cout << "pos+11 = " << pos+11 << ", " << arg.length() << "\n";
-				if (pos+11==arg.length()){
+				if (pos+11>=arg.length()){
 					maxthread=10;
 					std::cout << "Using default amount: " << maxthread << " thread(s)\n";
 				} else {
