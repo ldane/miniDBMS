@@ -415,6 +415,12 @@ int updateData(const hsql::UpdateStatement* stmt, bool specialCase=false) {
 		//table doesnt exist = update should fail = transaction should fail
 		return -1;
 	}	
+	
+	if( t->getColumnType(t->getPrimaryKey()) == "INT"){
+		if (!stmt->where->expr2->type==kExprLiteralInt) return -1;
+	} else if (t->getColumnType(t->getPrimaryKey()).substr(0, 4) == "CHAR"){
+		if (!stmt->where->expr2->type==kExprLiteralString) return -1;
+	}
 	recordsize = t->getRecordSize();	
 	buffer = new char[recordsize];
 
