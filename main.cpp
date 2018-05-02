@@ -807,10 +807,7 @@ int main(int argc, char *argv[]) {
 	if (argc!=1) {
 		std::string arg = argv[1];
 		size_t len = arg.size();
-		if(icompare(arg.substr(len-4),".sql")) {
-			std::ifstream ss(arg);
-			quit=processStream(ss);
-		} else if (icompare(arg.substr(0,7), "script=")) {
+		if (icompare(arg.substr(0,7), "script=")) {
 			int pos = arg.find(':');
 			int maxthread = 0;
 			std::string script = arg.substr(7,pos-7);
@@ -820,8 +817,13 @@ int main(int argc, char *argv[]) {
 			} else {
 				maxthread=10;
 			}
+			std::cout << script <<"\n";
 			processScript(script, maxthread);
 			quit=false;
+		} else if(icompare(arg.substr(len-4),".sql")) {
+			std::ifstream ss(arg);
+			quit=processStream(ss);
+
 		} else {
 			std::istringstream ss(argv[1]);
 			quit=processStream(ss);
