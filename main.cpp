@@ -813,8 +813,13 @@ int main(int argc, char *argv[]) {
 			std::string script = arg.substr(7,pos-7);
 			pos+=1;
 			if(icompare(arg.substr(pos,11), "numthreads=")) {
-				maxthread = std::stoi(arg.substr(pos+11));
-				std::cout << "Using: " << maxthread << " thread(s)\n";
+				if (pos+11<=arg.length){
+					maxthread=10;
+					std::cout << "Using default amount: " << maxthread << " thread(s)\n";
+				} else {
+					maxthread = std::stoi(arg.substr(pos+11));
+					std::cout << "Using: " << maxthread << " thread(s)\n";
+				}
 			} else {
 				maxthread=10;
 				std::cout << "Using default amount: " << maxthread << " thread(s)\n";
