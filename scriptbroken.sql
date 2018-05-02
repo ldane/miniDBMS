@@ -15,3 +15,5 @@ WHERE accountid=2;
 
 COMMIT;
 END TRANSACTION;
+
+SELECT * FROM account;
