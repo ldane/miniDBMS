@@ -415,7 +415,7 @@ int updateData(const hsql::UpdateStatement* stmt, bool specialCase=false) {
 		//table doesnt exist = update should fail = transaction should fail
 		return -1;
 	}	
-	std::cout << "victor: " << getColumnType(t->getPrimaryKey()) << "\n";
+	std::cout << "victor: " << t->getColumnType(t->getPrimaryKey()) << "\n";
 	if (stmt->where->expr2->type==kExprLiteralInt){
 			std::cout << "victor: where clause is int\n";
 	}
