@@ -156,6 +156,9 @@ std::string Table::getColumnType(std::string column){
 		return "";
 	}
 }
+std::string Table::getColumnType(int i){
+	return getColumnType(columnNames.at(i));
+}
 
 void Table::setIfDropped(bool dropflag){
 	dropped = dropflag;

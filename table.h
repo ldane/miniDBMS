@@ -54,6 +54,7 @@ class Table{
 		int getNumOfRecords();
 		std::vector<std::string> getColumnNames();
 		std::string getColumnType(std::string column);
+		std::string getColumnType(int i);
 		void print();
 		void setIfDropped(bool dropflag);
 		bool isTemporary();

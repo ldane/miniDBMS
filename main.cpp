@@ -278,18 +278,43 @@ int selectData(const hsql::SelectStatement* stmt, bool print=true) {
 	return count;
 }
 
-void packRecord(std::ofstream *ofs, Table *t, const std::vector<hsql::Expr *>* values) {
+bool packRecord(std::ofstream *ofs, Table *t, const std::vector<hsql::Expr *>* values) {
 	int ind=0;
 	int i;
 	char* s;
+	bool fail=false;
+	int n = t->getColumnNames().size();
+	for(auto it = values->begin(); it != values->end(); ++it, ++ind) {
+		const hsql::Expr* v=*it;
+		//std::cout << ind << ":" << n << " - " << v->type << "\n";
+		if(ind > n) {
+			fail=true;
+			break;
+		}
+		std::string type = t->getColumnType(ind);
+		switch(v->type) {
+			case kExprLiteralInt:
+				if(icompare(type.substr(0,4),"CHAR"))
+					fail=true;
+				break;
+			case kExprLiteralString:
+				if(icompare(type,"INT"))
+					fail=true;
+				break;
+			default:
+				break;
+		}
+	}
+	if(fail)
+		return false;
+	ind = 0;
 	for(auto it = values->begin(); it != values->end(); ++it, ++ind) {
 		size_t size;
 		const hsql::Expr* v=*it;
 		switch(v->type) {
 			case kExprLiteralInt:
-				i=v->ival;
 				size = t->getColumnByteSizeAt(ind);
-				//std::cout << v->ival << "\n";
+				i=v->ival;
 				ofs->write((char *)&i, size);
 				break;
 			case kExprLiteralString:
@@ -297,13 +322,13 @@ void packRecord(std::ofstream *ofs, Table *t, const std::vector<hsql::Expr *>* v
 				s = new char[size];
 				std::memset(s,0,size);
 				std::strcpy(s,v->name);
-				//std::cout << s << "\n";
 				ofs->write(s, size);
 				break;
 			default:
 				break;
 		}
 	}
+	return true;
 }
 
 int insertData(const hsql::InsertStatement* stmt) {
@@ -355,14 +380,19 @@ int insertData(const hsql::InsertStatement* stmt) {
 
 	table->lockAppend();
 	std::ofstream *ofs = table->getoFile();
-	packRecord(ofs, table, values);
+	bool res=packRecord(ofs, table, values);
 	ofs->close();
 	table->unlockAppend();
 	delete ofs;
 
 	// increment things in catalog
-	if (ctlg.incrementRecordsInTable(tName)) printf("Successfully inserted record\n");
-	return 1;
+	if(res) {
+		if (ctlg.incrementRecordsInTable(tName))  {
+			printf("Successfully inserted record\n");
+			return 1;
+		}
+	}
+	return -1;
 }
 
 int deleteData(const hsql::DeleteStatement* stmt) {
