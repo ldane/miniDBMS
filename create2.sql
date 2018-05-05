@@ -1,0 +1,17 @@
+CREATE TABLE account(personid INT, accountid INT, balance INT, PRIMARY KEY(accountid));
+CREATE TABLE product(productid INT, description CHAR(10), quantity INT, PRIMARY KEY(productid));
+INSERT INTO product VALUES(1,'desktop',304);
+INSERT INTO product VALUES(2,'desktop',308);
+INSERT INTO product VALUES(3,'desktop',129);
+INSERT INTO product VALUES(4,'laptop',364);
+INSERT INTO product VALUES(5,'desktop',336);
+INSERT INTO account VALUES(1,1,121);
+INSERT INTO account VALUES(2,2,393);
+INSERT INTO account VALUES(9,3,244);
+INSERT INTO account VALUES(2,4,315);
+INSERT INTO account VALUES(9,5,124);
+INSERT INTO account VALUES(1,6,292);
+INSERT INTO account VALUES(1,7,127);
+INSERT INTO account VALUES(2,8,252);
+INSERT INTO account VALUES(5,9,333);
+INSERT INTO account VALUES(6,10,101);
