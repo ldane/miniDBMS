@@ -1,7 +1,7 @@
 BEGIN TRANSACTION
 
 UPDATE product
-SET quantiy=quantity+1
+SET quantity=quantity+1
 WHERE productid=5;
 
 UPDATE account
@@ -66,11 +66,11 @@ END TRANSACTION;
 BEGIN TRANSACTION
 
 UPDATE product
-SET quantiy=quantity-1
+SET quantity=quantity-1
 WHERE productid=1;
 
 UPDATE product
-SET quantiy=quantity-1
+SET quantity=quantity-1
 WHERE productid=5;
 
 COMMIT;
@@ -92,11 +92,11 @@ END TRANSACTION;
 BEGIN TRANSACTION
 
 UPDATE product
-SET quantiy=quantity-1
+SET quantity=quantity-1
 WHERE productid=4;
 
 UPDATE product
-SET quantiy=quantity+1
+SET quantity=quantity+1
 WHERE productid=1;
 
 COMMIT;
@@ -122,7 +122,7 @@ SET balance=balance-1
 WHERE accountid=7;
 
 UPDATE product
-SET quantiy=quantity-1
+SET quantity=quantity-1
 WHERE productid=4;
 
 COMMIT;
@@ -135,7 +135,7 @@ SET balance=balance+1
 WHERE accountid=6;
 
 UPDATE product
-SET quantiy=quantity+1
+SET quantity=quantity+1
 WHERE productid=2;
 
 COMMIT;
@@ -144,11 +144,11 @@ END TRANSACTION;
 BEGIN TRANSACTION
 
 UPDATE product
-SET quantiy=quantity+1
+SET quantity=quantity+1
 WHERE productid=1;
 
 UPDATE product
-SET quantiy=quantity-1
+SET quantity=quantity-1
 WHERE productid=3;
 
 COMMIT;
@@ -157,11 +157,11 @@ END TRANSACTION;
 BEGIN TRANSACTION
 
 UPDATE product
-SET quantiy=quantity+1
+SET quantity=quantity+1
 WHERE productid=2;
 
 UPDATE product
-SET quantiy=quantity+1
+SET quantity=quantity+1
 WHERE productid=1;
 
 COMMIT;
@@ -174,7 +174,7 @@ SET balance=balance-1
 WHERE accountid=9;
 
 UPDATE product
-SET quantiy=quantity-1
+SET quantity=quantity-1
 WHERE productid=3;
 
 COMMIT;
@@ -196,7 +196,7 @@ END TRANSACTION;
 BEGIN TRANSACTION
 
 UPDATE product
-SET quantiy=quantity+1
+SET quantity=quantity+1
 WHERE productid=3;
 
 UPDATE account
@@ -213,7 +213,7 @@ SET balance=balance-1
 WHERE accountid=10;
 
 UPDATE product
-SET quantiy=quantity+1
+SET quantity=quantity+1
 WHERE productid=5;
 
 COMMIT;
@@ -226,7 +226,7 @@ SET balance=balance+1
 WHERE accountid=10;
 
 UPDATE product
-SET quantiy=quantity-1
+SET quantity=quantity-1
 WHERE productid=4;
 
 COMMIT;
@@ -235,7 +235,7 @@ END TRANSACTION;
 BEGIN TRANSACTION
 
 UPDATE product
-SET quantiy=quantity-1
+SET quantity=quantity-1
 WHERE productid=1;
 
 UPDATE account
@@ -252,7 +252,7 @@ SET balance=balance+1
 WHERE accountid=4;
 
 UPDATE product
-SET quantiy=quantity+1
+SET quantity=quantity+1
 WHERE productid=3;
 
 COMMIT;
@@ -278,7 +278,7 @@ SET balance=balance-1
 WHERE accountid=7;
 
 UPDATE product
-SET quantiy=quantity-1
+SET quantity=quantity-1
 WHERE productid=4;
 
 COMMIT;
@@ -304,7 +304,7 @@ SET balance=balance+1
 WHERE accountid=8;
 
 UPDATE product
-SET quantiy=quantity+1
+SET quantity=quantity+1
 WHERE productid=2;
 
 COMMIT;
@@ -313,11 +313,11 @@ END TRANSACTION;
 BEGIN TRANSACTION
 
 UPDATE product
-SET quantiy=quantity+1
+SET quantity=quantity+1
 WHERE productid=2;
 
 UPDATE product
-SET quantiy=quantity-1
+SET quantity=quantity-1
 WHERE productid=5;
 
 COMMIT;
@@ -326,11 +326,11 @@ END TRANSACTION;
 BEGIN TRANSACTION
 
 UPDATE product
-SET quantiy=quantity-1
+SET quantity=quantity-1
 WHERE productid=1;
 
 UPDATE product
-SET quantiy=quantity+1
+SET quantity=quantity+1
 WHERE productid=4;
 
 COMMIT;
@@ -343,7 +343,7 @@ SET balance=balance+1
 WHERE accountid=1;
 
 UPDATE product
-SET quantiy=quantity+1
+SET quantity=quantity+1
 WHERE productid=5;
 
 COMMIT;
@@ -352,7 +352,7 @@ END TRANSACTION;
 BEGIN TRANSACTION
 
 UPDATE product
-SET quantiy=quantity+1
+SET quantity=quantity+1
 WHERE productid=2;
 
 UPDATE account
@@ -365,11 +365,11 @@ END TRANSACTION;
 BEGIN TRANSACTION
 
 UPDATE product
-SET quantiy=quantity+1
+SET quantity=quantity+1
 WHERE productid=2;
 
 UPDATE product
-SET quantiy=quantity-1
+SET quantity=quantity-1
 WHERE productid=3;
 
 COMMIT;
@@ -391,11 +391,11 @@ END TRANSACTION;
 BEGIN TRANSACTION
 
 UPDATE product
-SET quantiy=quantity+1
+SET quantity=quantity+1
 WHERE productid=5;
 
 UPDATE product
-SET quantiy=quantity-1
+SET quantity=quantity-1
 WHERE productid=1;
 
 COMMIT;
@@ -408,7 +408,7 @@ SET balance=balance+1
 WHERE accountid=10;
 
 UPDATE product
-SET quantiy=quantity-1
+SET quantity=quantity-1
 WHERE productid=2;
 
 COMMIT;
@@ -417,7 +417,7 @@ END TRANSACTION;
 BEGIN TRANSACTION
 
 UPDATE product
-SET quantiy=quantity-1
+SET quantity=quantity-1
 WHERE productid=1;
 
 UPDATE account
@@ -434,7 +434,7 @@ SET balance=balance-1
 WHERE accountid=10;
 
 UPDATE product
-SET quantiy=quantity-1
+SET quantity=quantity-1
 WHERE productid=1;
 
 COMMIT;
@@ -443,11 +443,11 @@ END TRANSACTION;
 BEGIN TRANSACTION
 
 UPDATE product
-SET quantiy=quantity-1
+SET quantity=quantity-1
 WHERE productid=4;
 
 UPDATE product
-SET quantiy=quantity+1
+SET quantity=quantity+1
 WHERE productid=1;
 
 COMMIT;
@@ -460,7 +460,7 @@ SET balance=balance+1
 WHERE accountid=3;
 
 UPDATE product
-SET quantiy=quantity-1
+SET quantity=quantity-1
 WHERE productid=5;
 
 COMMIT;
@@ -469,7 +469,7 @@ END TRANSACTION;
 BEGIN TRANSACTION
 
 UPDATE product
-SET quantiy=quantity-1
+SET quantity=quantity-1
 WHERE productid=5;
 
 UPDATE account
@@ -482,7 +482,7 @@ END TRANSACTION;
 BEGIN TRANSACTION
 
 UPDATE product
-SET quantiy=quantity-1
+SET quantity=quantity-1
 WHERE productid=1;
 
 UPDATE account
@@ -495,7 +495,7 @@ END TRANSACTION;
 BEGIN TRANSACTION
 
 UPDATE product
-SET quantiy=quantity-1
+SET quantity=quantity-1
 WHERE productid=1;
 
 UPDATE account
@@ -508,7 +508,7 @@ END TRANSACTION;
 BEGIN TRANSACTION
 
 UPDATE product
-SET quantiy=quantity+1
+SET quantity=quantity+1
 WHERE productid=3;
 
 UPDATE account
@@ -525,7 +525,7 @@ SET balance=balance-1
 WHERE accountid=8;
 
 UPDATE product
-SET quantiy=quantity+1
+SET quantity=quantity+1
 WHERE productid=4;
 
 COMMIT;
@@ -534,7 +534,7 @@ END TRANSACTION;
 BEGIN TRANSACTION
 
 UPDATE product
-SET quantiy=quantity-1
+SET quantity=quantity-1
 WHERE productid=4;
 
 UPDATE account
@@ -547,7 +547,7 @@ END TRANSACTION;
 BEGIN TRANSACTION
 
 UPDATE product
-SET quantiy=quantity-1
+SET quantity=quantity-1
 WHERE productid=1;
 
 UPDATE account
@@ -590,7 +590,7 @@ SET balance=balance+1
 WHERE accountid=8;
 
 UPDATE product
-SET quantiy=quantity+1
+SET quantity=quantity+1
 WHERE productid=2;
 
 COMMIT;
@@ -599,11 +599,11 @@ END TRANSACTION;
 BEGIN TRANSACTION
 
 UPDATE product
-SET quantiy=quantity-1
+SET quantity=quantity-1
 WHERE productid=1;
 
 UPDATE product
-SET quantiy=quantity+1
+SET quantity=quantity+1
 WHERE productid=4;
 
 COMMIT;
@@ -612,7 +612,7 @@ END TRANSACTION;
 BEGIN TRANSACTION
 
 UPDATE product
-SET quantiy=quantity-1
+SET quantity=quantity-1
 WHERE productid=4;
 
 UPDATE account
@@ -664,11 +664,11 @@ END TRANSACTION;
 BEGIN TRANSACTION
 
 UPDATE product
-SET quantiy=quantity+1
+SET quantity=quantity+1
 WHERE productid=5;
 
 UPDATE product
-SET quantiy=quantity+1
+SET quantity=quantity+1
 WHERE productid=4;
 
 COMMIT;
@@ -681,7 +681,7 @@ SET balance=balance-1
 WHERE accountid=5;
 
 UPDATE product
-SET quantiy=quantity-1
+SET quantity=quantity-1
 WHERE productid=2;
 
 COMMIT;
@@ -703,11 +703,11 @@ END TRANSACTION;
 BEGIN TRANSACTION
 
 UPDATE product
-SET quantiy=quantity+1
+SET quantity=quantity+1
 WHERE productid=3;
 
 UPDATE product
-SET quantiy=quantity+1
+SET quantity=quantity+1
 WHERE productid=5;
 
 COMMIT;
@@ -716,7 +716,7 @@ END TRANSACTION;
 BEGIN TRANSACTION
 
 UPDATE product
-SET quantiy=quantity-1
+SET quantity=quantity-1
 WHERE productid=5;
 
 UPDATE account
@@ -729,7 +729,7 @@ END TRANSACTION;
 BEGIN TRANSACTION
 
 UPDATE product
-SET quantiy=quantity-1
+SET quantity=quantity-1
 WHERE productid=5;
 
 UPDATE account
@@ -742,11 +742,11 @@ END TRANSACTION;
 BEGIN TRANSACTION
 
 UPDATE product
-SET quantiy=quantity-1
+SET quantity=quantity-1
 WHERE productid=3;
 
 UPDATE product
-SET quantiy=quantity-1
+SET quantity=quantity-1
 WHERE productid=4;
 
 COMMIT;
@@ -759,7 +759,7 @@ SET balance=balance-1
 WHERE accountid=1;
 
 UPDATE product
-SET quantiy=quantity-1
+SET quantity=quantity-1
 WHERE productid=1;
 
 COMMIT;
@@ -768,7 +768,7 @@ END TRANSACTION;
 BEGIN TRANSACTION
 
 UPDATE product
-SET quantiy=quantity+1
+SET quantity=quantity+1
 WHERE productid=5;
 
 UPDATE account
@@ -785,7 +785,7 @@ SET balance=balance+1
 WHERE accountid=5;
 
 UPDATE product
-SET quantiy=quantity-1
+SET quantity=quantity-1
 WHERE productid=4;
 
 COMMIT;
@@ -798,7 +798,7 @@ SET balance=balance+1
 WHERE accountid=6;
 
 UPDATE product
-SET quantiy=quantity+1
+SET quantity=quantity+1
 WHERE productid=1;
 
 COMMIT;
@@ -807,7 +807,7 @@ END TRANSACTION;
 BEGIN TRANSACTION
 
 UPDATE product
-SET quantiy=quantity-1
+SET quantity=quantity-1
 WHERE productid=1;
 
 UPDATE account
@@ -824,7 +824,7 @@ SET balance=balance-1
 WHERE accountid=8;
 
 UPDATE product
-SET quantiy=quantity-1
+SET quantity=quantity-1
 WHERE productid=4;
 
 COMMIT;
@@ -833,11 +833,11 @@ END TRANSACTION;
 BEGIN TRANSACTION
 
 UPDATE product
-SET quantiy=quantity-1
+SET quantity=quantity-1
 WHERE productid=1;
 
 UPDATE product
-SET quantiy=quantity+1
+SET quantity=quantity+1
 WHERE productid=1;
 
 COMMIT;
@@ -859,7 +859,7 @@ END TRANSACTION;
 BEGIN TRANSACTION
 
 UPDATE product
-SET quantiy=quantity-1
+SET quantity=quantity-1
 WHERE productid=5;
 
 UPDATE account
@@ -876,7 +876,7 @@ SET balance=balance-1
 WHERE accountid=7;
 
 UPDATE product
-SET quantiy=quantity-1
+SET quantity=quantity-1
 WHERE productid=3;
 
 COMMIT;
@@ -902,7 +902,7 @@ SET balance=balance+1
 WHERE accountid=4;
 
 UPDATE product
-SET quantiy=quantity-1
+SET quantity=quantity-1
 WHERE productid=1;
 
 COMMIT;
@@ -915,7 +915,7 @@ SET balance=balance-1
 WHERE accountid=8;
 
 UPDATE product
-SET quantiy=quantity+1
+SET quantity=quantity+1
 WHERE productid=2;
 
 COMMIT;
@@ -928,7 +928,7 @@ SET balance=balance+1
 WHERE accountid=10;
 
 UPDATE product
-SET quantiy=quantity-1
+SET quantity=quantity-1
 WHERE productid=5;
 
 COMMIT;
@@ -963,11 +963,11 @@ END TRANSACTION;
 BEGIN TRANSACTION
 
 UPDATE product
-SET quantiy=quantity+1
+SET quantity=quantity+1
 WHERE productid=5;
 
 UPDATE product
-SET quantiy=quantity-1
+SET quantity=quantity-1
 WHERE productid=2;
 
 COMMIT;
